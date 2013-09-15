@@ -26,33 +26,33 @@ public class UnicodeInputStreamReader extends Reader
         int bom24 = bom16 << 8 | (data[2] & 0xFF);
         int bom32 = bom24 << 8 | (data[3] & 0xFF);
 
-        if (bom24 == 0xEFBBBF)
+        if( bom24 == 0xEFBBBF )
         {
             enc = "UTF-8";
             size = 3;
         }
-        else if (bom16 == 0xFEFF)
+        else if( bom16 == 0xFEFF )
         {
             enc = "UTF-16BE";
             size = 2;
         }
-        else if (bom16 == 0xFFFE)
+        else if( bom16 == 0xFFFE )
         {
             enc = "UTF-16LE";
             size = 2;
         }
-        else if (bom32 == 0x0000FEFF)
+        else if( bom32 == 0x0000FEFF )
         {
             enc = "UTF-32BE";
             size = 4;
         }
-        else if (bom32 == 0xFFFE0000) //This will never happen as it'll be caught by UTF-16LE,
+        else if( bom32 == 0xFFFE0000 ) //This will never happen as it'll be caught by UTF-16LE,
         { //but if anyone ever runs across a 32LE file, i'd like to disect it.
             enc = "UTF-32LE";
             size = 4;
         }
 
-        if (size < read)
+        if( size < read )
         {
             pbStream.unread(data, size, read - size);
         }

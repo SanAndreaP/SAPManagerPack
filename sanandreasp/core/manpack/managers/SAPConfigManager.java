@@ -8,12 +8,14 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cpw.mods.fml.common.FMLLog;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Table;
 
+import cpw.mods.fml.common.FMLLog;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-
-import sanandreasp.core.manpack.CommonUsedStuff;
+import sanandreasp.core.manpack.helpers.CommonUsedStuff;
 
 /**
  * A Configuration manager for Minecraft modifications. It comes with an auto-assign feature for block and item IDs. Version 2.0
@@ -76,7 +78,7 @@ public class SAPConfigManager {
 		
 		configFile = new File(configFile, par3FileName);
 		
-		if((!configFile.canRead() || !configFile.canWrite()) && configFile.exists())
+		if( (!configFile.canRead() || !configFile.canWrite()) && configFile.exists() )
 			throw new RuntimeException(String.format("[SAP-ConfigMan] Can't read or write File for %s!", modName));
 	}
 	
@@ -87,7 +89,7 @@ public class SAPConfigManager {
 	 * @param par1Name The name of the new group.
 	 */
 	public void addGroup(String par1Name) {
-		if(groups.containsKey(par1Name))
+		if( groups.containsKey(par1Name) )
 			FMLLog.log("SAP-ConfigManager", Level.WARNING, "Group %s already exists for %s! Skipping.", par1Name, modName);
 		else
 			groups.put(par1Name, new SAPGroup(par1Name));
@@ -103,7 +105,7 @@ public class SAPConfigManager {
 	 * @see DataTypes
 	 */
 	public void addProperty(String par1PropName, String par2GroupName, Object par3Value) {
-		if(!groups.containsKey(par2GroupName)) {
+		if( !groups.containsKey(par2GroupName) ) {
 			FMLLog.log("SAP-ConfigManager", Level.WARNING, "Group %s cannot be found for %s!", par2GroupName, modName);
 			return;
 		}
@@ -133,15 +135,15 @@ public class SAPConfigManager {
 	 * @see DataTypes
 	 */
 	public void addProperties(String[] par1PropNames, String par2GroupName, Object[] par3Values) {
-		if(par3Values == null) {
+		if( par3Values == null ) {
 			FMLLog.log("SAP-ConfigManager", Level.WARNING, "Values array is null in %s for %s!", par2GroupName, modName);
 			return;
 		}
-		if(par1PropNames.length != par3Values.length) {
+		if( par1PropNames.length != par3Values.length ) {
 			FMLLog.log("SAP-ConfigManager", Level.WARNING, "Property name and value lengths are not equal in %s for %s!", par2GroupName, modName);
 			return;
 		}
-		for(int i = 0; i < par1PropNames.length; i++) {
+		for( int i = 0; i < par1PropNames.length; i++ ) {
 			groups.get(par2GroupName).addProp(par1PropNames[i], par3Values[i]);
 		}
 	}
@@ -155,17 +157,17 @@ public class SAPConfigManager {
 	    Class<?> valKlass = val.getClass();
 	    Object[] outputArray = null;
 
-	    for(Class<?> arrKlass : ARRAY_PRIMITIVE_TYPES){
-	        if(valKlass.isAssignableFrom(arrKlass)) {
+	    for( Class<?> arrKlass : ARRAY_PRIMITIVE_TYPES ){
+	        if( valKlass.isAssignableFrom(arrKlass) ) {
 	            int arrlength = Array.getLength(val);
 	            outputArray = new Object[arrlength];
-	            for(int i = 0; i < arrlength; ++i) {
+	            for( int i = 0; i < arrlength; ++i ) {
 	                outputArray[i] = Array.get(val, i);
 	            }
 	            break;
 	        }
 	    }
-	    if(outputArray == null) // not primitive type array
+	    if( outputArray == null ) // not primitive type array
 	        outputArray = (Object[])val;
 
 	    return outputArray;
@@ -180,7 +182,7 @@ public class SAPConfigManager {
 	 * @return The property value, if the group exist.
 	 */
 	public SAPProp getSAPProperty(String par1PropName, String par2GroupName) {
-		if(!groups.containsKey(par2GroupName)) {
+		if( !groups.containsKey(par2GroupName) ) {
 			FMLLog.log("SAP-ConfigManager", Level.WARNING, "Group %s cannot be found for %s!", par2GroupName, modName);
 			return null;
 		}
@@ -194,12 +196,12 @@ public class SAPConfigManager {
 	 * @return An array of property values, if the group exist.
 	 */
 	private SAPProp[] getSAPProperties(String[] par1PropNames, String par2GroupName) {
-		if(!groups.containsKey(par2GroupName)) {
+		if( !groups.containsKey(par2GroupName) ) {
 			FMLLog.log("SAP-ConfigManager", Level.WARNING, "Group %s cannot be found for %s!", par2GroupName, modName);
 			return null;
 		}
 		SAPProp[] values = new SAPProp[par1PropNames.length];
-		for(int i = 0; i < par1PropNames.length; i++)
+		for( int i = 0; i < par1PropNames.length; i++ )
 			values[i] = groups.get(par2GroupName).getProp(par1PropNames[i]);
 		return values;
 	}
@@ -213,7 +215,7 @@ public class SAPConfigManager {
 	public long[] getPropertiesLong(String[] par1PropNames, String par2GroupName) {
 		SAPProp[] inArray = getSAPProperties(par1PropNames, par2GroupName);
 		long[] retArray = new long[inArray.length];
-		for(int i = 0; i < inArray.length; i++) retArray[i] = inArray[i].getLong();
+		for( int i = 0; i < inArray.length; i++) retArray[i] = inArray[i].getLong( );
 		return retArray;
 	}
 
@@ -226,7 +228,7 @@ public class SAPConfigManager {
 	public int[] getPropertiesInt(String[] par1PropNames, String par2GroupName) {
 		SAPProp[] inArray = getSAPProperties(par1PropNames, par2GroupName);
 		int[] retArray = new int[inArray.length];
-		for(int i = 0; i < inArray.length; i++) retArray[i] = inArray[i].getInt();
+		for( int i = 0; i < inArray.length; i++) retArray[i] = inArray[i].getInt( );
 		return retArray;
 	}
 	
@@ -239,7 +241,7 @@ public class SAPConfigManager {
 	public short[] getPropertiesShort(String[] par1PropNames, String par2GroupName) {
 		SAPProp[] inArray = getSAPProperties(par1PropNames, par2GroupName);
 		short[] retArray = new short[inArray.length];
-		for(int i = 0; i < inArray.length; i++) retArray[i] = inArray[i].getShort();
+		for( int i = 0; i < inArray.length; i++) retArray[i] = inArray[i].getShort( );
 		return retArray;
 	}
 	
@@ -252,7 +254,7 @@ public class SAPConfigManager {
 	public byte[] getPropertiesByte(String[] par1PropNames, String par2GroupName) {
 		SAPProp[] inArray = getSAPProperties(par1PropNames, par2GroupName);
 		byte[] retArray = new byte[inArray.length];
-		for(int i = 0; i < inArray.length; i++) retArray[i] = inArray[i].getByte();
+		for( int i = 0; i < inArray.length; i++) retArray[i] = inArray[i].getByte( );
 		return retArray;
 	}
 	
@@ -265,7 +267,7 @@ public class SAPConfigManager {
 	public float[] getPropertiesFloat(String[] par1PropNames, String par2GroupName) {
 		SAPProp[] inArray = getSAPProperties(par1PropNames, par2GroupName);
 		float[] retArray = new float[inArray.length];
-		for(int i = 0; i < inArray.length; i++) retArray[i] = inArray[i].getFloat();
+		for( int i = 0; i < inArray.length; i++) retArray[i] = inArray[i].getFloat( );
 		return retArray;
 	}
 	
@@ -278,7 +280,7 @@ public class SAPConfigManager {
 	public double[] getPropertiesDouble(String[] par1PropNames, String par2GroupName) {
 		SAPProp[] inArray = getSAPProperties(par1PropNames, par2GroupName);
 		double[] retArray = new double[inArray.length];
-		for(int i = 0; i < inArray.length; i++) retArray[i] = inArray[i].getDouble();
+		for( int i = 0; i < inArray.length; i++) retArray[i] = inArray[i].getDouble( );
 		return retArray;
 	}
 	
@@ -291,7 +293,7 @@ public class SAPConfigManager {
 	public char[] getPropertiesChar(String[] par1PropNames, String par2GroupName) {
 		SAPProp[] inArray = getSAPProperties(par1PropNames, par2GroupName);
 		char[] retArray = new char[inArray.length];
-		for(int i = 0; i < inArray.length; i++) retArray[i] = inArray[i].getChar();
+		for( int i = 0; i < inArray.length; i++) retArray[i] = inArray[i].getChar( );
 		return retArray;
 	}
 	
@@ -304,7 +306,7 @@ public class SAPConfigManager {
 	public boolean[] getPropertiesBool(String[] par1PropNames, String par2GroupName) {
 		SAPProp[] inArray = getSAPProperties(par1PropNames, par2GroupName);
 		boolean[] retArray = new boolean[inArray.length];
-		for(int i = 0; i < inArray.length; i++) retArray[i] = inArray[i].getBool();
+		for( int i = 0; i < inArray.length; i++) retArray[i] = inArray[i].getBool( );
 		return retArray;
 	}
 	
@@ -317,7 +319,7 @@ public class SAPConfigManager {
 	public String[] getPropertiesStr(String[] par1PropNames, String par2GroupName) {
 		SAPProp[] inArray = getSAPProperties(par1PropNames, par2GroupName);
 		String[] retArray = new String[inArray.length];
-		for(int i = 0; i < inArray.length; i++) retArray[i] = inArray[i].getString();
+		for( int i = 0; i < inArray.length; i++) retArray[i] = inArray[i].getString( );
 		return retArray;
 	}
 	
@@ -327,7 +329,7 @@ public class SAPConfigManager {
 	 * @param par1PropName The name of the property.
 	 */
 	public void addNewBlockIDs(String... par1PropNames) {
-		for(String name : par1PropNames)
+		for( String name : par1PropNames )
 			this.addProperty(name, "Block IDs", this.getFreeBlockID());
 	}
 
@@ -337,7 +339,7 @@ public class SAPConfigManager {
 	 * @param par1PropName The name of the property.
 	 */
 	public void addNewItemIDs(String... par1PropNames) {
-		for(String name : par1PropNames)
+		for( String name : par1PropNames )
 			this.addProperty(name, "Item IDs", this.getFreeItemID());
 	}
 	
@@ -348,7 +350,7 @@ public class SAPConfigManager {
 	 * @param par2Values An array of pre-defined values.
 	 */
 	public void addStaticBlockIDs(String[] par1PropNames, int[] par2Values) {
-		if(par1PropNames.length == par2Values.length) {
+		if( par1PropNames.length == par2Values.length ) {
 			this.addProperties(par1PropNames, "Block IDs", par2Values);
 		}
 	}
@@ -360,7 +362,7 @@ public class SAPConfigManager {
 	 * @param par2Values An array of pre-defined values.
 	 */
 	public void addStaticBlockIDs(String[] par1PropNames, Integer[] par2Values) {
-		if(par1PropNames.length == par2Values.length) {
+		if( par1PropNames.length == par2Values.length ) {
 			this.addProperties(par1PropNames, "Block IDs", par2Values);
 		}
 	}
@@ -372,7 +374,7 @@ public class SAPConfigManager {
 	 * @param par2Values An array of pre-defined values.
 	 */
 	public void addStaticItemIDs(String[] par1PropNames, int[] par2Values) {
-		if(par1PropNames.length == par2Values.length) {
+		if( par1PropNames.length == par2Values.length ) {
 			this.addProperties(par1PropNames, "Item IDs", par2Values);
 		}
 	}
@@ -384,7 +386,7 @@ public class SAPConfigManager {
 	 * @param par2Values An array of pre-defined values.
 	 */
 	public void addStaticItemIDs(String[] par1PropNames, Integer[] par2Values) {
-		if(par1PropNames.length == par2Values.length) {
+		if( par1PropNames.length == par2Values.length ) {
 			this.addProperties(par1PropNames, "Item IDs", par2Values);
 		}
 	}
@@ -396,7 +398,7 @@ public class SAPConfigManager {
 	 * @param par2Values An array of pre-defined values.
 	 */
 	public void addAchievementIDs(String[] par1PropNames, int[] par2Values) {
-		if(par1PropNames.length == par2Values.length) {
+		if( par1PropNames.length == par2Values.length ) {
 			this.addProperties(par1PropNames, "Achievement IDs", par2Values);
 		}
 	}
@@ -408,7 +410,7 @@ public class SAPConfigManager {
 	 * @param par2Values An array of pre-defined values.
 	 */
 	public void addAchievementIDs(String[] par1PropNames, Integer[] par2Values) {
-		if(par1PropNames.length == par2Values.length) {
+		if( par1PropNames.length == par2Values.length ) {
 			this.addProperties(par1PropNames, "Achievement IDs", par2Values);
 		}
 	}
@@ -500,8 +502,8 @@ public class SAPConfigManager {
 	 * @throws RuntimeException If there are no block IDs left.
 	 */
 	public int getFreeBlockID() {
-		for(int i = Block.blocksList.length-1; i >= 0; i--) {
-			if(Block.blocksList[i] == null && !registeredBlocks[i] && !preRegisteredBlocks[i]) {
+		for( int i = Block.blocksList.length-1; i >= 0; i-- ) {
+			if( Block.blocksList[i] == null && !registeredBlocks[i] && !preRegisteredBlocks[i] ) {
 				preRegisteredBlocks[i] = true;
 				return i;
 			}
@@ -515,8 +517,8 @@ public class SAPConfigManager {
 	 * @throws RuntimeException If there are no item IDs left
 	 */
 	public int getFreeItemID() {
-		for(int i = Item.itemsList.length-1; i >= 0; i--) {
-			if(Item.itemsList[i] == null && !registeredItems[i] && !preRegisteredItems[i]) {
+		for( int i = Item.itemsList.length-1; i >= 0; i-- ) {
+			if( Item.itemsList[i] == null && !registeredItems[i] && !preRegisteredItems[i] ) {
 				preRegisteredItems[i] = true;
 				return i;
 			}
@@ -525,13 +527,13 @@ public class SAPConfigManager {
 	}
 	
 	private void writeNewFile(boolean update) {
-		if(update) {
+		if( update ) {
 			FMLLog.log("SAP-ConfigManager", Level.INFO, "Updating %s config file!", this.modName);
 		} else {
 			FMLLog.log("SAP-ConfigManager", Level.INFO, "Creating %s config file!", this.modName);
 		}
 		
-		if(configFile.exists())
+		if( configFile.exists() )
 			configFile.delete();
 		
 		try {
@@ -540,31 +542,32 @@ public class SAPConfigManager {
 			
 			String title = String.format(" %s Configuration File, made by SanAndreasPs ConfigManager", this.modName);
 			String line = "";
-			for(int i = 0; i < title.length()+1; i++) line += "-";
+			for( int i = 0; i < title.length()+1; i++ ) line += "-";
 
 			out.write(line+"\n");
 			out.write(title+"\n");
 			out.write(line+"\n");
-			for(SAPGroup group : this.groups.values()) {
-				if(!group.props.isEmpty()) {
+			for( SAPGroup group : this.groups.values() ) {
+				if( !group.props.isEmpty() ) {
 					out.write(String.format("[ %s ]", group.groupName)+"\n");
-					for(SAPProp prop : group.props.values()) {
+					for( int i = 0; i < group.props.size(); i++ ) {
+						SAPProp prop = group.props.row(i).values().iterator().next();
 						Object value = prop.value;
-						if(!update && group.groupName.equals("Block IDs") && (registeredBlocks[(Integer) value]
+						if( !update && group.groupName.equals("Block IDs") && (registeredBlocks[(Integer ) value]
 								|| Block.blocksList[(Integer) value] != null)) {
 							FMLLog.log("SAP-ConfigManager", Level.WARNING, "Block ID %s already occupied! Reassign free one for %s", value, this.modName);
 							value = new Integer(this.getFreeBlockID());
 						}
-						if(!update && group.groupName.equals("Item IDs") && (registeredItems[(Integer) value]
+						if( !update && group.groupName.equals("Item IDs") && (registeredItems[(Integer ) value]
 								|| Item.itemsList[(Integer) value] != null)) {
 							FMLLog.log("SAP-ConfigManager", Level.WARNING, "Item ID %s already occupied! Reassign free one for %s", value, this.modName);
 							value = new Integer(this.getFreeItemID());
 						}
 							
 						out.write(String.format("#   %s = %s", prop.propName, value.toString())+"\n");
-						if(group.groupName.equals("Block IDs") && !update)
+						if( group.groupName.equals("Block IDs") && !update )
 							registeredBlocks[(Integer) value] = true;
-						else if(group.groupName.equals("Item IDs") && !update)
+						else if( group.groupName.equals("Item IDs") && !update )
 							registeredItems[(Integer) value] = true;
 					}
 				}
@@ -573,13 +576,13 @@ public class SAPConfigManager {
 			osr.close();
 			out.close();
 
-			if(update) {
+			if( update ) {
 				FMLLog.log("SAP-ConfigManager", Level.INFO, "%s config file successfully updated!", this.modName);
 			} else {
 				FMLLog.log("SAP-ConfigManager", Level.INFO, "%s config file successfully created!", this.modName);
 			}
 		} catch (IOException e) {
-			if(update) {
+			if( update ) {
 				FMLLog.log("SAP-ConfigManager", Level.WARNING, "An error occured during updating %s config file!", this.modName);
 			} else {
 				FMLLog.log("SAP-ConfigManager", Level.WARNING, "An error occured during creating %s config file!", this.modName);
@@ -611,7 +614,7 @@ public class SAPConfigManager {
 					Double.parseDouble(par2Value);
 					break;
 				case CHAR:
-					if(par2Value.length() == 1) {
+					if( par2Value.length() == 1 ) {
 						return true;
 					}
 					break;
@@ -640,61 +643,61 @@ public class SAPConfigManager {
 	}
 	
 	public void loadConfig() {
-		if(!configFile.exists()) {
+		if( !configFile.exists() ) {
 			writeNewFile(false);
 		} else {
 			try {
 				boolean updateFile = false;
 				
 				BufferedReader var1In = new BufferedReader(new UnicodeInputStreamReader(new FileInputStream(configFile), "UTF-8"));
-				for(int i = 0; i < 3; i++) var1In.readLine();
+				for( int i = 0; i < 3; i++) var1In.readLine( );
 				
 				String currLine = "";
 				String var2String = "";
 				
 				Map<String, Boolean> groupsMap = new HashMap<String, Boolean>();
-				for(SAPGroup group : groups.values()) groupsMap.put(group.groupName, Boolean.valueOf(group.props.isEmpty()));
+				for( SAPGroup group : groups.values()) groupsMap.put(group.groupName, Boolean.valueOf(group.props.isEmpty()) );
 				
 				while(var1In.ready()) {
 					var2String = currLine.isEmpty() ? var1In.readLine() : currLine;
 					Matcher matcher = Pattern.compile("\\[ {0,}(.*?) {0,}\\]").matcher(var2String);
 					
-					if(matcher.find()) {
+					if( matcher.find() ) {
 						String var3GroupName = matcher.group(1);
-						if(this.groups.containsKey(var3GroupName)) {
+						if( this.groups.containsKey(var3GroupName) ) {
 							SAPGroup var4Group = this.groups.get(var3GroupName);
 							
 							Map<String, Boolean> var5Map = new HashMap<String, Boolean>();
-							for(SAPProp var6Prop : var4Group.props.values()) var5Map.put(var6Prop.propName, Boolean.FALSE);
+							for( SAPProp var6Prop : var4Group.props.values()) var5Map.put(var6Prop.propName, Boolean.FALSE );
 							
 							boolean finishedGroup = false;
 							while(var1In.ready() && !finishedGroup) {
 								var2String = var1In.readLine();
 								matcher = Pattern.compile("# {0,}(.*?) {0,}= {0,}(.*)").matcher(var2String);
 								
-								if(matcher.find()) {
+								if( matcher.find() ) {
 									String var8Key = matcher.group(1);
 									String var9Value = matcher.group(2);
 									
-									if(var4Group.props.containsKey(var8Key)) {
-										SAPProp prop = var4Group.props.get(var8Key);
-										if(this.isValueLegit(prop, var9Value)) {
+									if( var4Group.props.containsColumn(var8Key) ) {
+										SAPProp prop = var4Group.getProp(var8Key);
+										if( this.isValueLegit(prop, var9Value) ) {
 											Object value = getParsedValue(var9Value, prop.getDataType());
-											if(var4Group.groupName.equals("Block IDs")) {
-												if(Block.blocksList[(Integer) value] != null || registeredBlocks[(Integer) value]) {
+											if( var4Group.groupName.equals("Block IDs") ) {
+												if( Block.blocksList[(Integer) value] != null || registeredBlocks[(Integer) value] ) {
 													FMLLog.log("SAP-ConfigManager", Level.SEVERE, "Block ID conflict with property %s in %s config file! Change this block ID!",
 															var8Key, this.modName);
 												}
 												registeredBlocks[(Integer) value] = true;
-											} else if(var4Group.groupName.equals("Item IDs")) {
-												if(Item.itemsList[(Integer) value] != null || registeredItems[(Integer) value]) {
+											} else if( var4Group.groupName.equals("Item IDs") ) {
+												if( Item.itemsList[(Integer) value] != null || registeredItems[(Integer) value] ) {
 													FMLLog.log("SAP-ConfigManager", Level.SEVERE, "Item ID conflict with property %s in %s config file! Change this item ID!",
 															var8Key, this.modName);
 												}
 												registeredItems[(Integer) value] = true;
 											}
 											SAPProp var10Prop = new SAPProp(var8Key, value);
-											var4Group.props.put(var10Prop.propName, var10Prop);
+											var4Group.updateProp(var10Prop.propName, var10Prop);
 											var5Map.put(prop.propName, Boolean.TRUE);
 										} else {
 											FMLLog.log("SAP-ConfigManager", Level.WARNING, "Cannot assign value %s for property %s in %s config file! Invalid value!",
@@ -711,7 +714,7 @@ public class SAPConfigManager {
 								}
 							}
 							
-							if(var5Map.containsValue(Boolean.FALSE)) {
+							if( var5Map.containsValue(Boolean.FALSE) ) {
 								FMLLog.log("SAP-ConfigManager", Level.WARNING, "One or more properties are missing or invalid in %s config file!",
 										this.modName);
 								updateFile = true;
@@ -725,7 +728,7 @@ public class SAPConfigManager {
 					}
 				}
 				
-				if(groupsMap.containsValue(Boolean.FALSE)) {
+				if( groupsMap.containsValue(Boolean.FALSE) ) {
 					FMLLog.log("SAP-ConfigManager", Level.WARNING, "One or more groups are missing in %s config file!",
 							this.modName);
 					updateFile = true;
@@ -733,7 +736,7 @@ public class SAPConfigManager {
 				
 				var1In.close();
 				
-				if(updateFile)
+				if( updateFile )
 					writeNewFile(true);
 				else
 					FMLLog.log("SAP-ConfigManager", Level.INFO, "%s config file successfully readed!", this.modName);
@@ -780,8 +783,8 @@ public class SAPConfigManager {
 		}
 		
 		public boolean isDTClass(Class clazz) {
-			for(Class cls : dtClass) {
-				if(clazz == cls)
+			for( Class cls : dtClass ) {
+				if( clazz == cls )
 					return true;
 			}
 			return false;
@@ -790,26 +793,39 @@ public class SAPConfigManager {
 	
 	public static class SAPGroup {
 		public final String groupName;
-		public Map<String, SAPProp> props = new HashMap<String, SAPProp>();
+		public Table<Integer, String, SAPProp> props = HashBasedTable.create();//new HashMap<String, SAPProp>();
 		public SAPGroup(String par1Name) {
 			groupName = par1Name;
 		}
 		
 		public void addProp(String par1PropName, Object par3Value) {
-			if(par3Value == null) {
+			if( par3Value == null ) {
 				FMLLog.log("SAP-ConfigManager", Level.WARNING, "Property value cannot be null for property %s in group %s!",
 						par1PropName, groupName);
 			} else {
-				props.put(par1PropName, new SAPProp(par1PropName, par3Value));
+				props.put(props.size(), par1PropName, new SAPProp(par1PropName, par3Value));
 			}
 		}
 		
 		public SAPProp getProp(String par1Name) {
-			if(!props.containsKey(par1Name)) {
+			if( !props.containsColumn(par1Name) ) {
 				FMLLog.log("SAP-ConfigManager", Level.WARNING, "Property %s cannot be found!", par1Name);
 				return null;
 			}
-			return props.get(par1Name);
+			return props.column(par1Name).values().iterator().next();
+		}
+		
+		public SAPProp getSortedProp(int id, String par1Name) {
+			if( !props.row(id).containsKey(par1Name) ) {
+				FMLLog.log("SAP-ConfigManager", Level.WARNING, "Property %s cannot be found!", par1Name);
+				return null;
+			}
+			return props.row(id).get(par1Name);
+		}
+		
+		public void updateProp(String name, SAPProp value) {
+			int row = this.props.column(name).keySet().iterator().next();
+			this.props.row(row).put(name, value);
 		}
 	}
 	
@@ -821,7 +837,7 @@ public class SAPConfigManager {
 		public SAPProp(String par1PropName, Object par2Value, DataTypes par3DataType) {
 			this.propName = par1PropName;
 			this.value = par2Value;
-			if(par3DataType == null) {
+			if( par3DataType == null ) {
 				FMLLog.log("SAP-ConfigManager", Level.SEVERE, "Value %s is not supported!", par2Value.getClass());
 				throw new RuntimeException();
 			}
@@ -892,8 +908,8 @@ public class SAPConfigManager {
 		}
 		
 		private static DataTypes getDTFromClass(Class clazz) {
-			for(DataTypes dt : DataTypes.values()) {
-				if(dt.isDTClass(clazz))
+			for( DataTypes dt : DataTypes.values() ) {
+				if( dt.isDTClass(clazz) )
 					return dt;
 			}
 			return null;

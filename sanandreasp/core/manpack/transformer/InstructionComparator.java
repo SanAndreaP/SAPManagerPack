@@ -38,7 +38,7 @@ public class InstructionComparator
     
     public static boolean varInsnEqual(VarInsnNode insn1, VarInsnNode insn2)
     {
-        if(insn1.var == -1 || insn2.var == -1)
+        if( insn1.var == -1 || insn2.var == -1 )
             return true;
         
         return insn1.var == insn2.var;
@@ -56,7 +56,7 @@ public class InstructionComparator
     
     public static boolean ldcInsnEqual(LdcInsnNode insn1, LdcInsnNode insn2)
     {
-        if(insn1.cst.equals("~") || insn2.cst.equals("~"))
+        if( insn1.cst.equals("~") || insn2.cst.equals("~") )
             return true;
         
         return insn1.cst.equals(insn2.cst);
@@ -64,7 +64,7 @@ public class InstructionComparator
     
     public static boolean typeInsnEqual(TypeInsnNode insn1, TypeInsnNode insn2)
     {
-        if(insn1.desc.equals("~") || insn2.desc.equals("~"))
+        if( insn1.desc.equals("~") || insn2.desc.equals("~") )
             return true;
         
         return insn1.desc.equals(insn2.desc);
@@ -77,7 +77,7 @@ public class InstructionComparator
     
     public static boolean intInsnEqual(IntInsnNode node1, IntInsnNode node2)
     {
-        if(node1.operand == -1 || node2.operand == -1)
+        if( node1.operand == -1 || node2.operand == -1 )
             return true;
         
         return node1.operand == node2.operand;
@@ -85,7 +85,7 @@ public class InstructionComparator
     
     public static boolean insnEqual(AbstractInsnNode node1, AbstractInsnNode node2)
     {
-        if(node1.getOpcode() != node2.getOpcode())
+        if( node1.getOpcode() != node2.getOpcode() )
             return false;
         
         switch(node2.getType())
@@ -111,20 +111,20 @@ public class InstructionComparator
 
     public static InsnList getImportantList(InsnList list)
     {
-        if(list.size() == 0)
+        if( list.size() == 0 )
             return list;
         
         HashMap<LabelNode, LabelNode> labels = new HashMap<LabelNode, LabelNode>();
-        for(AbstractInsnNode insn = list.getFirst(); insn != null; insn = insn.getNext())
+        for( AbstractInsnNode insn = list.getFirst(); insn != null; insn = insn.getNext() )
         {
-            if(insn instanceof LabelNode)
+            if( insn instanceof LabelNode )
                 labels.put((LabelNode)insn, (LabelNode)insn);
         }        
         
         InsnList importantNodeList = new InsnList();
-        for(AbstractInsnNode insn = list.getFirst(); insn != null; insn = insn.getNext())
+        for( AbstractInsnNode insn = list.getFirst(); insn != null; insn = insn.getNext() )
         {
-            if(insn instanceof LabelNode || insn instanceof LineNumberNode)
+            if( insn instanceof LabelNode || insn instanceof LineNumberNode )
                 continue;
             
             importantNodeList.add(insn.clone(labels));
@@ -134,12 +134,12 @@ public class InstructionComparator
     
     public static boolean insnListMatches(InsnList haystack, InsnList needle, int start)
     {
-        if(haystack.size()-start < needle.size())
+        if( haystack.size()-start < needle.size() )
             return false;
         
-        for(int i = 0; i < needle.size(); i++)
+        for( int i = 0; i < needle.size(); i++ )
         {
-            if(!insnEqual(haystack.get(i+start), needle.get(i)))
+            if( !insnEqual(haystack.get(i+start), needle.get(i)) )
                 return false;
         }
         return true;
@@ -148,8 +148,8 @@ public class InstructionComparator
     public static List<Integer> insnListFind(InsnList haystack, InsnList needle)
     {
         LinkedList<Integer> list = new LinkedList<Integer>();
-        for(int start = 0; start <= haystack.size()-needle.size(); start++)
-            if(insnListMatches(haystack, needle, start))
+        for( int start = 0; start <= haystack.size()-needle.size(); start++ )
+            if( insnListMatches(haystack, needle, start) )
                 list.add(start);
         
         return list;
@@ -158,7 +158,7 @@ public class InstructionComparator
     public static List<AbstractInsnNode> insnListFindStart(InsnList haystack, InsnList needle)
     {
         LinkedList<AbstractInsnNode> callNodes = new LinkedList<AbstractInsnNode>();
-        for(int callPoint : insnListFind(haystack, needle))
+        for( int callPoint : insnListFind(haystack, needle) )
             callNodes.add(haystack.get(callPoint));
         return callNodes;
     }
@@ -166,7 +166,7 @@ public class InstructionComparator
     public static List<AbstractInsnNode> insnListFindEnd(InsnList haystack, InsnList needle)
     {
         LinkedList<AbstractInsnNode> callNodes = new LinkedList<AbstractInsnNode>();
-        for(int callPoint : insnListFind(haystack, needle))
+        for( int callPoint : insnListFind(haystack, needle) )
             callNodes.add(haystack.get(callPoint+needle.size()-1));
         return callNodes;
     }
@@ -175,7 +175,7 @@ public class InstructionComparator
     {
         HashSet<LabelNode> controlFlowLabels = new HashSet<LabelNode>();
         
-        for(AbstractInsnNode insn = haystack.getFirst(); insn != null; insn = insn.getNext())
+        for( AbstractInsnNode insn = haystack.getFirst(); insn != null; insn = insn.getNext() )
         {
             switch(insn.getType())
             {
@@ -188,25 +188,25 @@ public class InstructionComparator
                     break;
                 case 11:
                     TableSwitchInsnNode tsinsn = (TableSwitchInsnNode)insn;
-                    for(LabelNode label : tsinsn.labels)
+                    for( LabelNode label : (List<LabelNode>)tsinsn.labels )
                         controlFlowLabels.add(label);
                     break;
                 case 12:
                     LookupSwitchInsnNode lsinsn = (LookupSwitchInsnNode)insn;
-                    for(LabelNode label : lsinsn.labels)
+                    for( LabelNode label : (List<LabelNode>)lsinsn.labels )
                         controlFlowLabels.add(label);
                     break;
             }
         }
         
         LinkedList<InsnListSection> list = new LinkedList<InsnListSection>();
-        nextsection: for(int start = 0; start <= haystack.size()-needle.size(); start++)
+        nextsection: for( int start = 0; start <= haystack.size()-needle.size(); start++ )
         {
             InsnListSection section = insnListMatchesL(haystack, needle, start, controlFlowLabels);
-            if(section != null)
+            if( section != null )
             {
-                for(InsnListSection asection : list)
-                    if(asection.last == section.last)
+                for( InsnListSection asection : list )
+                    if( asection.last == section.last )
                         continue nextsection;
                 
                 list.add(section);
@@ -219,19 +219,19 @@ public class InstructionComparator
     private static InsnListSection insnListMatchesL(InsnList haystack, InsnList needle, int start, HashSet<LabelNode> controlFlowLabels)
     {
         int h = start, n = 0; 
-        for(;h < haystack.size() && n < needle.size(); h++)
+        for( ;h < haystack.size() && n < needle.size(); h++ )
         {
             AbstractInsnNode insn = haystack.get(h);
-            if(insn.getType() == 15)
+            if( insn.getType() == 15 )
                 continue;
-            if(insn.getType() == 8 && !controlFlowLabels.contains(insn))
+            if( insn.getType() == 8 && !controlFlowLabels.contains(insn) )
                 continue;
             
-            if(!insnEqual(haystack.get(h), needle.get(n)))
+            if( !insnEqual(haystack.get(h), needle.get(n)) )
                 return null;
             n++;
         }
-        if(n != needle.size())
+        if( n != needle.size() )
             return null;
         
         return new InsnListSection(haystack, start, h-1);

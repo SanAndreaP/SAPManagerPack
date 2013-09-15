@@ -14,6 +14,7 @@ import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.LoadController;
 import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.common.Mod.PreInit;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLConstructionEvent;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -30,19 +31,22 @@ import cpw.mods.fml.relauncher.Side;
 @NetworkMod(clientSideRequired=true, serverSideRequired=false,
 	clientPacketHandlerSpec = @SidedPacketHandler(channels={ModContainerManPack.channel}, packetHandler=ClientPacketHandler.class))
 public class ModContainerManPack extends DummyModContainer {
-	public static final String version = "2.0.0";
+	public static final String version = "1.9.9";
 	public static final String channel = "SAPManPack";
+	
+	@SidedProxy(clientSide="sanandreasp.core.manpack.mod.client.ClientProxy", serverSide="sanandreasp.core.manpack.mod.CommonProxy")
+	public static CommonProxy proxy;
 	
 	public ModContainerManPack() {
         super(new ModMetadata());
-        /* ModMetadata is the same as mcmod.info */
+//        /* ModMetadata is the same as mcmod.info */
         ModMetadata myMeta = super.getMetadata();
         myMeta.authorList = Arrays.asList(new String[] { "SanAndreasP" });
         myMeta.description = "A helper coremod which is needed for all my mods.";
         myMeta.modId = "SAPManPackCore";
         myMeta.version = this.version;
         myMeta.name = "SanAndreasPs Manager Pack CORE edition";
-        myMeta.url = "http://minecraftforge.net/wiki/Using_Access_Transformers";
+        myMeta.url = "http://www.minecraftforge.net/forum/index.php/topic,2828.0.html";
 	}
 	
 	@Override
@@ -63,6 +67,8 @@ public class ModContainerManPack extends DummyModContainer {
 	public void init(FMLInitializationEvent evt) {
 		TickRegistry.registerTickHandler(new TickHandlerUpdMgr(), Side.SERVER);
 		TickRegistry.registerScheduledTickHandler(new SchedTickHandlerWld(), Side.SERVER);
+		
+		this.proxy.registerRenderStuff();
 	}
 	
 	@Subscribe

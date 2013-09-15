@@ -15,8 +15,8 @@ public class TickHandlerUpdMgr implements ITickHandler {
 
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) {
-		for(SAPUpdateManager udm : SAPUpdateManager.updMgrs) {
-			if((!ManPackLoadingPlugin.isServer() && Minecraft.getMinecraft().thePlayer != null) || ManPackLoadingPlugin.isServer())
+		for( SAPUpdateManager udm : SAPUpdateManager.updMgrs ) {
+			if( (!ManPackLoadingPlugin.isServer() && Minecraft.getMinecraft().thePlayer != null) || ManPackLoadingPlugin.isServer() )
 				udm.checkForUpdate();
 		}
 	}

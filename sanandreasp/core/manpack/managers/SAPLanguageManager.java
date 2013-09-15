@@ -9,9 +9,10 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import sanandreasp.core.manpack.CommonUsedStuff;
+import sanandreasp.core.manpack.helpers.CommonUsedStuff;
 
 import com.google.common.collect.Maps;
+
 
 
 import net.minecraft.block.Block;
@@ -21,7 +22,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.StringTranslate;
-
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
@@ -30,13 +30,13 @@ public class SAPLanguageManager {
 	private File path;
 	private String version, modname;
 	private List<String> localizations = new ArrayList<String>();
-	private static StringTranslate strTrans = new StringTranslate("en_US");
+//	private static StringTranslate strTrans = new StringTranslate();
 	
 	public SAPLanguageManager(String par1Path, String par2LangVer, String par3Mod) {
 		try {
 			String cfgpath = "config/langs"+par1Path;
 			path = CommonUsedStuff.getMCDir(cfgpath);
-			if(!(path.exists()))
+			if( !(path.exists()) )
 				path.mkdirs();
 		} catch(Throwable e) {
 			e.printStackTrace();
@@ -47,11 +47,11 @@ public class SAPLanguageManager {
 		
 		File[] files = path.listFiles(new LangFileFilter());
 		
-		if(files == null) return;
+		if( files == null ) return;
 		
-		for(File langFile : files) {
+		for( File langFile : files ) {
 			String lang = langFile.getName().replaceAll(".(txt|lang|SAPlang)", "");
-			if(StringTranslate.getInstance().getLanguageList().containsKey(lang) && true)
+//			if( StringTranslate.containsTranslateKey(lang) )
 				langFiles.put(lang, langFile);
 		}
 	}
@@ -63,9 +63,9 @@ public class SAPLanguageManager {
 	
 	public void loadLangs() {
 		String[] langs = langFiles.keySet().toArray(new String[langFiles.size()]);
-		for(String cLang : langs) {
+		for( String cLang : langs ) {
 			File cFile = langFiles.get(cLang);
-			if(!cFile.canRead() || this.localizations.isEmpty())
+			if( !cFile.canRead() || this.localizations.isEmpty() )
 				continue;
 			
 			try {
@@ -75,17 +75,17 @@ public class SAPLanguageManager {
 
 				do {
 					String s = in.readLine();
-					if(s == null || s.isEmpty())
+					if( s == null || s.isEmpty() )
 						continue;
 					
-					if(s.matches("[ ]{0,}.*?[ ]{0,}=[ ]{0,}.*")) {
+					if( s.matches("[ ]{0,}.*?[ ]{0,}=[ ]{0,}.*") ) {
 						Matcher matcher = Pattern.compile("[ ]{0,}(.*?)[ ]{0,}=[ ]{0,}(.*)").matcher(s);
 						
-						if(matcher.find()) {
+						if( matcher.find() ) {
 							String prop = matcher.group(1);
 							String value = matcher.group(2);
 							
-							if(this.localizations.contains(prop)) {
+							if( this.localizations.contains(prop) ) {
 								LanguageRegistry.instance().addStringLocalization(prop, cLang, value);
 							}
 						}
@@ -110,7 +110,7 @@ public class SAPLanguageManager {
 			
 			String title = String.format(" %s Language File example, made by SanAndreasPs Language Manager", this.modname);
 			String line = "";
-			for(int i = 0; i < title.length()+1; i++) line += "-";
+			for( int i = 0; i < title.length()+1; i++ ) line += "-";
 
 			out.write(line+"\n");
 			out.write(title+"\n");
@@ -123,8 +123,8 @@ public class SAPLanguageManager {
 			out.write("// '.lang' and '.SAPlang'.\n// A list of all available language localizations supported by Minecraft can be found here:\n// https://dl.dropbox.com/u/56920617/languages.txt\n");
 			out.write("// WARNING: This file cannot be used as language file, because it'll be overridden!\n");
 			out.write("// NOTE: The %s in the localization values are variables! Keep them and place this variable somewhere you see it's fitting\n\n");
-			for(String prop : this.localizations) {
-				if(!prop.isEmpty()) {
+			for( String prop : this.localizations ) {
+				if( !prop.isEmpty() ) {
 					String value = getTranslated(prop, "en_US");
 					out.write(String.format("%s = %s\n", prop, value));
 				}
@@ -142,19 +142,19 @@ public class SAPLanguageManager {
 	public void addLangProp(Object obj, String defName) {
 		String objectName;
 		
-		if(obj == null)
+		if( obj == null )
             throw new IllegalArgumentException(String.format("[SAP-LanguageManager] Illegal object for naming %s",obj));
 		
-		if (obj instanceof String) {
+		if( obj instanceof String ) {
             this.addLangPropS((String)obj, defName);
             return;
-        } else if (obj instanceof Item) {
+        } else if( obj instanceof Item ) {
             objectName=((Item)obj).getUnlocalizedName();
-        } else if (obj instanceof Block) {
+        } else if( obj instanceof Block ) {
             objectName=((Block)obj).getUnlocalizedName();
-        } else if (obj instanceof ItemStack) {
+        } else if( obj instanceof ItemStack ) {
             objectName=((ItemStack)obj).getItem().getUnlocalizedName((ItemStack)obj);
-        } else if (obj instanceof Class && (Entity.class.isAssignableFrom((Class)obj))){
+        } else if( obj instanceof Class && (Entity.class.isAssignableFrom((Class)obj)) ){
         	objectName="entity."+((String)EntityList.classToStringMapping.get((Class)obj));
         } else {
             throw new IllegalArgumentException(String.format("[SAP-LanguageManager] Illegal object for naming %s",obj));
@@ -180,7 +180,7 @@ public class SAPLanguageManager {
 	
 		@Override
 		public boolean accept(File dir, String name) {
-			if(name.endsWith(".txt") || name.endsWith(".SAPlang") || name.endsWith(".lang"))
+			if( name.endsWith(".txt") || name.endsWith(".SAPlang") || name.endsWith(".lang") )
 				return true;
 			else return false;
 		}

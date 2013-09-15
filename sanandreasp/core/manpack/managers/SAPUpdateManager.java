@@ -43,7 +43,7 @@ public class SAPUpdateManager {
 	}
 	
 	private void addMessage(String s, Level level) {
-		if(FMLCommonHandler.instance().getSide().isClient()) {
+		if( FMLCommonHandler.instance().getSide().isClient() ) {
 			Minecraft.getMinecraft().thePlayer.addChatMessage(s);
 		}
 		FMLLog.log("SAP-UpdateManager", level, s.replaceAll("\247.", ""));
@@ -68,14 +68,14 @@ public class SAPUpdateManager {
 				    
 				    in.close();
 				    
-				    if(str == null || str.length() < 1) return;
+				    if( str == null || str.length() < 1 ) return;
 				    
 				    Pattern pattern = Pattern.compile("major:(\\d+);minor:(\\d+);revision:(\\d+)");
 				    Matcher matches = pattern.matcher(str);
 				    
 				    int[] webVer = new int[] {0, 0, 0};
 				    
-				    if(matches.find()) {
+				    if( matches.find() ) {
 				    	webVer[0] = Integer.valueOf(matches.group(1));
 				    	webVer[1] = Integer.valueOf(matches.group(2));
 				    	webVer[2] = Integer.valueOf(matches.group(3));
@@ -85,13 +85,13 @@ public class SAPUpdateManager {
 					String newVer = form.format("%1$d.%2$02d_%3$02d", webVer[0], webVer[1], webVer[2]).toString();
 					form.close();
 				    			    
-				    if(webVer[0] > maj) {
+				    if( webVer[0] > maj ) {
 				    	addMessage(String.format("\247cNew major update (%s) for \2476%s \247cis out:", newVer, modName), Level.WARNING);
 				    	addMessage("\247c"+mUrl, Level.WARNING);
-				    } else if(webVer[0] == maj && webVer[1] > min) {
+				    } else if( webVer[0] == maj && webVer[1] > min ) {
 				    	addMessage(String.format("\247eNew feature update (%s) for \2476%s \247eis out:", newVer, modName), Level.INFO);
 				    	addMessage("\247e"+mUrl, Level.INFO);
-				    } else if(webVer[0] == maj && webVer[1] == min && webVer[2] > rev) {
+				    } else if( webVer[0] == maj && webVer[1] == min && webVer[2] > rev ) {
 				    	addMessage(String.format("\247bNew bugfix update (%s) for \2476%s \247bis out:", newVer, modName), Level.INFO);
 				    	addMessage("\247b"+mUrl, Level.INFO);
 				    } else {
@@ -107,7 +107,7 @@ public class SAPUpdateManager {
 	}
 	
 	public void checkForUpdate() {
-		if(!this.checkedForUpdate) {
+		if( !this.checkedForUpdate ) {
 			this.check();
 			this.checkedForUpdate = true;
 		}

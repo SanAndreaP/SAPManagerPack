@@ -1,40 +1,39 @@
-package sanandreasp.core.manpack;
+package sanandreasp.core.manpack.helpers;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 public final class ItemRenderHelper {
-	public static void renderItem(EntityLiving par1EntityLiving, ItemStack par2ItemStack, int par3) {
+    private static final ResourceLocation glintPNG = new ResourceLocation("textures/misc/enchanted_item_glint.png");
+	
+	public static void renderItem(EntityLivingBase par1EntityLiving, ItemStack par2ItemStack, int par3) {
 		renderItem(par1EntityLiving, par2ItemStack, par3, false);
 	}
 	
-	public static void renderItem(EntityLiving par1EntityLiving, ItemStack par2ItemStack, int par3, boolean isGlowing) {
+	public static void renderItem(EntityLivingBase par1EntityLiving, ItemStack par2ItemStack, int par3, boolean isGlowing) {
 		GL11.glPushMatrix();
-		Icon icon = par1EntityLiving.getItemIcon(par2ItemStack, par3);
+		
+        Icon icon = par1EntityLiving.getItemIcon(par2ItemStack, par3);
 
-        if (icon == null)
+        if( icon == null )
         {
+            GL11.glPopMatrix();
             return;
         }
 
-        if (par2ItemStack.getItemSpriteNumber() == 0)
-        {
-            Minecraft.getMinecraft().renderEngine.bindTexture("/terrain.png");
-        }
-        else
-        {
-        	Minecraft.getMinecraft().renderEngine.bindTexture("/gui/items.png");
-        }
-
+        Minecraft.getMinecraft().renderEngine.bindTexture(Minecraft.getMinecraft().renderEngine.getResourceLocation(par2ItemStack.getItemSpriteNumber()));
         Tessellator tessellator = Tessellator.instance;
         float f = icon.getMinU();
         float f1 = icon.getMaxU();
@@ -49,14 +48,13 @@ public final class ItemRenderHelper {
         GL11.glRotatef(50.0F, 0.0F, 1.0F, 0.0F);
         GL11.glRotatef(335.0F, 0.0F, 0.0F, 1.0F);
         GL11.glTranslatef(-0.9375F, -0.0625F, 0.0F);
+        renderItemIn2D(tessellator, f1, f2, f, f3, icon.getIconWidth(), icon.getIconHeight(), 0.0625F, isGlowing);
 
-        renderItemIn2D(tessellator, f1, f2, f, f3, icon.getSheetWidth(), icon.getSheetHeight(), 0.0625F, isGlowing);
-
-        if (par2ItemStack != null && par2ItemStack.hasEffect())
+        if( par2ItemStack != null && par2ItemStack.hasEffect(par3) )
         {
             GL11.glDepthFunc(GL11.GL_EQUAL);
             GL11.glDisable(GL11.GL_LIGHTING);
-            Minecraft.getMinecraft().renderEngine.bindTexture("%blur%/misc/glint.png");
+            Minecraft.getMinecraft().renderEngine.bindTexture(glintPNG);
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
             float f7 = 0.76F;
@@ -89,7 +87,7 @@ public final class ItemRenderHelper {
 	}
 	
 	private static void renderItemIn2D(Tessellator par0Tessellator, float par1, float par2, float par3, float par4, int par5, int par6, float par7, boolean isGlowing) {
-		if(isGlowing) {
+		if( isGlowing ) {
 	        GL11.glDisable(GL11.GL_LIGHTING);
 	        GL11.glDisable(GL11.GL_LIGHT0);
 	        GL11.glDisable(GL11.GL_LIGHT1);
@@ -113,14 +111,14 @@ public final class ItemRenderHelper {
 
     public static void renderGlint(int par1, int par2, int par3, int par4, int par5, double zLevel)
     {
-        for (int j1 = 0; j1 < 2; ++j1)
+        for( int j1 = 0; j1 < 2; ++j1 )
         {
-            if (j1 == 0)
+            if( j1 == 0 )
             {
                 GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
             }
 
-            if (j1 == 1)
+            if( j1 == 1 )
             {
                 GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
             }
@@ -132,7 +130,7 @@ public final class ItemRenderHelper {
             Tessellator tessellator = Tessellator.instance;
             float f4 = 4.0F;
 
-            if (j1 == 1)
+            if( j1 == 1 )
             {
                 f4 = -1.0F;
             }

@@ -1,4 +1,4 @@
-package sanandreasp.core.manpack;
+package sanandreasp.core.manpack.helpers;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,9 +21,12 @@ import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.ReflectionHelper.UnableToFindMethodException;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -65,7 +68,7 @@ public class CommonUsedStuff {
 	**/
 	public static ItemStack decrStackSize(ItemStack is, int amount) {
 		is.stackSize -= amount;
-		if(is.stackSize <= 0) {
+		if( is.stackSize <= 0 ) {
 			return null;
 		}
 		return is;
@@ -79,9 +82,9 @@ public class CommonUsedStuff {
 	 * @return true, if stacks are equal, false otherwise.
 	 */
 	public static boolean areStacksEqualWithWCV(ItemStack is1, ItemStack is2) {
-		if(is1.isItemEqual(is2))
+		if( is1.isItemEqual(is2) )
 			return true;
-		if(is1.getItemDamage() == OreDictionary.WILDCARD_VALUE || is2.getItemDamage() == OreDictionary.WILDCARD_VALUE)
+		if( is1.getItemDamage() == OreDictionary.WILDCARD_VALUE || is2.getItemDamage() == OreDictionary.WILDCARD_VALUE )
 			return is1.itemID == is2.itemID;
 		return false;
 	}
@@ -93,13 +96,13 @@ public class CommonUsedStuff {
 	 */
 	public static ItemStack[] getGoodItemStacks(ItemStack is) {
 		List<ItemStack> isMap = new ArrayList<ItemStack>();
-		if(is.stackSize <= is.getMaxStackSize() && is.stackSize > 0) {
+		if( is.stackSize <= is.getMaxStackSize() && is.stackSize > 0 ) {
 			isMap.add(is);
-		} else if(is.stackSize > 0) {
+		} else if( is.stackSize > 0 ) {
 			int stk = is.stackSize;
-			for(int i = 0; i < MathHelper.ceiling_float_int((float) is.stackSize / (float) is.getMaxStackSize()); i++) {
+			for( int i = 0; i < MathHelper.ceiling_float_int((float) is.stackSize / (float) is.getMaxStackSize()); i++ ) {
 				ItemStack is1 = is.copy();
-				if(stk > is.getMaxStackSize()) {
+				if( stk > is.getMaxStackSize() ) {
 					stk -= is1.stackSize = is.getMaxStackSize();
 				} else {
 					is1.stackSize = stk;
@@ -155,23 +158,23 @@ public class CommonUsedStuff {
 
 	public static void dropBlockXP(Block block, World world, int X, int Y, int Z, int meta, int fortune) {
 
-        if (block.idDropped(meta, world.rand, fortune) != block.blockID)
+        if( block.idDropped(meta, world.rand, fortune) != block.blockID )
         {
             int j1 = 0;
 
-            if (block.blockID == Block.oreCoal.blockID)
+            if( block.blockID == Block.oreCoal.blockID )
                 j1 = MathHelper.getRandomIntegerInRange(world.rand, 0, 2);
-            else if (block.blockID == Block.oreDiamond.blockID)
+            else if( block.blockID == Block.oreDiamond.blockID )
                 j1 = MathHelper.getRandomIntegerInRange(world.rand, 3, 7);
-            else if (block.blockID == Block.oreEmerald.blockID)
+            else if( block.blockID == Block.oreEmerald.blockID )
                 j1 = MathHelper.getRandomIntegerInRange(world.rand, 3, 7);
-            else if (block.blockID == Block.oreLapis.blockID)
+            else if( block.blockID == Block.oreLapis.blockID )
                 j1 = MathHelper.getRandomIntegerInRange(world.rand, 2, 5);
-            else if (block.blockID == Block.oreNetherQuartz.blockID)
+            else if( block.blockID == Block.oreNetherQuartz.blockID )
                 j1 = MathHelper.getRandomIntegerInRange(world.rand, 2, 5);
-            else if (block.blockID == Block.oreRedstone.blockID || block.blockID == Block.oreRedstoneGlowing.blockID)
+            else if( block.blockID == Block.oreRedstone.blockID || block.blockID == Block.oreRedstoneGlowing.blockID )
             	j1 = 1 + world.rand.nextInt(5);
-            else if (block.blockID == Block.mobSpawner.blockID)
+            else if( block.blockID == Block.mobSpawner.blockID )
             	j1 = 15 + world.rand.nextInt(15) + world.rand.nextInt(15);
 
             dropXpOnBlockBreak(block, world, X, Y, Z, j1);
@@ -179,8 +182,8 @@ public class CommonUsedStuff {
 	}
 	
 	public static boolean isItemInStackArray(ItemStack base, ItemStack... stackArray) {
-		for(ItemStack stack : stackArray) {
-			if(base != null && stack != null && areStacksEqualWithWCV(base, stack))
+		for( ItemStack stack : stackArray ) {
+			if( base != null && stack != null && areStacksEqualWithWCV(base, stack) )
 				return true;
 		}
 		return false;
@@ -191,27 +194,27 @@ public class CommonUsedStuff {
 	}
 	
 	public static boolean isToolEffective(Block[] effectives, Block block) {
-		for(Block currBlock : effectives) {
-			if(block == currBlock)
+		for( Block currBlock : effectives ) {
+			if( block == currBlock )
 				return true;
 		}
 		return false;
 	}
 	
 	public static <T> T[] getArrayFromList(List<T> list, Class clazz) {
-		if(list.size() == 0)
+		if( list.size() == 0 )
 			return null;
 		return list.toArray((T[])Array.newInstance(clazz, list.size()));
 	}
 	
 	public static ItemStack addItemStackToInventory(ItemStack is, IInventory inv) {
 		int invSize = inv.getSizeInventory() - (inv instanceof InventoryPlayer ? 4 : 0);
-		for(int i1 = 0; i1 < invSize && is != null; i1++) {
+		for( int i1 = 0; i1 < invSize && is != null; i1++ ) {
 			ItemStack invIS = inv.getStackInSlot(i1);
-			if(invIS != null && is.isItemEqual(invIS)) {
+			if( invIS != null && is.isItemEqual(invIS) ) {
 				int combinedCount = is.stackSize + invIS.stackSize;
 				int maxStack = Math.min(invIS.getMaxStackSize(), inv.getInventoryStackLimit());
-				if(combinedCount <= maxStack) {
+				if( combinedCount <= maxStack ) {
 					invIS.stackSize = combinedCount;
 					inv.setInventorySlotContents(i1, invIS.copy());
 					is = null;
@@ -226,10 +229,10 @@ public class CommonUsedStuff {
 		}
 		
 		// if the given stack is not empty yet, search for an empty slot and put it there
-		for(int i2 = 0; i2 < invSize && is != null; i2++) {
+		for( int i2 = 0; i2 < invSize && is != null; i2++ ) {
 			ItemStack invIS = inv.getStackInSlot(i2);
-			if(invIS == null && inv.isStackValidForSlot(i2, is)) {
-				if(is.stackSize <= inv.getInventoryStackLimit()) {
+			if( invIS == null && inv.isItemValidForSlot(i2, is) ) {
+				if( is.stackSize <= inv.getInventoryStackLimit() ) {
 					inv.setInventorySlotContents(i2, is.copy());
 					is = null;
 					break;
@@ -245,9 +248,19 @@ public class CommonUsedStuff {
 	}
 	
 	public static File getMCDir(String path) {
-		if(FMLCommonHandler.instance().getSide() == Side.CLIENT) {
-			return new File(Minecraft.getMinecraftDir(), path);
-		}
+//		if( FMLCommonHandler.instance().getSide() == Side.CLIENT ) {
+//			return new File(Minecraft.getMinecraftDir(), path);
+//		}
 		return new File(".", path);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public static void setSelectedBtn(GuiScreen inst, GuiButton btn) {
+		ObfuscationReflectionHelper.setPrivateValue(GuiScreen.class, inst, btn, "selectedButton", "field_73883_a");
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public static GuiButton getSelectedBtn(GuiScreen inst) {
+		return ObfuscationReflectionHelper.getPrivateValue(GuiScreen.class, inst, "selectedButton", "field_73883_a");
 	}
 }

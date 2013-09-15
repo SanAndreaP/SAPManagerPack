@@ -1,18 +1,23 @@
 package sanandreasp.core.manpack;
 
+import java.io.File;
 import java.util.Map;
 
+import sanandreasp.core.manpack.mod.ModContainerManPack;
+import sanandreasp.core.manpack.transformer.ASMHelper;
+import sanandreasp.core.manpack.transformer.TransformBadPotionsATN;
+import sanandreasp.core.manpack.transformer.TransformEntityThrowable;
+import sanandreasp.core.manpack.transformer.TransformFOVMultiplier;
+import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin.DependsOn;
 
-@TransformerExclusions({"sanandreasp.core"})
-@MCVersion("1.5.2")
+@TransformerExclusions({"sanandreasp.core.manpack.transformer"})
+@MCVersion("1.6.2")
 public class ManPackLoadingPlugin implements IFMLLoadingPlugin {
-
-	public ManPackLoadingPlugin() {
-	}
-
+	
 	@Override
 	public String[] getLibraryRequestClass() {
 		return null;
@@ -21,31 +26,30 @@ public class ManPackLoadingPlugin implements IFMLLoadingPlugin {
 	@Override
 	public String[] getASMTransformerClass() {
 		return new String[] {
-			"sanandreasp.core.manpack.transformer.TransformFOVMultiplier",
-			"sanandreasp.core.manpack.transformer.TransformBadPotionsATN",
-			"sanandreasp.core.manpack.transformer.TransformMiscStuff"
+			TransformBadPotionsATN.class.getName(),
+			TransformEntityThrowable.class.getName()
 		};
 	}
 
 	@Override
 	public String getModContainerClass() {
-		return "sanandreasp.core.manpack.mod.ModContainerManPack";
+		return ModContainerManPack.class.getName();
 	}
 
 	@Override
 	public String getSetupClass() {
-		return null;
+		return ManPackSetupClass.class.getName();
 	}
 
 	@Override
 	public void injectData(Map<String, Object> data) {
-
+		ASMHelper.isMCP = !((Boolean)data.get("runtimeDeobfuscationEnabled")).booleanValue();
 	}
 	
 	public static boolean isServer() {
 		try {
 			Class clazz = Class.forName("net.minecraft.client.Minecraft");
-			if(clazz != null) {
+			if( clazz != null ) {
 				clazz = null;
 				return false;
 			}

@@ -29,19 +29,19 @@ public class SchedTickHandlerWld implements IScheduledTickHandler {
 	public void tickEnd(EnumSet<TickType> type, Object... tickData) {
 		World worldObj = (World)tickData[0];
 		
-		if(worldObj.isRemote || worldObj.provider.getClass() != WorldProviderSurface.class) return;
+		if( worldObj.isRemote || worldObj.provider.getClass() != WorldProviderSurface.class ) return;
 		
 		short ID = -1;
 		WorldInfo wInfo = worldObj.getWorldInfo();
 		int time = Math.min(wInfo.getRainTime(), wInfo.getThunderTime());
 		
-		if(prevThunderState && !worldObj.isThundering()) {
+		if( prevThunderState && !worldObj.isThundering() ) {
 			ID = 0;
-		} else if(!prevThunderState && worldObj.isThundering()) {
+		} else if( !prevThunderState && worldObj.isThundering() ) {
 			ID = 1;
 		}
 		
-		if(ID >= 0) {
+		if( ID >= 0 ) {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			DataOutputStream dos = new DataOutputStream(bos);
 			

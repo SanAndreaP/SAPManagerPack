@@ -3,6 +3,7 @@ package sanandreasp.core.manpack.transformer;
 import java.util.List;
 
 import net.minecraft.item.Item;
+import net.minecraft.launchwrapper.IClassTransformer;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -32,13 +33,12 @@ import sanandreasp.core.manpack.ManPackLoadingPlugin;
 
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.IClassTransformer;
 
 public class TransformBadPotionsATN implements IClassTransformer, Opcodes {
 
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes) {
-		if(transformedName.equals("net.minecraft.potion.Potion") && ManPackLoadingPlugin.isServer())
+		if( transformedName.equals("net.minecraft.potion.Potion") )
 			return transformPotion(bytes);
 		
 		return bytes;
@@ -46,21 +46,26 @@ public class TransformBadPotionsATN implements IClassTransformer, Opcodes {
 	
 	private byte[] transformPotion(byte[] bytes) {
 		ClassNode cn = ASMHelper.createClassNode(bytes);
-		MethodNode mn = new MethodNode(ACC_PUBLIC, "isBadEffect", "()Z", null, null);
-		mn.visitCode();
-		Label l0 = new Label();
-		mn.visitLabel(l0);
-		mn.visitLineNumber(272, l0);
-		mn.visitVarInsn(ALOAD, 0);
-		mn.visitFieldInsn(GETFIELD, "net/minecraft/potion/Potion", "isBadEffect", "Z");
-		mn.visitInsn(IRETURN);
-		Label l1 = new Label();
-		mn.visitLabel(l1);
-		mn.visitLocalVariable("this", "Lnet/minecraft/potion/Potion;", null, l0, l1, 0);
-		mn.visitMaxs(0, 0);
-		mn.visitEnd();
 		
-		cn.methods.add(mn);
+		for( MethodNode method : cn.methods ) {
+			if( method.name.equals(ASMHelper.getNotchedMethod("isBadEffect", "net/minecraft/potion/Potion/func_76398_f")) )
+				return bytes;
+		}
+		
+		MethodNode method = new MethodNode(ACC_PUBLIC, ASMHelper.getNotchedMethod("isBadEffect", "net/minecraft/potion/Potion/func_76398_f"), "()Z", null, null);
+		method.visitCode();
+		Label l0 = new Label();
+		method.visitLabel(l0);
+		method.visitVarInsn(ALOAD, 0);
+		method.visitFieldInsn(GETFIELD, "net/minecraft/potion/Potion", ASMHelper.getRemappedMF("isBadEffect", "field_76418_K"), "Z");
+		method.visitInsn(IRETURN);
+		Label l1 = new Label();
+		method.visitLabel(l1);
+		method.visitLocalVariable("this", "Lnet/minecraft/potion/Potion;", null, l0, l1, 0);
+		method.visitMaxs(0, 0);
+		method.visitEnd();
+		
+		cn.methods.add(method);
 		
 	    bytes = ASMHelper.createBytes(cn, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
 	    
