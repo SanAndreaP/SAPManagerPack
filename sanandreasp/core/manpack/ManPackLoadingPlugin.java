@@ -15,7 +15,6 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.DependsOn;
 
 @TransformerExclusions({"sanandreasp.core.manpack.transformer"})
-@MCVersion("1.6.2")
 public class ManPackLoadingPlugin implements IFMLLoadingPlugin {
 	
 	@Override
