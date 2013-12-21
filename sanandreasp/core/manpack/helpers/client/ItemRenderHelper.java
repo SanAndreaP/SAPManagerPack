@@ -1,4 +1,4 @@
-package sanandreasp.core.manpack.helpers;
+package sanandreasp.core.manpack.helpers.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;

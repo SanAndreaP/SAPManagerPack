@@ -1,4 +1,4 @@
-package sanandreasp.core.manpack.helpers;
+package sanandreasp.core.manpack.helpers.client;
 
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;

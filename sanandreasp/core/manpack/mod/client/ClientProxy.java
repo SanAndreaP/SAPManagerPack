@@ -1,7 +1,7 @@
 package sanandreasp.core.manpack.mod.client;
 
 import cpw.mods.fml.client.registry.RenderingRegistry;
-import sanandreasp.core.manpack.helpers.RenderBlockGlowOverlay;
+import sanandreasp.core.manpack.helpers.client.RenderBlockGlowOverlay;
 import sanandreasp.core.manpack.mod.CommonProxy;
 import sanandreasp.mods.EnderStuffPlus.registry.ESPModRegistry;
 

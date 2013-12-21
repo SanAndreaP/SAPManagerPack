@@ -1,4 +1,4 @@
-package sanandreasp.core.manpack.helpers;
+package sanandreasp.core.manpack.helpers.client;
 
 import org.lwjgl.opengl.GL11;
 
