@@ -6,8 +6,9 @@ import java.util.Map;
 import sanandreasp.core.manpack.mod.ModContainerManPack;
 import sanandreasp.core.manpack.transformer.ASMHelper;
 import sanandreasp.core.manpack.transformer.TransformBadPotionsATN;
+import sanandreasp.core.manpack.transformer.TransformELBAttackingPlayer;
 import sanandreasp.core.manpack.transformer.TransformEntityThrowable;
-import sanandreasp.core.manpack.transformer.TransformFOVMultiplier;
+//import sanandreasp.core.manpack.transformer.TransformFOVMultiplier;
 import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
@@ -26,7 +27,8 @@ public class ManPackLoadingPlugin implements IFMLLoadingPlugin {
 	public String[] getASMTransformerClass() {
 		return new String[] {
 			TransformBadPotionsATN.class.getName(),
-			TransformEntityThrowable.class.getName()
+			TransformEntityThrowable.class.getName(),
+			TransformELBAttackingPlayer.class.getName()
 		};
 	}
 

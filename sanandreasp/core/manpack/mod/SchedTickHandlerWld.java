@@ -6,13 +6,12 @@ import java.io.IOException;
 import java.util.EnumSet;
 
 import sanandreasp.core.manpack.ManPackLoadingPlugin;
-
+import sanandreasp.core.manpack.mod.packet.PacketRegistry;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderSurface;
 import net.minecraft.world.biome.WorldChunkManager;
 import net.minecraft.world.storage.WorldInfo;
-
 import cpw.mods.fml.common.IScheduledTickHandler;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -42,16 +41,7 @@ public class SchedTickHandlerWld implements IScheduledTickHandler {
 		}
 		
 		if( ID >= 0 ) {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			DataOutputStream dos = new DataOutputStream(bos);
-			
-			try {
-				dos.writeShort(ID);
-				dos.writeInt(time);
-				PacketDispatcher.sendPacketToAllPlayers(new Packet250CustomPayload(ModContainerManPack.channel, bos.toByteArray()));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			PacketRegistry.sendPacketToAllPlayers(ModContainerManPack.modid, "weather", ID, time);
 		}
 		prevThunderState = worldObj.isThundering();
 	}

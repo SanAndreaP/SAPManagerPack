@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.logging.Level;
 
 import sanandreasp.core.manpack.managers.TickHandlerUpdMgr;
-import sanandreasp.core.manpack.mod.client.ClientPacketHandler;
+import sanandreasp.core.manpack.mod.client.ClientPHandler;
+import sanandreasp.core.manpack.mod.packet.CommonPHandler;
+import sanandreasp.core.manpack.mod.packet.PacketRegistry;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -29,10 +31,12 @@ import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 @NetworkMod(clientSideRequired=true, serverSideRequired=false,
-	clientPacketHandlerSpec = @SidedPacketHandler(channels={ModContainerManPack.channel}, packetHandler=ClientPacketHandler.class))
+	clientPacketHandlerSpec = @SidedPacketHandler(channels={ModContainerManPack.channel}, packetHandler=ClientPHandler.class),
+	serverPacketHandlerSpec = @SidedPacketHandler(channels={ModContainerManPack.channel}, packetHandler=CommonPHandler.class))
 public class ModContainerManPack extends DummyModContainer {
 	public static final String version = "1.9.9";
 	public static final String channel = "SAPManPack";
+	public static final String modid = "SAPManPackCore";
 	
 	@SidedProxy(clientSide="sanandreasp.core.manpack.mod.client.ClientProxy", serverSide="sanandreasp.core.manpack.mod.CommonProxy")
 	public static CommonProxy proxy;
@@ -43,7 +47,7 @@ public class ModContainerManPack extends DummyModContainer {
         ModMetadata myMeta = super.getMetadata();
         myMeta.authorList = Arrays.asList(new String[] { "SanAndreasP" });
         myMeta.description = "A helper coremod which is needed for all my mods.";
-        myMeta.modId = "SAPManPackCore";
+        myMeta.modId = this.modid;
         myMeta.version = this.version;
         myMeta.name = "SanAndreasPs Manager Pack CORE edition";
         myMeta.url = "http://www.minecraftforge.net/forum/index.php/topic,2828.0.html";
@@ -61,6 +65,8 @@ public class ModContainerManPack extends DummyModContainer {
 		FMLLog.makeLog("SAP-ConfigManager");
 		FMLLog.makeLog("SAP-LanguageManager");
 		FMLLog.makeLog("SAP-UpdateManager");
+		
+		this.proxy.registerPackets();
 	}
 	
 	@Subscribe

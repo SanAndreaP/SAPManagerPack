@@ -15,16 +15,6 @@ public class ManPackSetupClass implements IFMLCallHook {
 
 	@Override
 	public Void call() throws Exception {
-//        try {
-//            Class clazz = Class.forName("api.player.forge.PlayerAPIForgePlugin");
-//            if( clazz != null ) {
-//                ManPackLoadingPlugin.PAPI_available = true;
-//                System.out.println("[SAPManPack] PlayerAPI detected, using compatibility methods");
-//            }
-//        } catch (ClassNotFoundException e) {
-//            
-//        }
-        
         return null;
 	}
 

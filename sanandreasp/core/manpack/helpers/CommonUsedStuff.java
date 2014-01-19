@@ -18,11 +18,11 @@ import com.google.common.collect.Maps;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.ReflectionHelper.UnableToFindMethodException;
 import cpw.mods.fml.relauncher.SideOnly;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -205,6 +205,22 @@ public class CommonUsedStuff {
 		if( list.size() == 0 )
 			return null;
 		return list.toArray((T[])Array.newInstance(clazz, list.size()));
+	}
+	
+	public static void registerBlocks(String prefix, Block... blocks) {
+		int cnt = 0;
+		for( Block blk : blocks ) {
+			String suffix = (new String("0000" + (++cnt)));
+			GameRegistry.registerBlock(blk, prefix + "_" + suffix.substring(suffix.length() - 4));
+		}
+	}
+	
+	public static void registerItems(String prefix, Item... items) {
+		int cnt = 0;
+		for( Item itm : items ) {
+			String suffix = (new String("0000" + (++cnt)));
+			GameRegistry.registerItem(itm, prefix + "_" + suffix.substring(suffix.length() - 4));
+		}
 	}
 	
 	public static ItemStack addItemStackToInventory(ItemStack is, IInventory inv) {
