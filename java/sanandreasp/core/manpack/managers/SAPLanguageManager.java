@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.IllegalFormatException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -12,6 +13,7 @@ import java.util.regex.Pattern;
 import sanandreasp.core.manpack.helpers.CommonUsedStuff;
 
 import com.google.common.collect.Maps;
+
 
 
 
@@ -177,6 +179,20 @@ public class SAPLanguageManager {
 	
 	public static String getTranslated(String key, String lang) {
 		return LanguageRegistry.instance().getStringLocalization(key, lang);
+	}
+	
+	public static String getTranslatedFormat(String key, Object data) {
+		return StatCollector.translateToLocal(key);
+	}
+	
+	public static String getTranslatedFormat(String key, String lang, Object... data) {
+		String str = LanguageRegistry.instance().getStringLocalization(key, lang);
+
+		try {
+            return String.format(str, data);
+        } catch( IllegalFormatException illegalformatexception ) {
+            return "Format error: " + str;
+        }
 	}
 
 	public static class LangFileFilter implements FilenameFilter {
