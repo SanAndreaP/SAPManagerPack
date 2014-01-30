@@ -1,5 +1,7 @@
 package sanandreasp.core.manpack;
 
+import java.io.File;
+import java.util.Arrays;
 import java.util.Map;
 
 import sanandreasp.core.manpack.mod.ModContainerManPack;
@@ -39,6 +41,7 @@ public class ManPackLoadingPlugin implements IFMLLoadingPlugin {
 	@Override
 	public void injectData(Map<String, Object> data) {
 		ASMHelper.isMCP = !((Boolean)data.get("runtimeDeobfuscationEnabled")).booleanValue();
+		ModContainerManPack.modLocation = (File)data.get("coremodLocation");
 	}
 	
 	@SuppressWarnings("rawtypes")

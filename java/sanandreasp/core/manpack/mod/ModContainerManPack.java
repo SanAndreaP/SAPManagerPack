@@ -1,5 +1,8 @@
 package sanandreasp.core.manpack.mod;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.logging.Level;
 
@@ -13,6 +16,7 @@ import com.google.common.eventbus.Subscribe;
 import cpw.mods.fml.common.DummyModContainer;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.LoadController;
+import cpw.mods.fml.common.MetadataCollection;
 import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLConstructionEvent;
@@ -33,19 +37,43 @@ public class ModContainerManPack extends DummyModContainer {
 	public static final String channel = "sapmanpack";
 	public static final String modid = "sapmanpackcore";
 	
+	public static File modLocation;
+    private ModMetadata md;
+	
 	@SidedProxy(clientSide="sanandreasp.core.manpack.mod.client.ClientProxy", serverSide="sanandreasp.core.manpack.mod.CommonProxy")
 	public static CommonProxy proxy;
 	
 	public ModContainerManPack() {
         super(new ModMetadata());
-//        /* ModMetadata is the same as mcmod.info */
-        ModMetadata myMeta = super.getMetadata();
-        myMeta.authorList = Arrays.asList(new String[] { "SanAndreasP" });
-        myMeta.description = "A helper coremod which is needed for all my mods.";
-        myMeta.modId = ModContainerManPack.modid;
-        myMeta.version = ModContainerManPack.version;
-        myMeta.name = "SanAndreasPs Manager Pack CORE edition";
-        myMeta.url = "http://www.minecraftforge.net/forum/index.php/topic,2828.0.html";
+        this.md = super.getMetadata();
+        File mcmod = new File(ModContainerManPack.modLocation, "mcmod.info");
+        MetadataCollection mc = null;
+        try {
+            FileInputStream fis = new FileInputStream(mcmod);
+            mc = MetadataCollection.from(fis, ModContainerManPack.modLocation.getName());
+            fis.close();
+            System.out.println(String.format("Found an mcmod.info file in directory %s", ModContainerManPack.modLocation.getName()));
+        } catch( Exception e1 ) {
+        	try {
+        		InputStream is = ClassLoader.getSystemResourceAsStream("mcmod.info");
+        		mc = MetadataCollection.from(is, ModContainerManPack.modLocation.getName());
+                is.close();
+                System.out.println("Found an mcmod.info file in classpath");
+        	} catch( Exception e2 ) {
+                System.out.println(String.format("No mcmod.info file found, neither in directory %s nor inside the classpath", ModContainerManPack.modLocation.getName()));
+        	}
+        }
+        
+        if( mc != null ) {
+        	this.md = mc.getMetadataForId(ModContainerManPack.modid, null);
+        } else {
+        	this.md.authorList = Arrays.asList(new String[] { "SanAndreasP" });
+        	this.md.description = "A helper coremod which is needed for all my mods.";
+        	this.md.modId = ModContainerManPack.modid;
+        	this.md.version = ModContainerManPack.version;
+        	this.md.name = "SanAndreasPs Manager Pack CORE edition";
+        	this.md.url = "http://www.minecraftforge.net/forum/index.php/topic,2828.0.html";
+        }
 	}
 	
 	@Override
@@ -78,16 +106,42 @@ public class ModContainerManPack extends DummyModContainer {
 	}
 	
 	@Subscribe
-	public void modConstruction(FMLConstructionEvent evt)
-	{
-		try
-		{
+	public void modConstruction(FMLConstructionEvent evt) {
+		try {
 			FMLNetworkHandler.instance().registerNetworkMod(new ManPackNetworkModHandler(this));
 			FMLLog.info("Succeeded registering SAPManPack Packet Handler");
-		}
-		catch (Exception e)
-		{
+		} catch( Exception e ) {
 			FMLLog.log(Level.SEVERE, e, "Failed to register packet handler for SAPManPack");
 		}
 	}
+
+    @Override
+    public ModMetadata getMetadata() {
+        return this.md;
+    }
+
+    @Override
+    public String getModId() {
+        return this.md.modId;
+    }
+
+    @Override
+    public String getName() {
+        return this.md.name;
+    }
+
+    @Override
+    public String getVersion() {
+        return this.md.version;
+    }
+
+    @Override
+    public String getDisplayVersion() {
+        return this.md.version;
+    }
+
+    @Override
+    public String toString() {
+        return this.md != null ? getModId() : "Dummy Container ("+ModContainerManPack.modid+") @" + System.identityHashCode(this);
+    }
 }
