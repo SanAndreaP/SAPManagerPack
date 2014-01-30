@@ -1,7 +1,6 @@
 package sanandreasp.core.manpack;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Map;
 
 import sanandreasp.core.manpack.mod.ModContainerManPack;
@@ -15,10 +14,6 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 @TransformerExclusions({"sanandreasp.core.manpack.transformer"})
 public class ManPackLoadingPlugin implements IFMLLoadingPlugin {
 	
-//	public String[] getLibraryRequestClass() {
-//		return null;
-//	}
-
 	@Override
 	public String[] getASMTransformerClass() {
 		return new String[] {
