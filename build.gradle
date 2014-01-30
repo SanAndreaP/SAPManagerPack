@@ -1,0 +1,47 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'
+    }
+}
+
+apply plugin: 'forge'
+minecraft{version = "1.6.4-9.11.1.964"}
+version = "1.6.4-2.0.0"//Set the mod version, is appended to the end of the jar name
+archivesBaseName = 'SAPManPack'// Set the jar name as the project root folder name
+
+sourceSets.main {
+    java {
+        srcDirs 'java'//set the source folder as the /src subfolder
+    }
+    resources {
+        srcDirs 'resources'//set the resources folder as the /resources subfolder
+    }
+}
+
+
+
+
+
+
+
+
+//processResources {
+   // replace stuff in mcmod.info, nothing else
+    //from(sourceSets.main.resources.srcDirs) {
+      //  include 'mcmod.info'
+    // replace $version and $mcversion
+     //   expand 'version':project.version, 'mcversion':project.minecraft.version
+    //}
+
+    // copy everything else, thats not the mcmod.info
+    //from(sourceSets.main.resources.srcDirs) {
+      //  exclude 'mcmod.info'
+    //} 
+//}
