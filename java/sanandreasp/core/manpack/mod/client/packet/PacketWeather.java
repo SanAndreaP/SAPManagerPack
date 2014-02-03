@@ -4,16 +4,18 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-
 import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.world.storage.WorldInfo;
 import sanandreasp.core.manpack.mod.packet.ISAPPacketHandler;
 
-public class PacketWeather implements ISAPPacketHandler {
-
+@SideOnly(Side.CLIENT)
+public class PacketWeather implements ISAPPacketHandler
+{
 	@Override
 	public byte[] getDataForPacket(Object... data) throws Exception {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -54,5 +56,4 @@ public class PacketWeather implements ISAPPacketHandler {
 		
 		dis.close();
 	}
-
 }

@@ -12,36 +12,59 @@ buildscript {
 }
 
 apply plugin: 'forge'
-minecraft{version = "1.6.4-9.11.1.964"}
-version = "1.6.4-2.0.0"//Set the mod version, is appended to the end of the jar name
-archivesBaseName = 'SAPManPack'// Set the jar name as the project root folder name
 
-sourceSets.main {
-    java {
-        srcDirs 'java'//set the source folder as the /src subfolder
-    }
-    resources {
-        srcDirs 'resources'//set the resources folder as the /resources subfolder
+group = "sanandreasp.core.manpack"
+version = "1.6.4-2.0.0"
+archivesBaseName = 'SAPManPack'
+
+sourceSets {
+    main {
+        java { srcDir 'java' }
+        resources { srcDir 'resources' }
     }
 }
 
+minecraft{
+	version = "1.6.4-9.11.1.964"
+}
 
+jar {
+    manifest {
+        attributes 'FMLCorePlugin': 'sanandreasp.core.manpack.ManPackLoadingPlugin'
+        attributes 'FMLCorePluginContainsFMLMod' : 'true'
+    }
+}
 
+task sourceJar(type: Jar) {
+    archiveName = baseName + "-" + version + "-s.jar"
+    from sourceSets.main.allSource
+    appendix = 'src'
+    archiveName = baseName + "-" + version + "-" + appendix + ".jar"
+}
 
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    appendix = 'compile'
+    archiveName = baseName + "-" + version + "-" + appendix + ".jar"
+}
 
+repositories {
+    mavenCentral()
+}
 
+artifacts {
+	archives deobfJar
+	archives sourceJar
+	archives jar
+}
 
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
 
-//processResources {
-   // replace stuff in mcmod.info, nothing else
-    //from(sourceSets.main.resources.srcDirs) {
-      //  include 'mcmod.info'
-    // replace $version and $mcversion
-     //   expand 'version':project.version, 'mcversion':project.minecraft.version
-    //}
-
-    // copy everything else, thats not the mcmod.info
-    //from(sourceSets.main.resources.srcDirs) {
-      //  exclude 'mcmod.info'
-    //} 
-//}
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}

@@ -1,7 +1,6 @@
 package sanandreasp.core.manpack.transformer;
 
 import net.minecraft.launchwrapper.IClassTransformer;
-
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
@@ -16,12 +15,13 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-public class TransformEntityThrowable implements IClassTransformer, Opcodes {
-
+public class TransformEntityThrowable implements IClassTransformer, Opcodes
+{
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
-        if( transformedName.equals("net.minecraft.entity.projectile.EntityThrowable") )
+        if( transformedName.equals("net.minecraft.entity.projectile.EntityThrowable") ) {
             return this.transformLqThrowable(bytes);
+        }
         
         return bytes;
     }

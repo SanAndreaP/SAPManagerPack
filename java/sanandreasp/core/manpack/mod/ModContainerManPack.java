@@ -2,7 +2,6 @@ package sanandreasp.core.manpack.mod;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.logging.Level;
 
@@ -32,10 +31,11 @@ import cpw.mods.fml.relauncher.Side;
 @NetworkMod(clientSideRequired=true, serverSideRequired=false,
 	clientPacketHandlerSpec = @SidedPacketHandler(channels={ModContainerManPack.channel}, packetHandler=ClientPHandler.class),
 	serverPacketHandlerSpec = @SidedPacketHandler(channels={ModContainerManPack.channel}, packetHandler=CommonPHandler.class))
-public class ModContainerManPack extends DummyModContainer {
-	public static final String version = "1.9.9";
+public class ModContainerManPack extends DummyModContainer
+{
+	public static final String version = "1.6.4-2.0.0";
 	public static final String channel = "sapmanpack";
-	public static final String modid = "sapmanpackcore";
+	public static final String modid = "sapmanpack";
 	
 	public static File modLocation;
     private ModMetadata md;
@@ -54,14 +54,7 @@ public class ModContainerManPack extends DummyModContainer {
             fis.close();
             System.out.println(String.format("Found an mcmod.info file in directory %s", ModContainerManPack.modLocation.getName()));
         } catch( Exception e1 ) {
-        	try {
-        		InputStream is = ClassLoader.getSystemResourceAsStream("mcmod.info");
-        		mc = MetadataCollection.from(is, ModContainerManPack.modLocation.getName());
-                is.close();
-                System.out.println("Found an mcmod.info file in classpath");
-        	} catch( Exception e2 ) {
-                System.out.println(String.format("No mcmod.info file found, neither in directory %s nor inside the classpath", ModContainerManPack.modLocation.getName()));
-        	}
+            System.out.println(String.format("No mcmod.info file found in directory %s", ModContainerManPack.modLocation.getName()));
         }
         
         if( mc != null ) {

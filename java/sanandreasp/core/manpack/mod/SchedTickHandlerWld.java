@@ -1,7 +1,6 @@
 package sanandreasp.core.manpack.mod;
 
 import java.util.EnumSet;
-
 import sanandreasp.core.manpack.mod.packet.PacketRegistry;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderSurface;
@@ -9,7 +8,8 @@ import net.minecraft.world.storage.WorldInfo;
 import cpw.mods.fml.common.IScheduledTickHandler;
 import cpw.mods.fml.common.TickType;
 
-public class SchedTickHandlerWld implements IScheduledTickHandler {
+public class SchedTickHandlerWld implements IScheduledTickHandler
+{
 	public static boolean prevThunderState = false;
 	
 	@Override

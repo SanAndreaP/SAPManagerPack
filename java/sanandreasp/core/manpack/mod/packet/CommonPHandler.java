@@ -6,18 +6,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-
 import org.apache.commons.lang3.ArrayUtils;
-
 import com.google.common.collect.HashBasedTable;
-
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 
-public class CommonPHandler implements IPacketHandler {
+public class CommonPHandler implements IPacketHandler
+{
 	private HashBasedTable<UUID, Integer, byte[]> buffer = HashBasedTable.create();
 	
 	@Override

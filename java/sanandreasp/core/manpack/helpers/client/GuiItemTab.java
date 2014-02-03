@@ -2,7 +2,8 @@ package sanandreasp.core.manpack.helpers.client;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -14,27 +15,20 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Icon;
 
-public class GuiItemTab extends GuiButton {
-	
+@SideOnly(Side.CLIENT)
+public class GuiItemTab extends GuiButton
+{
     protected static RenderItem itemRenderer = new RenderItem();
-    
     protected static final ResourceLocation RES_ITEM_GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");
-    
     public ResourceLocation baseTexture = TextureMap.locationItemsTexture;
-	
 	protected Icon renderedIcon;
-	
 	protected ResourceLocation texture = null;
-	
     protected boolean isRight;
-    
     protected boolean hasEffect;
-    
     public int textureBaseX = 0;
     public int textureBaseY = 0;
 
-	public GuiItemTab(int id, int xPos, int yPos, String name, Icon icon, boolean right, boolean hasEff, ResourceLocation tabTexture)
-	{
+	public GuiItemTab(int id, int xPos, int yPos, String name, Icon icon, boolean right, boolean hasEff, ResourceLocation tabTexture) {
 		super(id, xPos, yPos, name);
 		this.width = 26;
 		this.height = 26;
@@ -44,21 +38,20 @@ public class GuiItemTab extends GuiButton {
 		this.texture = tabTexture;
 	}
 	
-	public void setIcon(Icon ico)
-	{
+	public void setIcon(Icon ico) {
 		this.renderedIcon = ico;
 	}
 	
-    public void drawButton(Minecraft par1Minecraft, int par2, int par3)
-    {
+	@Override
+    public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if( this.drawButton ) {
-        	FontRenderer var4 = par1Minecraft.fontRenderer;
-        	par1Minecraft.getTextureManager().bindTexture(this.texture);
+        	FontRenderer var4 = mc.fontRenderer;
+        	mc.getTextureManager().bindTexture(this.texture);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.field_82253_i = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
+            this.field_82253_i = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
             int var5 = this.getHoverState(this.field_82253_i);
             this.drawTexturedModalRect(this.xPosition, this.yPosition, this.textureBaseX+26*(isRight?0:1), this.textureBaseY+var5*26, this.width, this.height);
-            this.mouseDragged(par1Minecraft, par2, par3);
+            this.mouseDragged(mc, mouseX, mouseY);
 
             GL11.glEnable(GL11.GL_DEPTH_TEST);
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
@@ -71,7 +64,7 @@ public class GuiItemTab extends GuiButton {
             
             
             itemRenderer.zLevel = 300.0F;
-            this.drawIcon(this.renderedIcon, this.xPosition + 5, this.yPosition + 5, par1Minecraft, 0xFFFFFF);
+            this.drawIcon(this.renderedIcon, this.xPosition + 5, this.yPosition + 5, mc, 0xFFFFFF);
             itemRenderer.zLevel = 0.0F;
             GL11.glPopMatrix();
             GL11.glEnable(GL11.GL_LIGHTING);
@@ -85,8 +78,7 @@ public class GuiItemTab extends GuiButton {
         }
     }
     
-    protected void drawTabHoveringText(String par1Str, int par2, int par3, FontRenderer fontRenderer)
-    {
+    protected void drawTabHoveringText(String par1Str, int par2, int par3, FontRenderer fontRenderer) {
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         RenderHelper.disableStandardItemLighting();
         GL11.glDisable(GL11.GL_LIGHTING);
@@ -117,8 +109,7 @@ public class GuiItemTab extends GuiButton {
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
     }
 
-	private void drawIcon(Icon par1Icon, int par2, int par3, Minecraft mc, int color)
-	{
+	private void drawIcon(Icon ico, int x, int y, Minecraft mc, int color) {
         float f;
         int i1;
         float f1;
@@ -139,18 +130,17 @@ public class GuiItemTab extends GuiButton {
         
         GL11.glColor4f(f, f1, f2, 1.0F);
 
-        GuiItemTab.itemRenderer.renderIcon(par2, par3, this.renderedIcon, 16, 16);
+        GuiItemTab.itemRenderer.renderIcon(x, y, this.renderedIcon, 16, 16);
         GL11.glEnable(GL11.GL_LIGHTING);
 
         if( this.hasEffect ) {
-        	this.renderEffect(mc.renderEngine, par2, par3);
+        	this.renderEffect(mc.renderEngine, x, y);
         }
         GL11.glEnable(GL11.GL_CULL_FACE);
 
 	}
 
-    protected void renderEffect(TextureManager manager, int x, int y)
-    {
+    protected void renderEffect(TextureManager manager, int x, int y) {
         GL11.glDepthFunc(GL11.GL_GREATER);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDepthMask(false);
@@ -167,8 +157,7 @@ public class GuiItemTab extends GuiButton {
         GL11.glDepthFunc(GL11.GL_LEQUAL);
     }
 
-    private void renderGlint(int par1, int par2, int par3, int par4, int par5)
-    {
+    private void renderGlint(int par1, int x, int y, int width, int height) {
         for( int j1 = 0; j1 < 2; ++j1 ) {
             if( j1 == 0 ) {
                 GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
@@ -190,10 +179,10 @@ public class GuiItemTab extends GuiButton {
             }
 
             tessellator.startDrawingQuads();
-            tessellator.addVertexWithUV((double)(par2 + 0), (double)(par3 + par5), (double)this.zLevel, (double)((f2 + (float)par5 * f4) * f), (double)((f3 + (float)par5) * f1));
-            tessellator.addVertexWithUV((double)(par2 + par4), (double)(par3 + par5), (double)this.zLevel, (double)((f2 + (float)par4 + (float)par5 * f4) * f), (double)((f3 + (float)par5) * f1));
-            tessellator.addVertexWithUV((double)(par2 + par4), (double)(par3 + 0), (double)this.zLevel, (double)((f2 + (float)par4) * f), (double)((f3 + 0.0F) * f1));
-            tessellator.addVertexWithUV((double)(par2 + 0), (double)(par3 + 0), (double)this.zLevel, (double)((f2 + 0.0F) * f), (double)((f3 + 0.0F) * f1));
+            tessellator.addVertexWithUV((double)(x + 0), (double)(y + height), (double)this.zLevel, (double)((f2 + (float)height * f4) * f), (double)((f3 + (float)height) * f1));
+            tessellator.addVertexWithUV((double)(x + width), (double)(y + height), (double)this.zLevel, (double)((f2 + (float)width + (float)height * f4) * f), (double)((f3 + (float)height) * f1));
+            tessellator.addVertexWithUV((double)(x + width), (double)(y + 0), (double)this.zLevel, (double)((f2 + (float)width) * f), (double)((f3 + 0.0F) * f1));
+            tessellator.addVertexWithUV((double)(x + 0), (double)(y + 0), (double)this.zLevel, (double)((f2 + 0.0F) * f), (double)((f3 + 0.0F) * f1));
             tessellator.draw();
         }
     }

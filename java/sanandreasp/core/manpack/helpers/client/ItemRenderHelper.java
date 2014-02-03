@@ -8,69 +8,84 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-public final class ItemRenderHelper {
+@SideOnly(Side.CLIENT)
+public final class ItemRenderHelper
+{
     private static final ResourceLocation glintPNG = new ResourceLocation("textures/misc/enchanted_item_glint.png");
 	
-	public static void renderItem(EntityLivingBase par1EntityLiving, ItemStack par2ItemStack, int par3) {
-		renderItem(par1EntityLiving, par2ItemStack, par3, false);
+	public static void renderItem(EntityLivingBase living, ItemStack stack, int layer) {
+		renderItem(living, stack, layer, false);
 	}
 	
-	public static void renderItem(EntityLivingBase par1EntityLiving, ItemStack par2ItemStack, int par3, boolean isGlowing) {
+	public static void renderItem(EntityLivingBase living, ItemStack stack, int layer, boolean isGlowing) {
 		GL11.glPushMatrix();
 		
-        Icon icon = par1EntityLiving.getItemIcon(par2ItemStack, par3);
+        Icon icon = living.getItemIcon(stack, layer);
 
-        if( icon == null )
-        {
+        if( icon == null ) {
             GL11.glPopMatrix();
             return;
         }
-
-        Minecraft.getMinecraft().renderEngine.bindTexture(Minecraft.getMinecraft().renderEngine.getResourceLocation(par2ItemStack.getItemSpriteNumber()));
+        
+        float minU = icon.getMinU();
+        float maxU = icon.getMaxU();
+        float minV = icon.getMinV();
+        float maxV = icon.getMaxV();
+        float transX = 0.0F;
+        float transY = 0.3F;
+        float scale = 1.5F;
         Tessellator tessellator = Tessellator.instance;
-        float f = icon.getMinU();
-        float f1 = icon.getMaxU();
-        float f2 = icon.getMinV();
-        float f3 = icon.getMaxV();
-        float f4 = 0.0F;
-        float f5 = 0.3F;
+
+        Minecraft.getMinecraft().renderEngine.bindTexture(
+        		Minecraft.getMinecraft().renderEngine.getResourceLocation(stack.getItemSpriteNumber())
+        );
+        
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        GL11.glTranslatef(-f4, -f5, 0.0F);
-        float f6 = 1.5F;
-        GL11.glScalef(f6, f6, f6);
+        GL11.glTranslatef(-transX, -transY, 0.0F);
+        GL11.glScalef(scale, scale, scale);
         GL11.glRotatef(50.0F, 0.0F, 1.0F, 0.0F);
         GL11.glRotatef(335.0F, 0.0F, 0.0F, 1.0F);
         GL11.glTranslatef(-0.9375F, -0.0625F, 0.0F);
-        renderItemIn2D(tessellator, f1, f2, f, f3, icon.getIconWidth(), icon.getIconHeight(), 0.0625F, isGlowing);
+        
+        renderItemIn2D(tessellator, maxU, minV, minU, maxV, icon.getIconWidth(), icon.getIconHeight(), 0.0625F, isGlowing);
 
-        if( par2ItemStack != null && par2ItemStack.hasEffect(par3) )
-        {
+        if( stack != null && stack.hasEffect(layer) ) {
+            float baseClr = 0.76F;
+            float glintScale = 0.125F;
+            float glintTransX = (float)(Minecraft.getSystemTime() % 3000L) / 3000.0F * 8.0F;
+            
             GL11.glDepthFunc(GL11.GL_EQUAL);
             GL11.glDisable(GL11.GL_LIGHTING);
+            
             Minecraft.getMinecraft().renderEngine.bindTexture(glintPNG);
+            
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
-            float f7 = 0.76F;
-            GL11.glColor4f(0.5F * f7, 0.25F * f7, 0.8F * f7, 1.0F);
+            GL11.glColor4f(0.5F * baseClr, 0.25F * baseClr, 0.8F * baseClr, 1.0F);
             GL11.glMatrixMode(GL11.GL_TEXTURE);
             GL11.glPushMatrix();
-            float f8 = 0.125F;
-            GL11.glScalef(f8, f8, f8);
-            float f9 = (float)(Minecraft.getSystemTime() % 3000L) / 3000.0F * 8.0F;
-            GL11.glTranslatef(f9, 0.0F, 0.0F);
+            GL11.glScalef(glintScale, glintScale, glintScale);
+            GL11.glTranslatef(glintTransX, 0.0F, 0.0F);
             GL11.glRotatef(-50.0F, 0.0F, 0.0F, 1.0F);
+            
             renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.0625F, false);
+            
             GL11.glPopMatrix();
             GL11.glPushMatrix();
-            GL11.glScalef(f8, f8, f8);
-            f9 = (float)(Minecraft.getSystemTime() % 4873L) / 4873.0F * 8.0F;
-            GL11.glTranslatef(-f9, 0.0F, 0.0F);
+            GL11.glScalef(glintScale, glintScale, glintScale);
+            
+            glintTransX = (float)(Minecraft.getSystemTime() % 4873L) / 4873.0F * 8.0F;
+            
+            GL11.glTranslatef(-glintTransX, 0.0F, 0.0F);
             GL11.glRotatef(10.0F, 0.0F, 0.0F, 1.0F);
+            
             renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.0625F, false);
+            
             GL11.glPopMatrix();
             GL11.glColor4f(1F, 1F, 1F, 1.0F);
             GL11.glMatrixMode(GL11.GL_MODELVIEW);
@@ -83,40 +98,39 @@ public final class ItemRenderHelper {
 		GL11.glPopMatrix();
 	}
 	
-	private static void renderItemIn2D(Tessellator par0Tessellator, float par1, float par2, float par3, float par4, int par5, int par6, float par7, boolean isGlowing) {
+	private static void renderItemIn2D(Tessellator tess, float minU, float minV, float maxU, float maxV, int scaleX, int scaleY, float negZLevel, boolean isGlowing) {
 		if( isGlowing ) {
 	        GL11.glDisable(GL11.GL_LIGHTING);
 	        GL11.glDisable(GL11.GL_LIGHT0);
 	        GL11.glDisable(GL11.GL_LIGHT1);
 	        GL11.glDisable(GL11.GL_COLOR_MATERIAL);
+	        
 			float prevLGTX = OpenGlHelper.lastBrightnessX;
 			float prevLGTY = OpenGlHelper.lastBrightnessY;
-			char var5 = 0x000F0;
-			int var6 = var5 % 65536;
-			int var7 = var5 / 65536;
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, var6 / 1.0F, var7 / 1.0F);
-	        ItemRenderer.renderItemIn2D(par0Tessellator, par1, par2, par3, par4, par5, par6, par7);
+			char bright = 0x000F0;
+			int brightX = bright % 65536;
+			int brightY = bright / 65536;
+			
+			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX / 1.0F, brightY / 1.0F);
+	        ItemRenderer.renderItemIn2D(tess, minU, minV, maxU, maxV, scaleX, scaleY, negZLevel);
 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevLGTX, prevLGTY);
+			
 	        GL11.glEnable(GL11.GL_LIGHTING);
 	        GL11.glEnable(GL11.GL_LIGHT0);
 	        GL11.glEnable(GL11.GL_LIGHT1);
 	        GL11.glEnable(GL11.GL_COLOR_MATERIAL);
 		} else {
-			ItemRenderer.renderItemIn2D(par0Tessellator, par1, par2, par3, par4, par5, par6, par7);
+			ItemRenderer.renderItemIn2D(tess, minU, minV, maxU, maxV, scaleX, scaleY, negZLevel);
 		}
 	}
 
-    public static void renderGlint(int par1, int par2, int par3, int par4, int par5, double zLevel)
-    {
-        for( int j1 = 0; j1 < 2; ++j1 )
-        {
-            if( j1 == 0 )
-            {
+    public static void renderGlint(int par1, int minU, int minV, int maxU, int maxV, double zLevel) {
+        for( int j1 = 0; j1 < 2; ++j1 ) {
+            if( j1 == 0 ) {
                 GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
             }
 
-            if( j1 == 1 )
-            {
+            if( j1 == 1 ) {
                 GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
             }
 
@@ -127,16 +141,15 @@ public final class ItemRenderHelper {
             Tessellator tessellator = Tessellator.instance;
             float f4 = 4.0F;
 
-            if( j1 == 1 )
-            {
+            if( j1 == 1 ) {
                 f4 = -1.0F;
             }
 
             tessellator.startDrawingQuads();
-            tessellator.addVertexWithUV((double)(par2 + 0), (double)(par3 + par5), zLevel, (double)((f2 + (float)par5 * f4) * f), (double)((f3 + (float)par5) * f1));
-            tessellator.addVertexWithUV((double)(par2 + par4), (double)(par3 + par5), zLevel, (double)((f2 + (float)par4 + (float)par5 * f4) * f), (double)((f3 + (float)par5) * f1));
-            tessellator.addVertexWithUV((double)(par2 + par4), (double)(par3 + 0), zLevel, (double)((f2 + (float)par4) * f), (double)((f3 + 0.0F) * f1));
-            tessellator.addVertexWithUV((double)(par2 + 0), (double)(par3 + 0), zLevel, (double)((f2 + 0.0F) * f), (double)((f3 + 0.0F) * f1));
+            tessellator.addVertexWithUV((double)(minU + 0), (double)(minV + maxV), zLevel, (double)((f2 + (float)maxV * f4) * f), (double)((f3 + (float)maxV) * f1));
+            tessellator.addVertexWithUV((double)(minU + maxU), (double)(minV + maxV), zLevel, (double)((f2 + (float)maxU + (float)maxV * f4) * f), (double)((f3 + (float)maxV) * f1));
+            tessellator.addVertexWithUV((double)(minU + maxU), (double)(minV + 0), zLevel, (double)((f2 + (float)maxU) * f), (double)((f3 + 0.0F) * f1));
+            tessellator.addVertexWithUV((double)(minU + 0), (double)(minV + 0), zLevel, (double)((f2 + 0.0F) * f), (double)((f3 + 0.0F) * f1));
             tessellator.draw();
         }
     }

@@ -2,7 +2,6 @@ package sanandreasp.core.manpack;
 
 import java.io.File;
 import java.util.Map;
-
 import sanandreasp.core.manpack.mod.ModContainerManPack;
 import sanandreasp.core.manpack.transformer.ASMHelper;
 import sanandreasp.core.manpack.transformer.TransformBadPotionsATN;
@@ -11,9 +10,9 @@ import sanandreasp.core.manpack.transformer.TransformEntityThrowable;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 
-@TransformerExclusions({"sanandreasp.core.manpack.transformer"})
-public class ManPackLoadingPlugin implements IFMLLoadingPlugin {
-	
+@TransformerExclusions({"sanandreasp.core.manpack.transformer", "sanandreasp.core.manpack.ManPackLoadingPlugin"})
+public class ManPackLoadingPlugin implements IFMLLoadingPlugin
+{
 	@Override
 	public String[] getASMTransformerClass() {
 		return new String[] {
@@ -52,5 +51,4 @@ public class ManPackLoadingPlugin implements IFMLLoadingPlugin {
 		}
 		return true;
 	}
-
 }

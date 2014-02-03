@@ -1,6 +1,14 @@
 package sanandreasp.core.manpack.managers;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,16 +17,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import sanandreasp.core.manpack.helpers.CommonUsedStuff;
-
 import com.google.common.collect.Maps;
-
-
-
-
-
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -28,13 +28,13 @@ import net.minecraft.util.StatCollector;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-public class SAPLanguageManager {
+public class SAPLanguageManager
+{
 	private HashMap<String, File> langFiles = Maps.newHashMap();
 	private File path;
 	@SuppressWarnings("unused")
 	private String version, modname;
 	private List<String> localizations = new ArrayList<String>();
-//	private static StringTranslate strTrans = new StringTranslate();
 	
 	public SAPLanguageManager(String par1Path, String par2LangVer, String par3Mod) {
 		try {

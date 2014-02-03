@@ -1,6 +1,6 @@
 [
 {
-  "modid": "sapmanpackcore",
+  "modid": "sapmanpack",
   "name": "SanAndreasPs Manager Pack",
   "description": "A manager pack made for and required by all my mods.",
   "version": "${version}",

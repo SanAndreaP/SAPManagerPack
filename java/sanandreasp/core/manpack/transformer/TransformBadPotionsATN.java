@@ -1,19 +1,19 @@
 package sanandreasp.core.manpack.transformer;
 
 import net.minecraft.launchwrapper.IClassTransformer;
-
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
-public class TransformBadPotionsATN implements IClassTransformer, Opcodes {
-
+public class TransformBadPotionsATN implements IClassTransformer, Opcodes
+{
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes) {
-		if( transformedName.equals("net.minecraft.potion.Potion") )
+		if( transformedName.equals("net.minecraft.potion.Potion") ) {
 			return transformPotion(bytes);
+		}
 		
 		return bytes;
 	}
@@ -22,8 +22,9 @@ public class TransformBadPotionsATN implements IClassTransformer, Opcodes {
 		ClassNode cn = ASMHelper.createClassNode(bytes);
 		
 		for( MethodNode method : cn.methods ) {
-			if( method.name.equals(ASMHelper.getNotchedMethod("isBadEffect", "net/minecraft/potion/Potion/func_76398_f")) )
+			if( method.name.equals(ASMHelper.getNotchedMethod("isBadEffect", "net/minecraft/potion/Potion/func_76398_f")) ) {
 				return bytes;
+			}
 		}
 		
 		MethodNode method = new MethodNode(ACC_PUBLIC, ASMHelper.getNotchedMethod("isBadEffect", "net/minecraft/potion/Potion/func_76398_f"), "()Z", null, null);
@@ -45,5 +46,4 @@ public class TransformBadPotionsATN implements IClassTransformer, Opcodes {
 	    
 		return bytes;
 	}
-
 }

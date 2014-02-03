@@ -1,15 +1,22 @@
 package sanandreasp.core.manpack.managers;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-
 import cpw.mods.fml.common.FMLLog;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -23,7 +30,8 @@ import sanandreasp.core.manpack.helpers.CommonUsedStuff;
  * @author sanandreasp
  * @version 2.0
  */
-public class SAPConfigManager {
+public class SAPConfigManager
+{
 	private static boolean registeredItems[] = new boolean[Item.itemsList.length];
 	private static boolean registeredBlocks[] = new boolean[Block.blocksList.length];
 	private static boolean preRegisteredItems[] = new boolean[Item.itemsList.length];

@@ -1,27 +1,29 @@
 package sanandreasp.core.manpack.transformer;
 
 import net.minecraft.launchwrapper.IClassTransformer;
-
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
-public class TransformELBAttackingPlayer implements IClassTransformer, Opcodes {
-
+public class TransformELBAttackingPlayer implements IClassTransformer, Opcodes
+{
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes) {
-		if( transformedName.equals("net.minecraft.entity.EntityLivingBase") )
+		if( transformedName.equals("net.minecraft.entity.EntityLivingBase") ) {
 			return transformAttackingPlayer(bytes);
-		if( transformedName.equals("sanandreasp.core.manpack.helpers.TransformAccessors") )
+		}
+		if( transformedName.equals("sanandreasp.core.manpack.helpers.TransformAccessors") ) {
 			return transformAccessors(bytes);
+		}
 		return bytes;
 	}
 	
 	private byte[] transformAttackingPlayer(byte[] bytes) {
-		/** ADD GETTER FOR ATTACKING PLAYER **/
 		ClassNode clazz = ASMHelper.createClassNode(bytes);
+		
+		/** ADD GETTER FOR ATTACKING PLAYER **/
 		{
 			MethodNode method = new MethodNode(ACC_PUBLIC, "_SanAndreasP_getAttackingPlayer", "()Lnet/minecraft/entity/player/EntityPlayer;", null, null);
 			method.visitCode();
@@ -176,17 +178,13 @@ public class TransformELBAttackingPlayer implements IClassTransformer, Opcodes {
 				complete++;
 				continue;
 			}
-			if( complete >= 4 )
+			if( complete >= 4 ) {
 				break;
+			}
 		}
-
-		
-//		MethodNode method = new MethodNode(ACC_PUBLIC + ACC_STATIC, "getELAttackingPlayer", "(Lnet/minecraft/entity/EntityLivingBase;)Lnet/minecraft/entity/player/EntityPlayer;", null, null);
-		
 		
 	    bytes = ASMHelper.createBytes(clazz, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
 	    
 		return bytes;
 	}
-
 }

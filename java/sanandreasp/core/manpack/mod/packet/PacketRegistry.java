@@ -4,14 +4,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.UUID;
-
 import sanandreasp.core.manpack.mod.ModContainerManPack;
 import net.minecraft.network.packet.Packet250CustomPayload;
-
 import com.google.common.collect.HashBasedTable;
-
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
 
 public final class PacketRegistry {
 	private static HashBasedTable<String, String, ISAPPacketHandler> packetHandlers = HashBasedTable.create();
@@ -72,6 +70,8 @@ public final class PacketRegistry {
 				if( bos != null )
 					bos.close();
 			} catch (IOException e) { }
+			FMLLog.warning("Cannot send packet to server! Packet %s in mod %s", name, modID);
+			ex.printStackTrace();
 		}
 	}
 	
@@ -111,6 +111,51 @@ public final class PacketRegistry {
 				if( bos != null )
 					bos.close();
 			} catch (IOException e) { }
+			FMLLog.warning("Cannot send packet to all around! Packet %s in mod %s", name, modID);
+			ex.printStackTrace();
+		}
+	}
+	
+	public static void sendPacketToPlayer(String modID, String name, Player player, Object... data) {
+		DataOutputStream dos = null;
+		ByteArrayOutputStream bos = null;
+		
+		try {
+			
+			byte[] pData = packetHandlers.get(modID, name).getDataForPacket(data);
+			int part = 0;
+			
+			UUID uuid = UUID.randomUUID();
+			
+			do {
+				bos = new ByteArrayOutputStream();
+				dos = new DataOutputStream(bos);
+				
+				dos.writeUTF(modID);
+				dos.writeUTF(name);
+				dos.writeUTF(uuid.toString());
+				dos.writeInt(Math.min(30000, pData.length - part*30000));
+				dos.write(pData, part * 30000, Math.min(30000, pData.length - part*30000));
+				if( ++part * 30000 >= pData.length ) {
+					dos.writeUTF("EOD");
+				} else {
+					dos.writeUTF("EOP");
+				}
+				PacketDispatcher.sendPacketToPlayer(new Packet250CustomPayload(ModContainerManPack.channel, bos.toByteArray()), player);
+				
+				dos.close();
+			} while( part * 30000 < pData.length );
+		} catch( Exception ex ) {
+			FMLLog.warning("An exception occurred while sending a packet");
+			ex.printStackTrace();
+			try {
+				if( dos != null )
+					dos.close();
+				if( bos != null )
+					bos.close();
+			} catch (IOException e) { }
+			FMLLog.warning("Cannot send packet to player! Packet %s in mod %s", name, modID);
+			ex.printStackTrace();
 		}
 	}
 	
@@ -152,6 +197,8 @@ public final class PacketRegistry {
 				if( bos != null )
 					bos.close();
 			} catch (IOException e) { }
+			FMLLog.warning("Cannot send packet to all players! Packet %s in mod %s", name, modID);
+			ex.printStackTrace();
 		}
 	}
 }

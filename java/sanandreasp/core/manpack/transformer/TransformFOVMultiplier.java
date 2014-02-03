@@ -1,7 +1,6 @@
 package sanandreasp.core.manpack.transformer;
 
 import net.minecraft.launchwrapper.IClassTransformer;
-
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
@@ -18,14 +17,16 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-public class TransformFOVMultiplier implements IClassTransformer, Opcodes {
-
+public class TransformFOVMultiplier implements IClassTransformer, Opcodes
+{
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes) {
-		if( transformedName.equals("net.minecraft.client.entity.EntityPlayerSP") )
+		if( transformedName.equals("net.minecraft.client.entity.EntityPlayerSP") ) {
 			return transformPlayerSP(bytes);
-		if( transformedName.equals("net.minecraft.item.Item") )
+		}
+		if( transformedName.equals("net.minecraft.item.Item") ) {
 			return transformItem(bytes);
+		}
 		
 		return bytes;
 	}
@@ -33,6 +34,7 @@ public class TransformFOVMultiplier implements IClassTransformer, Opcodes {
 	private byte[] transformItem(byte[] bytes) {
 		ClassNode clazz = ASMHelper.createClassNode(bytes);
 		MethodNode method = new MethodNode(ACC_PUBLIC, "getFOVItemMultiplier", "(Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/player/EntityPlayer;F)F", null, null);
+		
 		{
 			AnnotationVisitor annotVisitor = method.visitAnnotation("Lcpw/mods/fml/relauncher/SideOnly;", true);
 			annotVisitor.visitEnum("value", "Lcpw/mods/fml/relauncher/Side;", "CLIENT");

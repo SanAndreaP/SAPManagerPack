@@ -6,21 +6,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-
 import org.apache.commons.lang3.ArrayUtils;
-
 import sanandreasp.core.manpack.mod.packet.ISAPPacketHandler;
 import sanandreasp.core.manpack.mod.packet.PacketRegistry;
-
 import com.google.common.collect.HashBasedTable;
-
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-public class ClientPHandler implements IPacketHandler {
+@SideOnly(Side.CLIENT)
+public class ClientPHandler implements IPacketHandler
+{
 	private HashBasedTable<UUID, Integer, byte[]> buffer = HashBasedTable.create();
 	
 	@Override

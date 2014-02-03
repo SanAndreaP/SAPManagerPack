@@ -2,13 +2,12 @@ package sanandreasp.core.manpack;
 
 import java.io.File;
 import java.util.Map;
-
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import sanandreasp.core.manpack.transformer.ASMHelper;
 import cpw.mods.fml.relauncher.IFMLCallHook;
 
-public class ManPackSetupClass implements IFMLCallHook {
-
+public class ManPackSetupClass implements IFMLCallHook
+{
     private LaunchClassLoader cl;
 
 	@Override
@@ -21,5 +20,4 @@ public class ManPackSetupClass implements IFMLCallHook {
 		cl = (LaunchClassLoader) data.get("classLoader");
 		ASMHelper.setup((File)data.get("mcLocation"), cl, (String) data.get("deobfuscationFileName"));
 	}
-
 }

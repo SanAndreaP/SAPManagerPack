@@ -6,7 +6,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
@@ -32,13 +31,8 @@ import net.minecraftforge.oredict.OreDictionary;
  * @author SanAndreasP
  *
  */
-public class CommonUsedStuff {
-	/**
-	 * A static variable to decrease paperwork. Import it as following:<br>
-	 * <code>import static sanandreasp.mods.managers.CommonUsedStuff.CUS;</code>
-	**/
-	public static CommonUsedStuff CUS;
-	
+public class CommonUsedStuff
+{
 	/**
 	 * decreases the ItemStack stackSize by 1
 	 * @param is ItemStack, whose stackSize will be decreased
@@ -64,7 +58,7 @@ public class CommonUsedStuff {
 	
 	/**
 	 * Compares two ItemStacks if they are equal. If one of the ItemStacks has the block wildcard as damage value,
-	 * only the itemIDs will be compared.
+	 * only the item instances will be compared.
 	 * @param is1 The first ItemStack
 	 * @param is2 the second ItemStack
 	 * @return true, if stacks are equal, false otherwise.
@@ -73,7 +67,7 @@ public class CommonUsedStuff {
 		if( is1.isItemEqual(is2) )
 			return true;
 		if( is1.getItemDamage() == OreDictionary.WILDCARD_VALUE || is2.getItemDamage() == OreDictionary.WILDCARD_VALUE )
-			return is1.itemID == is2.itemID;
+			return is1.getItem() == is2.getItem();
 		return false;
 	}
 	
@@ -123,7 +117,7 @@ public class CommonUsedStuff {
 		return null;
 	}
 	
-	public static ItemStack dropBlockAsItem_do(Block block, World world, int x, int y, int z, ItemStack stack) {
+	public static ItemStack dropBlockAsItem(Block block, World world, int x, int y, int z, ItemStack stack) {
 		EntityItem item = new EntityItem(world, x+0.5D, y+0.5D, z+0.5D, stack);
 		world.spawnEntityInWorld(item);
 		return null;
@@ -146,23 +140,22 @@ public class CommonUsedStuff {
 
 	public static void dropBlockXP(Block block, World world, int X, int Y, int Z, int meta, int fortune) {
 
-        if( block.idDropped(meta, world.rand, fortune) != block.blockID )
-        {
+        if( block.idDropped(meta, world.rand, fortune) != block.blockID ) {
             int j1 = 0;
 
-            if( block.blockID == Block.oreCoal.blockID )
+            if( block == Block.oreCoal )
                 j1 = MathHelper.getRandomIntegerInRange(world.rand, 0, 2);
-            else if( block.blockID == Block.oreDiamond.blockID )
+            else if( block == Block.oreDiamond )
                 j1 = MathHelper.getRandomIntegerInRange(world.rand, 3, 7);
-            else if( block.blockID == Block.oreEmerald.blockID )
+            else if( block == Block.oreEmerald )
                 j1 = MathHelper.getRandomIntegerInRange(world.rand, 3, 7);
-            else if( block.blockID == Block.oreLapis.blockID )
+            else if( block == Block.oreLapis )
                 j1 = MathHelper.getRandomIntegerInRange(world.rand, 2, 5);
-            else if( block.blockID == Block.oreNetherQuartz.blockID )
+            else if( block == Block.oreNetherQuartz )
                 j1 = MathHelper.getRandomIntegerInRange(world.rand, 2, 5);
-            else if( block.blockID == Block.oreRedstone.blockID || block.blockID == Block.oreRedstoneGlowing.blockID )
+            else if( block == Block.oreRedstone || block == Block.oreRedstoneGlowing )
             	j1 = 1 + world.rand.nextInt(5);
-            else if( block.blockID == Block.mobSpawner.blockID )
+            else if( block == Block.mobSpawner )
             	j1 = 15 + world.rand.nextInt(15) + world.rand.nextInt(15);
 
             dropXpOnBlockBreak(block, world, X, Y, Z, j1);
@@ -253,9 +246,6 @@ public class CommonUsedStuff {
 	}
 	
 	public static File getMCDir(String path) {
-//		if( FMLCommonHandler.instance().getSide() == Side.CLIENT ) {
-//			return new File(Minecraft.getMinecraftDir(), path);
-//		}
 		return new File(".", path);
 	}
 	
