@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.ReflectionHelper.UnableToFindMethodException;
@@ -19,9 +20,11 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -182,6 +185,29 @@ public class CommonUsedStuff
 		return false;
 	}
 	
+	public static boolean areItemInstEqual(Object instance1, Object instance2) {
+		if( instance1 instanceof Item ) {
+			if( instance2 instanceof Item ) {
+				return instance1 == instance2;
+			} else if( instance2 instanceof ItemStack ) {
+				return instance1 == ((ItemStack)instance2).getItem();
+			}
+		} else if( instance1 instanceof Block ) {
+			if( instance2 instanceof Block ) {
+				return instance1 == instance2;
+			} else if( instance2 instanceof ItemStack && ((ItemStack)instance2).getItem() instanceof ItemBlock ) {
+				return instance1 == Block.blocksList[((ItemBlock)((ItemStack)instance2).getItem()).getBlockID()];
+			}
+		} else if( instance1 instanceof ItemStack ) {
+			if( instance2 instanceof Block || instance2 instanceof Item ) {
+				return CommonUsedStuff.areItemInstEqual(instance2, instance1);
+			} else if( instance2 instanceof ItemStack ) {
+				return CommonUsedStuff.areStacksEqualWithWCV((ItemStack)instance1, (ItemStack)instance2);
+			}
+		}
+		return false;
+	}
+	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static <T> T[] getArrayFromList(List<T> list, Class clazz) {
 		if( list.size() == 0 )
@@ -258,4 +284,30 @@ public class CommonUsedStuff
 	public static GuiButton getSelectedBtn(GuiScreen inst) {
 		return ObfuscationReflectionHelper.getPrivateValue(GuiScreen.class, inst, "selectedButton", "field_73883_a");
 	}
+	
+	public static String getTranslatedEn(String key) {
+		return LanguageRegistry.instance().getStringLocalization(key, "en_US");
+	}
+	
+	public static String getTranslated(String key) {
+		return StatCollector.translateToLocal(key);
+	}
+	
+//	public static String getTranslated(String key, String lang) {
+//		return LanguageRegistry.instance().getStringLocalization(key, lang);
+//	}
+	
+	public static String getTranslated(String key, Object... data) {
+		return StatCollector.translateToLocal(String.format(key, data));
+	}
+	
+//	public static String getTranslatedFormat(String key, String lang, Object... data) {
+//		String str = LanguageRegistry.instance().getStringLocalization(key, lang);
+//
+//		try {
+//            return String.format(str, data);
+//        } catch( IllegalFormatException illegalformatexception ) {
+//            return "Format error: " + str;
+//        }
+//	}
 }
