@@ -2,10 +2,12 @@ package sanandreasp.core.manpack.helpers;
 
 import java.io.File;
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -23,6 +25,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -295,5 +298,16 @@ public class CommonUsedStuff
 	
 	public static String getTranslated(String key, Object... data) {
 		return String.format(StatCollector.translateToLocal(key), data);
+	}
+	
+	public static DamageSource getNewDmgSrc(String type) {
+		try {
+			Constructor<DamageSource> dmgsrcConst = DamageSource.class.getDeclaredConstructor(String.class);
+			dmgsrcConst.setAccessible(true);
+			return dmgsrcConst.newInstance(type);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
