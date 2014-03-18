@@ -293,21 +293,7 @@ public class CommonUsedStuff
 		return StatCollector.translateToLocal(key);
 	}
 	
-//	public static String getTranslated(String key, String lang) {
-//		return LanguageRegistry.instance().getStringLocalization(key, lang);
-//	}
-	
 	public static String getTranslated(String key, Object... data) {
-		return StatCollector.translateToLocal(String.format(key, data));
+		return String.format(StatCollector.translateToLocal(key), data);
 	}
-	
-//	public static String getTranslatedFormat(String key, String lang, Object... data) {
-//		String str = LanguageRegistry.instance().getStringLocalization(key, lang);
-//
-//		try {
-//            return String.format(str, data);
-//        } catch( IllegalFormatException illegalformatexception ) {
-//            return "Format error: " + str;
-//        }
-//	}
 }
