@@ -25,7 +25,7 @@ public class TransformELBAttackingPlayer implements IClassTransformer, Opcodes
 		
 		/** ADD GETTER FOR ATTACKING PLAYER **/
 		{
-			MethodNode method = new MethodNode(ACC_PUBLIC, "_SanAndreasP_getAttackingPlayer", "()Lnet/minecraft/entity/player/EntityPlayer;", null, null);
+			MethodNode method = new MethodNode(ACC_PUBLIC, "_SAP_getAttackingPlayer", "()Lnet/minecraft/entity/player/EntityPlayer;", null, null);
 			method.visitCode();
 			Label l0 = new Label();
 			method.visitLabel(l0);
@@ -42,7 +42,7 @@ public class TransformELBAttackingPlayer implements IClassTransformer, Opcodes
 		
 		/** ADD SETTER FOR ATTACKING PLAYER **/
 		{
-			MethodNode method = new MethodNode(ACC_PUBLIC, "_SanAndreasP_setAttackingPlayer", "(Lnet/minecraft/entity/player/EntityPlayer;)V", null, null);
+			MethodNode method = new MethodNode(ACC_PUBLIC, "_SAP_setAttackingPlayer", "(Lnet/minecraft/entity/player/EntityPlayer;)V", null, null);
 			method.visitCode();
 			Label l0 = new Label();
 			method.visitLabel(l0);
@@ -63,7 +63,7 @@ public class TransformELBAttackingPlayer implements IClassTransformer, Opcodes
 		
 		/** ADD GETTER FOR RECENTLY HIT **/
 		{
-			MethodNode method = new MethodNode(ACC_PUBLIC, "_SanAndreasP_getRecentlyHit", "()I", null, null);
+			MethodNode method = new MethodNode(ACC_PUBLIC, "_SAP_getRecentlyHit", "()I", null, null);
 			method.visitCode();
 			Label l0 = new Label();
 			method.visitLabel(l0);
@@ -80,7 +80,7 @@ public class TransformELBAttackingPlayer implements IClassTransformer, Opcodes
 		
 		/** ADD SETTER FOR RECENTLY HIT **/
 		{
-			MethodNode method = new MethodNode(ACC_PUBLIC, "_SanAndreasP_setRecentlyHit", "(I)V", null, null);
+			MethodNode method = new MethodNode(ACC_PUBLIC, "_SAP_setRecentlyHit", "(I)V", null, null);
 			method.visitCode();
 			Label l0 = new Label();
 			method.visitLabel(l0);
@@ -115,7 +115,7 @@ public class TransformELBAttackingPlayer implements IClassTransformer, Opcodes
 				Label l0 = new Label();
 				method.visitLabel(l0);
 				method.visitVarInsn(ALOAD, 0);
-				method.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/entity/EntityLivingBase", "_SanAndreasP_getAttackingPlayer", "()Lnet/minecraft/entity/player/EntityPlayer;");
+				method.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/entity/EntityLivingBase", "_SAP_getAttackingPlayer", "()Lnet/minecraft/entity/player/EntityPlayer;");
 				method.visitInsn(ARETURN);
 				Label l1 = new Label();
 				method.visitLabel(l1);
@@ -131,7 +131,7 @@ public class TransformELBAttackingPlayer implements IClassTransformer, Opcodes
 				method.visitLabel(l0);
 				method.visitVarInsn(ALOAD, 1);
 				method.visitVarInsn(ALOAD, 0);
-				method.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/entity/EntityLivingBase", "_SanAndreasP_setAttackingPlayer", "(Lnet/minecraft/entity/player/EntityPlayer;)V");
+				method.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/entity/EntityLivingBase", "_SAP_setAttackingPlayer", "(Lnet/minecraft/entity/player/EntityPlayer;)V");
 				Label l1 = new Label();
 				method.visitLabel(l1);
 				method.visitInsn(RETURN);
@@ -149,7 +149,7 @@ public class TransformELBAttackingPlayer implements IClassTransformer, Opcodes
 				Label l0 = new Label();
 				method.visitLabel(l0);
 				method.visitVarInsn(ALOAD, 0);
-				method.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/entity/EntityLivingBase", "_SanAndreasP_getRecentlyHit", "()I");
+				method.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/entity/EntityLivingBase", "_SAP_getRecentlyHit", "()I");
 				method.visitInsn(IRETURN);
 				Label l1 = new Label();
 				method.visitLabel(l1);
@@ -165,7 +165,7 @@ public class TransformELBAttackingPlayer implements IClassTransformer, Opcodes
 				method.visitLabel(l0);
 				method.visitVarInsn(ALOAD, 1);
 				method.visitVarInsn(ILOAD, 0);
-				method.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/entity/EntityLivingBase", "_SanAndreasP_setRecentlyHit", "(I)V");
+				method.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/entity/EntityLivingBase", "_SAP_setRecentlyHit", "(I)V");
 				Label l1 = new Label();
 				method.visitLabel(l1);
 				method.visitInsn(RETURN);

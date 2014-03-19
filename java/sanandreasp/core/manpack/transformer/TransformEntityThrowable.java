@@ -31,7 +31,7 @@ public class TransformEntityThrowable implements IClassTransformer, Opcodes
         ClassNode clazz = ASMHelper.createClassNode(bytes);
         
         {
-	        MethodNode method = new MethodNode(ACC_PUBLIC, "canImpactOnLiquid", "()Z", null, null);
+	        MethodNode method = new MethodNode(ACC_PUBLIC, "_SAP_canImpactOnLiquid", "()Z", null, null);
 	        
 	        method.visitCode();
 	        Label label1 = new Label();
@@ -69,7 +69,7 @@ public class TransformEntityThrowable implements IClassTransformer, Opcodes
 
 	        InsnList injectList = new InsnList();
 	        injectList.add(new VarInsnNode(ALOAD, 0));
-	        injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/projectile/EntityThrowable", "canImpactOnLiquid", "()Z"));
+	        injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/projectile/EntityThrowable", "_SAP_canImpactOnLiquid", "()Z"));
 	        injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/world/World", ASMHelper.getRemappedMF("clip", "func_72901_a"), "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;Z)Lnet/minecraft/util/MovingObjectPosition;"));
 
 	        method.instructions.insert(insertPoint, injectList);

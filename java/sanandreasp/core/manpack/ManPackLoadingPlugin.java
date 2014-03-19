@@ -2,11 +2,13 @@ package sanandreasp.core.manpack;
 
 import java.io.File;
 import java.util.Map;
+
 import sanandreasp.core.manpack.mod.ModContainerManPack;
 import sanandreasp.core.manpack.transformer.ASMHelper;
 import sanandreasp.core.manpack.transformer.TransformBadPotionsATN;
 import sanandreasp.core.manpack.transformer.TransformELBAttackingPlayer;
 import sanandreasp.core.manpack.transformer.TransformEntityThrowable;
+import sanandreasp.core.manpack.transformer.TransformPlayerDismountCtrl;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 
@@ -18,7 +20,8 @@ public class ManPackLoadingPlugin implements IFMLLoadingPlugin
 		return new String[] {
 			TransformBadPotionsATN.class.getName(),
 			TransformEntityThrowable.class.getName(),
-			TransformELBAttackingPlayer.class.getName()
+			TransformELBAttackingPlayer.class.getName(),
+			TransformPlayerDismountCtrl.class.getName()
 		};
 	}
 

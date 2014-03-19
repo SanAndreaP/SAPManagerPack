@@ -1,16 +1,14 @@
 package sanandreasp.core.manpack.transformer;
 
 import net.minecraft.launchwrapper.IClassTransformer;
-import org.objectweb.asm.AnnotationVisitor;
+
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.FrameNode;
 import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -24,6 +22,7 @@ public class TransformPlayerDismountCtrl implements IClassTransformer, Opcodes
 		if( transformedName.equals("net.minecraft.entity.player.EntityPlayer") ) {
 			return transformPlayer(bytes);
 		}
+		
 		if( transformedName.equals("net.minecraft.entity.Entity") ) {
 			return transformEntity(bytes);
 		}
@@ -32,39 +31,24 @@ public class TransformPlayerDismountCtrl implements IClassTransformer, Opcodes
 	}
 	
 	private byte[] transformEntity(byte[] bytes) {
-//		ClassNode clazz = ASMHelper.createClassNode(bytes);
-//		MethodNode method = new MethodNode(ACC_PUBLIC, "getFOVItemMultiplier", "(Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/player/EntityPlayer;F)F", null, null);
-//		
-//		{
-//			AnnotationVisitor annotVisitor = method.visitAnnotation("Lcpw/mods/fml/relauncher/SideOnly;", true);
-//			annotVisitor.visitEnum("value", "Lcpw/mods/fml/relauncher/Side;", "CLIENT");
-//			annotVisitor.visitEnd();
-//		}
-//		method.visitCode();
-//		
-//		Label l0 = new Label();
-//		method.visitLabel(l0);
-//		
-//		/** ORIGINAL CODE! **/
-//		  method.visitVarInsn(FLOAD, 3);
-//		/** DEBUGGING CODE! **/
-////		  mn.visitInsn(FCONST_0);
-//		/** END **/
-//		
-//		method.visitInsn(FRETURN);
-//		Label l1 = new Label();
-//		method.visitLabel(l1);
-//		method.visitLocalVariable("this", "Lnet/minecraft/item/Item;", null, l0, l1, 0);
-//		method.visitLocalVariable("stack", "Lnet/minecraft/item/ItemStack;", null, l0, l1, 1);
-//		method.visitLocalVariable("player", "Lnet/minecraft/entity/player/EntityPlayer;", null, l0, l1, 2);
-//		method.visitLocalVariable("fov", "F", null, l0, l1, 3);
-//		
-//		method.visitMaxs(0, 0);
-//		method.visitEnd();
-//		
-//		clazz.visitEnd();
-//		clazz.methods.add(method);
-//	    bytes = ASMHelper.createBytes(clazz, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+		ClassNode clazz = ASMHelper.createClassNode(bytes);
+		
+		MethodNode method = new MethodNode(ACC_PUBLIC, "_SAP_canDismountWithLSHIFT", "(Lnet/minecraft/entity/player/EntityPlayer;)Z", null, null);
+		method.visitCode();
+		Label l0 = new Label();
+		method.visitLabel(l0);
+		method.visitInsn(ICONST_1);
+		method.visitInsn(IRETURN);
+		Label l1 = new Label();
+		method.visitLabel(l1);
+		method.visitLocalVariable("this", "Lsanandreasp/mods/EnderStuffPlus/entity/EntityAvisArrow;", null, l0, l1, 0);
+		method.visitLocalVariable("player", "Lnet/minecraft/entity/player/EntityPlayer;", null, l0, l1, 1);
+		method.visitMaxs(1, 2);
+		method.visitEnd();
+		
+		clazz.methods.add(method);
+		
+	    bytes = ASMHelper.createBytes(clazz, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
 		return bytes;
 	}
 	
@@ -72,55 +56,28 @@ public class TransformPlayerDismountCtrl implements IClassTransformer, Opcodes
 		ClassNode clazz = ASMHelper.createClassNode(bytes);
 		MethodNode method = ASMHelper.findMethod(ASMHelper.getNotchedMethod("updateRidden", "net/minecraft/entity/player/EntityPlayer/func_70098_U"), "()V", clazz);
 		
-//		Label l0 = new Label();
-//		mv.visitLabel(l0);
-//		mv.visitLineNumber(543, l0);
-//		mv.visitVarInsn(ALOAD, 0);
-//		mv.visitFieldInsn(GETFIELD, "net/minecraft/entity/player/EntityPlayer", "worldObj", "Lnet/minecraft/world/World;");
-//		mv.visitFieldInsn(GETFIELD, "net/minecraft/world/World", "isRemote", "Z");
-//		Label l1 = new Label();
-//		mv.visitJumpInsn(IFNE, l1);
-//		mv.visitVarInsn(ALOAD, 0);
-//		mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/entity/player/EntityPlayer", "isSneaking", "()Z");
-//		mv.visitJumpInsn(IFEQ, l1);
-		
 		InsnList needle = new InsnList();
 		needle.add(new VarInsnNode(ALOAD, 0));
-//		needle.add(new FieldInsnNode(GETFIELD, ASMHelper.getNotchedClassName("net/minecraft/entity/player/EntityPlayer"), );
-		
+		needle.add(new FieldInsnNode(GETFIELD, ASMHelper.getNotchedClassName("net/minecraft/entity/player/EntityPlayer"), ASMHelper.getNotchedField("worldObj", "net/minecraft/entity/Entity/field_70170_p"), "Lnet/minecraft/world/World;"));
+		needle.add(new FieldInsnNode(GETFIELD, ASMHelper.getNotchedClassName("net/minecraft/world/World"), ASMHelper.getNotchedField("isRemote", "net/minecraft/world/World/field_72995_K"), "Z"));
 		LabelNode ln1 = new LabelNode();
+		needle.add(new JumpInsnNode(IFNE, ln1));
+		needle.add(new VarInsnNode(ALOAD, 0));
+		needle.add(new MethodInsnNode(INVOKEVIRTUAL, ASMHelper.getNotchedClassName("net/minecraft/entity/player/EntityPlayer"), ASMHelper.getNotchedMethod("isSneaking", "net/minecraft/entity/Entity/func_70093_af"), "()Z"));
+		needle.add(new JumpInsnNode(IFEQ, ln1));
 		
-		AbstractInsnNode insertPoint = ASMHelper.findFirstNodeFromNeedle(method.instructions, needle);
+		AbstractInsnNode insertPoint = ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
 		
 		InsnList injectList = new InsnList();
-		injectList.add(new FrameNode(F_CHOP, 2, null, 0, null));
 		injectList.add(new VarInsnNode(ALOAD, 0));
-		injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/client/entity/EntityPlayerSP", ASMHelper.getRemappedMF("isUsingItem", "func_71039_bw"), "()Z"));
-		LabelNode l13 = new LabelNode();
-		injectList.add(new JumpInsnNode(IFEQ, l13));
-		injectList.add(new FieldInsnNode(GETSTATIC, "net/minecraft/item/Item", ASMHelper.getRemappedMF("itemsList", "field_77698_e"), "[Lnet/minecraft/item/Item;"));
+		injectList.add(new FieldInsnNode(GETFIELD, "net/minecraft/entity/player/EntityPlayer", "ridingEntity", "Lnet/minecraft/entity/Entity;"));
 		injectList.add(new VarInsnNode(ALOAD, 0));
-		injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/client/entity/EntityPlayerSP", ASMHelper.getRemappedMF("getItemInUse", "func_71011_bu"), "()Lnet/minecraft/item/ItemStack;"));
-		injectList.add(new FieldInsnNode(GETFIELD, "net/minecraft/item/ItemStack", ASMHelper.getRemappedMF("itemID", "field_77993_c"), "I"));
-		injectList.add(new InsnNode(AALOAD));
-		injectList.add(new JumpInsnNode(IFNULL, l13));
-		injectList.add(new LabelNode());
-		injectList.add(new FieldInsnNode(GETSTATIC, "net/minecraft/item/Item", ASMHelper.getRemappedMF("itemsList", "field_77698_e"), "[Lnet/minecraft/item/Item;"));
-		injectList.add(new VarInsnNode(ALOAD, 0));
-		injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/client/entity/EntityPlayerSP", ASMHelper.getRemappedMF("getItemInUse", "func_71011_bu"), "()Lnet/minecraft/item/ItemStack;"));
-		injectList.add(new FieldInsnNode(GETFIELD, "net/minecraft/item/ItemStack", ASMHelper.getRemappedMF("itemID", "field_77993_c"), "I"));
-		injectList.add(new InsnNode(AALOAD));
-		injectList.add(new VarInsnNode(ALOAD, 0));
-		injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/client/entity/EntityPlayerSP", ASMHelper.getRemappedMF("getItemInUse", "func_71011_bu"), "()Lnet/minecraft/item/ItemStack;"));
-		injectList.add(new VarInsnNode(ALOAD, 0));
-		injectList.add(new VarInsnNode(FLOAD, 1));
-		injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/Item", "getFOVItemMultiplier", "(Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/player/EntityPlayer;F)F"));
-		injectList.add(new InsnNode(FRETURN));
-		injectList.add(l13);
+		injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/Entity", "_SAP_canDismountWithLSHIFT", "(Lnet/minecraft/entity/player/EntityPlayer;)Z"));
+		injectList.add(new JumpInsnNode(IFEQ, ((JumpInsnNode)insertPoint).label));
 	    
-	    method.instructions.insertBefore(insertPoint, injectList);
+	    method.instructions.insert(insertPoint, injectList);
 	    
-	    bytes = ASMHelper.createBytes(clazz, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+	    bytes = ASMHelper.createBytes(clazz, ClassWriter.COMPUTE_MAXS);
 		return bytes;
 	}
 
