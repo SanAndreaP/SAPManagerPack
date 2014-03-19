@@ -41,7 +41,7 @@ public class TransformPlayerDismountCtrl implements IClassTransformer, Opcodes
 		method.visitInsn(IRETURN);
 		Label l1 = new Label();
 		method.visitLabel(l1);
-		method.visitLocalVariable("this", "Lsanandreasp/mods/EnderStuffPlus/entity/EntityAvisArrow;", null, l0, l1, 0);
+		method.visitLocalVariable("this", "Lnet/minecraft/entity/Entity;", null, l0, l1, 0);
 		method.visitLocalVariable("player", "Lnet/minecraft/entity/player/EntityPlayer;", null, l0, l1, 1);
 		method.visitMaxs(1, 2);
 		method.visitEnd();
