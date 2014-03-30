@@ -1,18 +1,23 @@
 package sanandreasp.core.manpack.transformer;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import net.minecraft.launchwrapper.LaunchClassLoader;
+
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
+
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
@@ -20,6 +25,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.io.CharStreams;
 import com.google.common.io.InputSupplier;
+
 import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import cpw.mods.fml.common.asm.transformers.deobf.LZMAInputSupplier;
 
@@ -50,6 +56,30 @@ public class ASMHelper
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void writeClassToFile(byte[] classBytes, String file) {
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            out.write(classBytes);
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+	}
+	
+	public static void removeNeedleFromHaystack(InsnList haystack, InsnList needle) {
+	    int firstInd = haystack.indexOf(findFirstNodeFromNeedle(haystack, needle));
+	    int lastInd = haystack.indexOf(findLastNodeFromNeedle(haystack, needle));
+	    List<AbstractInsnNode> realNeedle = new ArrayList<AbstractInsnNode>();
+	    
+	    for( int i = firstInd; i <= lastInd; i++ ) {
+	        realNeedle.add(haystack.get(i));
+	    }
+	    
+	    for( AbstractInsnNode node : realNeedle ) {
+	        haystack.remove(node);
+	    }
 	}
 
     private static void parseMethod(String[] parts) {

@@ -1,28 +1,29 @@
 package sanandreasp.core.manpack.transformer;
 
-import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
+import net.minecraft.launchwrapper.IClassTransformer;
+
 public class TransformELBAttackingPlayer implements IClassTransformer, Opcodes
 {
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes) {
 		if( transformedName.equals("net.minecraft.entity.EntityLivingBase") ) {
-			return transformAttackingPlayer(bytes);
+			return this.transformAttackingPlayer(bytes);
 		}
 		if( transformedName.equals("sanandreasp.core.manpack.helpers.TransformAccessors") ) {
-			return transformAccessors(bytes);
+			return this.transformAccessors(bytes);
 		}
 		return bytes;
 	}
-	
+
 	private byte[] transformAttackingPlayer(byte[] bytes) {
 		ClassNode clazz = ASMHelper.createClassNode(bytes);
-		
+
 		/** ADD GETTER FOR ATTACKING PLAYER **/
 		{
 			MethodNode method = new MethodNode(ACC_PUBLIC, "_SAP_getAttackingPlayer", "()Lnet/minecraft/entity/player/EntityPlayer;", null, null);
@@ -39,7 +40,7 @@ public class TransformELBAttackingPlayer implements IClassTransformer, Opcodes
 			method.visitEnd();
 			clazz.methods.add(method);
 		}
-		
+
 		/** ADD SETTER FOR ATTACKING PLAYER **/
 		{
 			MethodNode method = new MethodNode(ACC_PUBLIC, "_SAP_setAttackingPlayer", "(Lnet/minecraft/entity/player/EntityPlayer;)V", null, null);
@@ -60,7 +61,7 @@ public class TransformELBAttackingPlayer implements IClassTransformer, Opcodes
 			method.visitEnd();
 			clazz.methods.add(method);
 		}
-		
+
 		/** ADD GETTER FOR RECENTLY HIT **/
 		{
 			MethodNode method = new MethodNode(ACC_PUBLIC, "_SAP_getRecentlyHit", "()I", null, null);
@@ -77,7 +78,7 @@ public class TransformELBAttackingPlayer implements IClassTransformer, Opcodes
 			method.visitEnd();
 			clazz.methods.add(method);
 		}
-		
+
 		/** ADD SETTER FOR RECENTLY HIT **/
 		{
 			MethodNode method = new MethodNode(ACC_PUBLIC, "_SAP_setRecentlyHit", "(I)V", null, null);
@@ -98,15 +99,15 @@ public class TransformELBAttackingPlayer implements IClassTransformer, Opcodes
 			method.visitEnd();
 			clazz.methods.add(method);
 		}
-		
+
 	    bytes = ASMHelper.createBytes(clazz, ClassWriter.COMPUTE_MAXS);
-		
+
 		return bytes;
 	}
-	
+
 	private byte[] transformAccessors(byte[] bytes) {
 		ClassNode clazz = ASMHelper.createClassNode(bytes);
-		
+
 		int complete = 0;
 		for( MethodNode method : clazz.methods ) {
 			if( method.name.equals("getELAttackingPlayer") ) {
@@ -182,9 +183,9 @@ public class TransformELBAttackingPlayer implements IClassTransformer, Opcodes
 				break;
 			}
 		}
-		
+
 	    bytes = ASMHelper.createBytes(clazz, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-	    
+
 		return bytes;
 	}
 }

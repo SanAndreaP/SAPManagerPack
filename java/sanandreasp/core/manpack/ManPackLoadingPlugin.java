@@ -8,7 +8,9 @@ import sanandreasp.core.manpack.transformer.ASMHelper;
 import sanandreasp.core.manpack.transformer.TransformBadPotionsATN;
 import sanandreasp.core.manpack.transformer.TransformELBAttackingPlayer;
 import sanandreasp.core.manpack.transformer.TransformEntityThrowable;
+import sanandreasp.core.manpack.transformer.TransformHorseArmor;
 import sanandreasp.core.manpack.transformer.TransformPlayerDismountCtrl;
+
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 
@@ -21,7 +23,8 @@ public class ManPackLoadingPlugin implements IFMLLoadingPlugin
 			TransformBadPotionsATN.class.getName(),
 			TransformEntityThrowable.class.getName(),
 			TransformELBAttackingPlayer.class.getName(),
-			TransformPlayerDismountCtrl.class.getName()
+			TransformPlayerDismountCtrl.class.getName(),
+			TransformHorseArmor.class.getName()
 		};
 	}
 
@@ -40,7 +43,7 @@ public class ManPackLoadingPlugin implements IFMLLoadingPlugin
 		ASMHelper.isMCP = !((Boolean)data.get("runtimeDeobfuscationEnabled")).booleanValue();
 		ModContainerManPack.modLocation = (File)data.get("coremodLocation");
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	public static boolean isServer() {
 		try {
