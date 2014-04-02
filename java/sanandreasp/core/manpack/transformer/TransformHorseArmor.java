@@ -38,6 +38,7 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
     private String RM_getWatchableObjectItemStack;
     private String RM_isItemEqual;
     private String RM_playSound;
+    private String RM_getUnlocalizedName;
     private String NTM_interact;
     private String NTM_func110211v;
     private String NTM_entityInit;
@@ -92,6 +93,7 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
         RM_getWatchableObjectItemStack = ASMHelper.getRemappedMF("getWatchableObjectItemStack", "func_82710_f");
         RM_isItemEqual = ASMHelper.getRemappedMF("isItemEqual", "func_77969_a");
         RM_playSound = ASMHelper.getRemappedMF("playSound", "func_85030_a");
+        RM_getUnlocalizedName = ASMHelper.getRemappedMF("getUnlocalizedName", "func_77977_a");
         
         NTM_interact = ASMHelper.getNotchedMethod("interact", "net/minecraft/entity/passive/EntityHorse/func_70085_c");
         NTM_func110211v = ASMHelper.getNotchedMethod("func_110211_v", "net/minecraft/entity/passive/EntityHorse/func_110211_v");
@@ -145,8 +147,6 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
         }
 
 	    bytes = ASMHelper.createBytes(clazz, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-        
-//        ASMHelper.writeClassToFile(bytes, "C:\\Users\\SanAndreas\\ClassFiles\\EntityHorse.class");
         
 		return bytes;
 	}
@@ -354,10 +354,10 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
 	    newInstr.add(new LdcInsnNode("cst-"));
 	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;"));
 	    newInstr.add(new VarInsnNode(ALOAD, 4));
-	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", "getUnlocalizedName", "()Ljava/lang/String;"));
+	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", RM_getUnlocalizedName, "()Ljava/lang/String;"));
 	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;"));
 	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;"));
-	    newInstr.add(new FieldInsnNode(PUTFIELD, "net/minecraft/entity/passive/EntityHorse", "field_110286_bQ", "Ljava/lang/String;"));
+	    newInstr.add(new FieldInsnNode(PUTFIELD, "net/minecraft/entity/passive/EntityHorse", RF_field110286bQ, "Ljava/lang/String;"));
 	    LabelNode l22 = new LabelNode();
 	    newInstr.add(l22);
 	    LabelNode l23 = new LabelNode();
