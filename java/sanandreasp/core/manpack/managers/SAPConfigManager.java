@@ -20,7 +20,7 @@ import com.google.common.collect.Table;
 import cpw.mods.fml.common.FMLLog;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import sanandreasp.core.manpack.helpers.CommonUsedStuff;
+import sanandreasp.core.manpack.helpers.SAPUtils;
 
 /**
  * A Configuration manager for Minecraft modifications. It comes with an auto-assign feature for block and item IDs. Version 2.0
@@ -79,7 +79,7 @@ public class SAPConfigManager
 		addGroup("Enchantment IDs");
 		
 		modName = par1ModName;
-		configFile = CommonUsedStuff.getMCDir("/config"+par2Path);
+		configFile = SAPUtils.getMCDir("/config"+par2Path);
 		configFile.mkdirs();
 		
 		configFile = new File(configFile, par3FileName);

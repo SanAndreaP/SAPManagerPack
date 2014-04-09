@@ -7,20 +7,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
-import cpw.mods.fml.relauncher.ReflectionHelper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.ReflectionHelper.UnableToFindMethodException;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -29,7 +24,16 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
 import net.minecraftforge.oredict.OreDictionary;
+
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
+import cpw.mods.fml.relauncher.ReflectionHelper;
+import cpw.mods.fml.relauncher.ReflectionHelper.UnableToFindMethodException;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * A helper class for common used stuff, which is not found somewhere else and not as easy and short to write.
@@ -37,8 +41,10 @@ import net.minecraftforge.oredict.OreDictionary;
  * @author SanAndreasP
  *
  */
-public class CommonUsedStuff
+public class SAPUtils
 {
+    public static final Random RANDOM = new Random();
+
 	/**
 	 * decreases the ItemStack stackSize by 1
 	 * @param is ItemStack, whose stackSize will be decreased
@@ -61,7 +67,7 @@ public class CommonUsedStuff
 		}
 		return is;
 	}
-	
+
 	/**
 	 * Compares two ItemStacks if they are equal. If one of the ItemStacks has the block wildcard as damage value,
 	 * only the item instances will be compared.
@@ -70,13 +76,15 @@ public class CommonUsedStuff
 	 * @return true, if stacks are equal, false otherwise.
 	 */
 	public static boolean areStacksEqualWithWCV(ItemStack is1, ItemStack is2) {
-		if( is1.isItemEqual(is2) )
-			return true;
-		if( is1.getItemDamage() == OreDictionary.WILDCARD_VALUE || is2.getItemDamage() == OreDictionary.WILDCARD_VALUE )
-			return is1.getItem() == is2.getItem();
+		if( is1.isItemEqual(is2) ) {
+            return true;
+        }
+		if( is1.getItemDamage() == OreDictionary.WILDCARD_VALUE || is2.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
+            return is1.getItem() == is2.getItem();
+        }
 		return false;
 	}
-	
+
 	/**
 	 * Splits the ItemStack into multiple ("good") ones if stackSize > getMaxStackSize().
 	 * @param is The ItemStack which shall be splitted into "good" ItemStacks
@@ -100,13 +108,13 @@ public class CommonUsedStuff
 		}
 		return isMap.toArray(new ItemStack[isMap.size()]);
 	}
-	
+
 	public static int getInBetweenVal(int var1, int var2) {
 		int maxVal = Math.max(var1, var2);
 		int minVal = Math.min(var1, var2);
-		return maxVal - Math.round((float)(maxVal-minVal) / 2F);
+		return maxVal - Math.round((maxVal-minVal) / 2F);
 	}
-	
+
 	public static ItemStack getSilkBlock(Block block, int meta) {
 		try {
 			Method method = ReflectionHelper.findMethod(Block.class, block, new String[] {"createStackedBlock", "func_71880_c_"}, int.class);
@@ -122,13 +130,13 @@ public class CommonUsedStuff
 		}
 		return null;
 	}
-	
+
 	public static ItemStack dropBlockAsItem(Block block, World world, int x, int y, int z, ItemStack stack) {
 		EntityItem item = new EntityItem(world, x+0.5D, y+0.5D, z+0.5D, stack);
 		world.spawnEntityInWorld(item);
 		return null;
 	}
-	
+
 	public static void dropXpOnBlockBreak(Block block, World world, int x, int y, int z, int xp) {
 		try {
 			Method method = ReflectionHelper.findMethod(Block.class, block, new String[] {"dropXpOnBlockBreak", "func_71923_g"}, World.class, int.class, int.class, int.class, int.class);
@@ -149,45 +157,48 @@ public class CommonUsedStuff
         if( block.idDropped(meta, world.rand, fortune) != block.blockID ) {
             int j1 = 0;
 
-            if( block == Block.oreCoal )
+            if( block == Block.oreCoal ) {
                 j1 = MathHelper.getRandomIntegerInRange(world.rand, 0, 2);
-            else if( block == Block.oreDiamond )
+            } else if( block == Block.oreDiamond ) {
                 j1 = MathHelper.getRandomIntegerInRange(world.rand, 3, 7);
-            else if( block == Block.oreEmerald )
+            } else if( block == Block.oreEmerald ) {
                 j1 = MathHelper.getRandomIntegerInRange(world.rand, 3, 7);
-            else if( block == Block.oreLapis )
+            } else if( block == Block.oreLapis ) {
                 j1 = MathHelper.getRandomIntegerInRange(world.rand, 2, 5);
-            else if( block == Block.oreNetherQuartz )
+            } else if( block == Block.oreNetherQuartz ) {
                 j1 = MathHelper.getRandomIntegerInRange(world.rand, 2, 5);
-            else if( block == Block.oreRedstone || block == Block.oreRedstoneGlowing )
-            	j1 = 1 + world.rand.nextInt(5);
-            else if( block == Block.mobSpawner )
-            	j1 = 15 + world.rand.nextInt(15) + world.rand.nextInt(15);
+            } else if( block == Block.oreRedstone || block == Block.oreRedstoneGlowing ) {
+                j1 = 1 + world.rand.nextInt(5);
+            } else if( block == Block.mobSpawner ) {
+                j1 = 15 + world.rand.nextInt(15) + world.rand.nextInt(15);
+            }
 
             dropXpOnBlockBreak(block, world, X, Y, Z, j1);
         }
 	}
-	
+
 	public static boolean isItemInStackArray(ItemStack base, ItemStack... stackArray) {
 		for( ItemStack stack : stackArray ) {
-			if( base != null && stack != null && areStacksEqualWithWCV(base, stack) )
-				return true;
+			if( base != null && stack != null && areStacksEqualWithWCV(base, stack) ) {
+                return true;
+            }
 		}
 		return false;
 	}
-	
+
 	public static Block[] getToolBlocks(ItemTool tool) {
 		return ObfuscationReflectionHelper.getPrivateValue(ItemTool.class, tool, "blocksEffectiveAgainst", "field_77863_c");
 	}
-	
+
 	public static boolean isToolEffective(Block[] effectives, Block block) {
 		for( Block currBlock : effectives ) {
-			if( block == currBlock )
-				return true;
+			if( block == currBlock ) {
+                return true;
+            }
 		}
 		return false;
 	}
-	
+
 	public static boolean areItemInstEqual(Object instance1, Object instance2) {
 		if( instance1 instanceof Item ) {
 			if( instance2 instanceof Item ) {
@@ -203,21 +214,22 @@ public class CommonUsedStuff
 			}
 		} else if( instance1 instanceof ItemStack ) {
 			if( instance2 instanceof Block || instance2 instanceof Item ) {
-				return CommonUsedStuff.areItemInstEqual(instance2, instance1);
+				return SAPUtils.areItemInstEqual(instance2, instance1);
 			} else if( instance2 instanceof ItemStack ) {
-				return CommonUsedStuff.areStacksEqualWithWCV((ItemStack)instance1, (ItemStack)instance2);
+				return SAPUtils.areStacksEqualWithWCV((ItemStack)instance1, (ItemStack)instance2);
 			}
 		}
 		return false;
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static <T> T[] getArrayFromList(List<T> list, Class clazz) {
-		if( list.size() == 0 )
-			return null;
+		if( list.size() == 0 ) {
+            return null;
+        }
 		return list.toArray((T[])Array.newInstance(clazz, list.size()));
 	}
-	
+
 	public static void registerBlocks(String prefix, Block... blocks) {
 		int cnt = 0;
 		for( Block blk : blocks ) {
@@ -225,7 +237,7 @@ public class CommonUsedStuff
 			GameRegistry.registerBlock(blk, prefix + "_" + suffix.substring(suffix.length() - 4));
 		}
 	}
-	
+
 	public static void registerItems(String prefix, Item... items) {
 		int cnt = 0;
 		for( Item itm : items ) {
@@ -233,7 +245,7 @@ public class CommonUsedStuff
 			GameRegistry.registerItem(itm, prefix + "_" + suffix.substring(suffix.length() - 4));
 		}
 	}
-	
+
 	public static ItemStack addItemStackToInventory(ItemStack is, IInventory inv) {
 		int invSize = inv.getSizeInventory() - (inv instanceof InventoryPlayer ? 4 : 0);
 		for( int i1 = 0; i1 < invSize && is != null; i1++ ) {
@@ -254,7 +266,7 @@ public class CommonUsedStuff
 				}
 			}
 		}
-		
+
 		// if the given stack is not empty yet, search for an empty slot and put it there
 		for( int i2 = 0; i2 < invSize && is != null; i2++ ) {
 			ItemStack invIS = inv.getStackInSlot(i2);
@@ -273,33 +285,33 @@ public class CommonUsedStuff
 		}
 		return is;
 	}
-	
+
 	public static File getMCDir(String path) {
 		return new File(".", path);
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	public static void setSelectedBtn(GuiScreen inst, GuiButton btn) {
 		ObfuscationReflectionHelper.setPrivateValue(GuiScreen.class, inst, btn, "selectedButton", "field_73883_a");
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	public static GuiButton getSelectedBtn(GuiScreen inst) {
 		return ObfuscationReflectionHelper.getPrivateValue(GuiScreen.class, inst, "selectedButton", "field_73883_a");
 	}
-	
+
 	public static String getTranslatedEn(String key) {
 		return LanguageRegistry.instance().getStringLocalization(key, "en_US");
 	}
-	
+
 	public static String getTranslated(String key) {
 		return StatCollector.translateToLocal(key);
 	}
-	
+
 	public static String getTranslated(String key, Object... data) {
 		return String.format(StatCollector.translateToLocal(key), data);
 	}
-	
+
 	public static DamageSource getNewDmgSrc(String type) {
 		try {
 			Constructor<DamageSource> dmgsrcConst = DamageSource.class.getDeclaredConstructor(String.class);
@@ -309,5 +321,9 @@ public class CommonUsedStuff
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static int getMaxDmgFactorETM() {
+	    return (Integer) ObfuscationReflectionHelper.getPrivateValue(EnumArmorMaterial.class, EnumArmorMaterial.IRON, "maxDamageFactor", "field_78048_f");
 	}
 }
