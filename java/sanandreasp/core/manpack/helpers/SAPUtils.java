@@ -312,7 +312,7 @@ public class SAPUtils
 		return String.format(StatCollector.translateToLocal(key), data);
 	}
 
-	public static DamageSource getNewDmgSrc(String type) {
+	public static DamageSource getNewDamageSource(String type) {
 		try {
 			Constructor<DamageSource> dmgsrcConst = DamageSource.class.getDeclaredConstructor(String.class);
 			dmgsrcConst.setAccessible(true);
