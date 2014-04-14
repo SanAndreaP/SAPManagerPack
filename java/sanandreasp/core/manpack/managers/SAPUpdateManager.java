@@ -11,18 +11,20 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import net.minecraft.client.Minecraft;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
-import net.minecraft.client.Minecraft;
 
 public class SAPUpdateManager
 {
 	private boolean checkedForUpdate = false;
 	private int majNmbr, minNmbr, revNmbr;
 	private String updURL, mdName, mdURL;
-	
+
 	public static List<SAPUpdateManager> updMgrs = new ArrayList<SAPUpdateManager>();
-	
+
 	public SAPUpdateManager(String modName, int majorNr, int minorNr, int revisionNr, String updateURL, String modURL) {
 		this.mdName = modName;
 		this.majNmbr = majorNr;
@@ -32,21 +34,21 @@ public class SAPUpdateManager
 		this.mdURL = modURL;
 		SAPUpdateManager.updMgrs.add(this);
 	}
-	
+
 	public String getFormattedVersion() {
-		Formatter form = new Formatter();
-		String ver = form.format("%1$d.%2$02d_%3$02d", this.majNmbr, this.minNmbr, this.revNmbr).toString();
-		form.close();
-	    return ver;
+		try( Formatter form = new Formatter() ) {
+		    String ver = form.format("%1$d.%2$02d_%3$02d", this.majNmbr, this.minNmbr, this.revNmbr).toString();
+		    return ver;
+		}
 	}
-	
+
 	private void addMessage(String s, Level level) {
 		if( FMLCommonHandler.instance().getSide().isClient() ) {
 			Minecraft.getMinecraft().thePlayer.addChatMessage(s);
 		}
 		FMLLog.log("SAP-UpdateManager", level, s.replaceAll("\247.", ""));
 	}
-	
+
 	private void check() {
 		final String mName = this.mdName;
 		final String mUrl = this.mdURL;
@@ -61,37 +63,41 @@ public class SAPUpdateManager
 					try {
 						FMLLog.log("SAP-UpdateManager", Level.INFO, "Checking for %s Update", mName);
 					    URL url = new URL(udUrl);
-					    BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-					    String str = in.readLine();
-					    
-					    in.close();
-					    
-					    if( str == null || str.length() < 1 ) return;
-					    
+					    String str = null;
+
+					    try( BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream())) ) {
+					        str = in.readLine();
+					    }
+
+					    if( str == null || str.length() < 1 ) {
+                            return;
+                        }
+
 					    Pattern pattern = Pattern.compile("major:(\\d+);minor:(\\d+);revision:(\\d+)");
 					    Matcher matches = pattern.matcher(str);
-					    
+
 					    int[] webVer = new int[] {0, 0, 0};
-					    
+
 					    if( matches.find() ) {
 					    	webVer[0] = Integer.valueOf(matches.group(1));
 					    	webVer[1] = Integer.valueOf(matches.group(2));
 					    	webVer[2] = Integer.valueOf(matches.group(3));
 					    }
-					    
-						Formatter form = new Formatter();
-						String newVer = form.format("%1$d.%2$02d_%3$02d", webVer[0], webVer[1], webVer[2]).toString();
-						form.close();
-					    			    
+
+					    String newVer = "[UNKNOWN]";
+						try( Formatter form = new Formatter() ) {
+						    newVer = form.format("%1$d.%2$02d_%3$02d", webVer[0], webVer[1], webVer[2]).toString();
+						}
+
 					    if( webVer[0] > maj ) {
-					    	addMessage(String.format("\247cNew major update (%s) for \2476%s \247cis out:", newVer, mdName), Level.WARNING);
-					    	addMessage("\247c"+mUrl, Level.WARNING);
+					    	SAPUpdateManager.this.addMessage(String.format("\247cNew major update (%s) for \2476%s \247cis out:", newVer, SAPUpdateManager.this.mdName), Level.WARNING);
+					    	SAPUpdateManager.this.addMessage("\247c"+mUrl, Level.WARNING);
 					    } else if( webVer[0] == maj && webVer[1] > min ) {
-					    	addMessage(String.format("\247eNew feature update (%s) for \2476%s \247eis out:", newVer, mdName), Level.INFO);
-					    	addMessage("\247e"+mUrl, Level.INFO);
+					    	SAPUpdateManager.this.addMessage(String.format("\247eNew feature update (%s) for \2476%s \247eis out:", newVer, SAPUpdateManager.this.mdName), Level.INFO);
+					    	SAPUpdateManager.this.addMessage("\247e"+mUrl, Level.INFO);
 					    } else if( webVer[0] == maj && webVer[1] == min && webVer[2] > rev ) {
-					    	addMessage(String.format("\247bNew bugfix update (%s) for \2476%s \247bis out:", newVer, mdName), Level.INFO);
-					    	addMessage("\247b"+mUrl, Level.INFO);
+					    	SAPUpdateManager.this.addMessage(String.format("\247bNew bugfix update (%s) for \2476%s \247bis out:", newVer, SAPUpdateManager.this.mdName), Level.INFO);
+					    	SAPUpdateManager.this.addMessage("\247b"+mUrl, Level.INFO);
 					    } else {
 					    	FMLLog.log("SAP-UpdateManager", Level.INFO, "No new update for %s available. Everything is fine.", mName);
 					    }
@@ -104,7 +110,7 @@ public class SAPUpdateManager
 			}
 		).start();
 	}
-	
+
 	public void checkForUpdate() {
 		if( !this.checkedForUpdate ) {
 			this.check();

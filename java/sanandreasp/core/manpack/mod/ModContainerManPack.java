@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.logging.Level;
 
 import sanandreasp.core.manpack.managers.TickHandlerUpdMgr;
-import sanandreasp.core.manpack.mod.client.ClientPHandler;
+import sanandreasp.core.manpack.mod.client.packet.ClientPHandler;
 import sanandreasp.core.manpack.mod.packet.CommonPHandler;
 
 import com.google.common.eventbus.EventBus;
@@ -36,27 +36,25 @@ public class ModContainerManPack extends DummyModContainer
 	public static final String version = "1.6.4-2.0.0";
 	public static final String channel = "sapmanpack";
 	public static final String modid = "sapmanpack";
-	
+
 	public static File modLocation;
     private ModMetadata md;
-	
+
 	@SidedProxy(clientSide="sanandreasp.core.manpack.mod.client.ClientProxy", serverSide="sanandreasp.core.manpack.mod.CommonProxy")
 	public static CommonProxy proxy;
-	
+
 	public ModContainerManPack() {
         super(new ModMetadata());
         this.md = super.getMetadata();
         File mcmod = new File(ModContainerManPack.modLocation, "mcmod.info");
         MetadataCollection mc = null;
-        try {
-            FileInputStream fis = new FileInputStream(mcmod);
+        try( FileInputStream fis = new FileInputStream(mcmod) ) {
             mc = MetadataCollection.from(fis, ModContainerManPack.modLocation.getName());
-            fis.close();
             System.out.println(String.format("Found an mcmod.info file in directory %s", ModContainerManPack.modLocation.getName()));
         } catch( Exception e1 ) {
             System.out.println(String.format("No mcmod.info file found in directory %s", ModContainerManPack.modLocation.getName()));
         }
-        
+
         if( mc != null ) {
         	this.md = mc.getMetadataForId(ModContainerManPack.modid, null);
         } else {
@@ -68,7 +66,7 @@ public class ModContainerManPack extends DummyModContainer
         	this.md.url = "http://www.minecraftforge.net/forum/index.php/topic,2828.0.html";
         }
 	}
-	
+
 	@Override
 	public boolean registerBus(EventBus bus, LoadController controller) {
 		bus.register(this);
@@ -81,23 +79,23 @@ public class ModContainerManPack extends DummyModContainer
 		FMLLog.makeLog("SAP-ConfigManager");
 		FMLLog.makeLog("SAP-LanguageManager");
 		FMLLog.makeLog("SAP-UpdateManager");
-		
+
 		ModContainerManPack.proxy.registerPackets();
 	}
-	
+
 	@Subscribe
 	public void init(FMLInitializationEvent evt) {
 		TickRegistry.registerTickHandler(new TickHandlerUpdMgr(), Side.SERVER);
 		TickRegistry.registerScheduledTickHandler(new SchedTickHandlerWld(), Side.SERVER);
-		
+
 		ModContainerManPack.proxy.registerRenderStuff();
 	}
-	
+
 	@Subscribe
 	public void playerJoin(FMLServerAboutToStartEvent evt) {
 		SchedTickHandlerWld.prevThunderState = false;
 	}
-	
+
 	@Subscribe
 	public void modConstruction(FMLConstructionEvent evt) {
 		try {
@@ -135,6 +133,6 @@ public class ModContainerManPack extends DummyModContainer
 
     @Override
     public String toString() {
-        return this.md != null ? getModId() : "Dummy Container ("+ModContainerManPack.modid+") @" + System.identityHashCode(this);
+        return this.md != null ? this.getModId() : "Dummy Container ("+ModContainerManPack.modid+") @" + System.identityHashCode(this);
     }
 }
