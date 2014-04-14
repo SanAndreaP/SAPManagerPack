@@ -61,7 +61,7 @@ public class ASMHelper
 	public static void writeClassToFile(byte[] classBytes, String file) {
         try( FileOutputStream out = new FileOutputStream(file) ) {
             out.write(classBytes);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
 	}

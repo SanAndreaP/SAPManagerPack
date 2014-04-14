@@ -7,9 +7,6 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
-import cpw.mods.fml.relauncher.ReflectionHelper.UnableToAccessFieldException;
-import cpw.mods.fml.relauncher.ReflectionHelper.UnableToFindMethodException;
-
 public final class CachedReflectionHelper
 {
     private static Map<String, Method> cachedMethods = Maps.newHashMap();
@@ -61,14 +58,14 @@ public final class CachedReflectionHelper
             method.setAccessible(true);
             cachedFields.put(key, method);
             return method;
-        } catch( Exception ex1 ) {
+        } catch( Throwable ex1 ) {
             try {
                 method = classToAccess.getDeclaredField(mcpName);
                 method.setAccessible(true);
                 cachedFields.put(key, method);
                 return method;
-            } catch( Exception ex2 ) {
-                throw new UnableToAccessFieldException(new String[] { mcpName, srgName }, ex2);
+            } catch( Throwable ex2 ) {
+                throw new UnableToAccessFieldException(ex2);
             }
         }
     }
@@ -89,14 +86,14 @@ public final class CachedReflectionHelper
             method.setAccessible(true);
             cachedMethods.put(key, method);
             return method;
-        } catch( Exception ex1 ) {
+        } catch( Throwable ex1 ) {
             try {
                 method = classToAccess.getDeclaredMethod(mcpName, parameterTypes);
                 method.setAccessible(true);
                 cachedMethods.put(key, method);
                 return method;
-            } catch( Exception ex2 ) {
-                throw new UnableToFindMethodException(new String[] { mcpName, srgName }, ex2);
+            } catch( Throwable ex2 ) {
+                throw new UnableToFindMethodException(ex2);
             }
         }
     }
@@ -127,6 +124,26 @@ public final class CachedReflectionHelper
         private static final long serialVersionUID = 1L;
 
         public UnableToInvokeMethodException(Throwable failed) {
+            super(failed);
+        }
+    }
+
+    public static class UnableToFindMethodException
+        extends RuntimeException
+    {
+        private static final long serialVersionUID = 1L;
+
+        public UnableToFindMethodException(Throwable failed) {
+            super(failed);
+        }
+    }
+
+    public static class UnableToAccessFieldException
+        extends RuntimeException
+    {
+        private static final long serialVersionUID = 1L;
+
+        public UnableToAccessFieldException(Throwable failed) {
             super(failed);
         }
     }

@@ -18,13 +18,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PacketWeather implements ISAPPacketHandler
 {
     @Override
-    public void getDataForPacket(DataOutputStream doStream, Object... data) throws Exception {
+    public void getDataForPacket(DataOutputStream doStream, Object... data) throws Throwable {
         doStream.writeShort((Short)data[0]);
         doStream.writeInt((Integer)data[1]);
     }
 
     @Override
-    public void processData(INetworkManager manager, Player player, DataInputStream diStream) throws Exception {
+    public void processData(INetworkManager manager, Player player, DataInputStream diStream) throws Throwable {
         WorldClient worldObj = Minecraft.getMinecraft().theWorld;
 
         int id = diStream.readShort();

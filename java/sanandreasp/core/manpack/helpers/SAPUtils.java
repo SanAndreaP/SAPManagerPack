@@ -303,7 +303,7 @@ public final class SAPUtils
             Constructor<DamageSource> dmgsrcConst = DamageSource.class.getDeclaredConstructor(String.class);
             dmgsrcConst.setAccessible(true);
             return dmgsrcConst.newInstance(type);
-        } catch( Exception e ) {
+        } catch( Throwable e ) {
             e.printStackTrace();
         }
         return null;

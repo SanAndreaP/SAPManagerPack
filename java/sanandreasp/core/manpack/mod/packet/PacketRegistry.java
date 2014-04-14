@@ -90,7 +90,7 @@ public final class PacketRegistry {
                     }
                 }
             } while( part * 30000 < pData.length );
-	    } catch( Exception e ) {
+	    } catch( Throwable e ) {
             switch( packetType ) {
                 case TO_ALL_AROUND :
                     FMLLog.warning("Cannot send packet to all around! Packet %s in mod %s", name, modID);

@@ -51,7 +51,7 @@ public class ModContainerManPack extends DummyModContainer
         try( FileInputStream fis = new FileInputStream(mcmod) ) {
             mc = MetadataCollection.from(fis, ModContainerManPack.modLocation.getName());
             System.out.println(String.format("Found an mcmod.info file in directory %s", ModContainerManPack.modLocation.getName()));
-        } catch( Exception e1 ) {
+        } catch( Throwable e1 ) {
             System.out.println(String.format("No mcmod.info file found in directory %s", ModContainerManPack.modLocation.getName()));
         }
 
@@ -101,7 +101,7 @@ public class ModContainerManPack extends DummyModContainer
 		try {
 			FMLNetworkHandler.instance().registerNetworkMod(new ManPackNetworkModHandler(this));
 			FMLLog.info("Succeeded registering SAPManPack Packet Handler");
-		} catch( Exception e ) {
+		} catch( Throwable e ) {
 			FMLLog.log(Level.SEVERE, e, "Failed to register packet handler for SAPManPack");
 		}
 	}
