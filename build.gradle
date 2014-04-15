@@ -68,3 +68,8 @@ processResources {
         exclude 'mcmod.info'
     }
 }
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
+}
