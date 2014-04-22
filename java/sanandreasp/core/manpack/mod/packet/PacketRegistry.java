@@ -70,7 +70,7 @@ public final class PacketRegistry {
                     switch( packetType ) {
                         case TO_ALL_AROUND :
                             @SuppressWarnings("unchecked")
-                            Quintet<Double, Double, Double, Integer, Integer> pdq = Quintet.class.cast(packetData);
+                            Quintet<Double, Double, Double, Double, Integer> pdq = Quintet.class.cast(packetData);
                             PacketDispatcher.sendPacketToAllAround(pdq.getValue0(), pdq.getValue1(), pdq.getValue2(), pdq.getValue3(),
                                                                    pdq.getValue4(), packet);
                             break;
