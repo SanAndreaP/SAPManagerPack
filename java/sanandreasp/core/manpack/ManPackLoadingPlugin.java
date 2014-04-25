@@ -57,4 +57,9 @@ public class ManPackLoadingPlugin implements IFMLLoadingPlugin
 		}
 		return true;
 	}
+
+    @Override
+    public String getAccessTransformerClass() {
+        return null;
+    }
 }

@@ -13,8 +13,8 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
@@ -127,7 +127,7 @@ public final class SAPUtils
     public static ItemStack getSilkBlock(Block block, int meta) {
         Class<?>[] methodPT = new Class[] { int.class };
         Object[] methodPV = new Object[] { meta };
-        return CachedReflectionHelper.invokeCachedMethod(Block.class, block, "createStackedBlock", "func_71880_c_", methodPT, methodPV);
+        return SAPReflectionHelper.invokeCachedMethod(Block.class, block, "createStackedBlock", "func_71880_c_", methodPT, methodPV);
     }
 
     public static ItemStack dropBlockAsItem(Block block, World world, int x, int y, int z, ItemStack stack) {
@@ -136,36 +136,36 @@ public final class SAPUtils
         return null;
     }
 
-    public static void dropXpOnBlockBreak(Block block, World world, int x, int y, int z, int xp) {
-        Class<?>[] methodPT = new Class[] { World.class, int.class, int.class, int.class, int.class };
-        Object[] methodPV = new Object[] { world, x, y, z, xp };
-        CachedReflectionHelper.invokeCachedMethod(Block.class, block, "dropXpOnBlockBreak", "func_71923_g", methodPT, methodPV);
-    }
+//    public static void dropXpOnBlockBreak(Block block, World world, int x, int y, int z, int xp) {
+//        Class<?>[] methodPT = new Class[] { World.class, int.class, int.class, int.class, int.class };
+//        Object[] methodPV = new Object[] { world, x, y, z, xp };
+//        CachedReflectionHelper.invokeCachedMethod(Block.class, block, "dropXpOnBlockBreak", "func_71923_g", methodPT, methodPV);
+//    }
 
-    public static void dropBlockXP(Block block, World world, int X, int Y, int Z, int meta, int fortune) {
-
-        if( block.idDropped(meta, world.rand, fortune) != block.blockID ) {
-            int j1 = 0;
-
-            if( block == Block.oreCoal ) {
-                j1 = MathHelper.getRandomIntegerInRange(world.rand, 0, 2);
-            } else if( block == Block.oreDiamond ) {
-                j1 = MathHelper.getRandomIntegerInRange(world.rand, 3, 7);
-            } else if( block == Block.oreEmerald ) {
-                j1 = MathHelper.getRandomIntegerInRange(world.rand, 3, 7);
-            } else if( block == Block.oreLapis ) {
-                j1 = MathHelper.getRandomIntegerInRange(world.rand, 2, 5);
-            } else if( block == Block.oreNetherQuartz ) {
-                j1 = MathHelper.getRandomIntegerInRange(world.rand, 2, 5);
-            } else if( block == Block.oreRedstone || block == Block.oreRedstoneGlowing ) {
-                j1 = 1 + world.rand.nextInt(5);
-            } else if( block == Block.mobSpawner ) {
-                j1 = 15 + world.rand.nextInt(15) + world.rand.nextInt(15);
-            }
-
-            dropXpOnBlockBreak(block, world, X, Y, Z, j1);
-        }
-    }
+//    public static void dropBlockXP(Block block, World world, int meta, int fortune) {
+//        int exp = block.getExpDrop(world, meta, fortune);
+////        if( block.canHarvestBlock(player, meta)(meta, world.rand, fortune) != block.blockID ) {
+////            int j1 = 0;
+////
+////            if( block == Block.oreCoal ) {
+////                j1 = MathHelper.getRandomIntegerInRange(world.rand, 0, 2);
+////            } else if( block == Block.oreDiamond ) {
+////                j1 = MathHelper.getRandomIntegerInRange(world.rand, 3, 7);
+////            } else if( block == Block.oreEmerald ) {
+////                j1 = MathHelper.getRandomIntegerInRange(world.rand, 3, 7);
+////            } else if( block == Block.oreLapis ) {
+////                j1 = MathHelper.getRandomIntegerInRange(world.rand, 2, 5);
+////            } else if( block == Block.oreNetherQuartz ) {
+////                j1 = MathHelper.getRandomIntegerInRange(world.rand, 2, 5);
+////            } else if( block == Block.oreRedstone || block == Block.oreRedstoneGlowing ) {
+////                j1 = 1 + world.rand.nextInt(5);
+////            } else if( block == Block.mobSpawner ) {
+////                j1 = 15 + world.rand.nextInt(15) + world.rand.nextInt(15);
+////            }
+////
+////            dropXpOnBlockBreak(block, world, X, Y, Z, j1);
+////        }
+//    }
 
     public static boolean isItemInStackArray(ItemStack base, ItemStack... stackArray) {
         for( ItemStack stack : stackArray ) {
@@ -177,7 +177,7 @@ public final class SAPUtils
     }
 
     public static Block[] getToolBlocks(ItemTool tool) {
-        return CachedReflectionHelper.getCachedFieldValue(ItemTool.class, tool, "blocksEffectiveAgainst", "field_77863_c");
+        return SAPReflectionHelper.getCachedFieldValue(ItemTool.class, tool, "blocksEffectiveAgainst", "field_77863_c");
     }
 
     public static boolean isToolEffective(Block[] effectives, Block block) {
@@ -200,7 +200,7 @@ public final class SAPUtils
             if( instance2 instanceof Block ) {
                 return instance1 == instance2;
             } else if( instance2 instanceof ItemStack && ((ItemStack) instance2).getItem() instanceof ItemBlock ) {
-                return instance1 == Block.blocksList[((ItemBlock) ((ItemStack) instance2).getItem()).getBlockID()];
+                return instance1 == Block.getBlockFromItem(((ItemStack)instance2).getItem());
             }
         } else if( instance1 instanceof ItemStack ) {
             if( instance2 instanceof Block || instance2 instanceof Item ) {
@@ -282,12 +282,12 @@ public final class SAPUtils
 
     @SideOnly(Side.CLIENT)
     public static void setSelectedBtn(GuiScreen inst, GuiButton btn) {
-        CachedReflectionHelper.setCachedFieldValue(GuiScreen.class, inst, "selectedButton", "field_73883_a", btn);
+        SAPReflectionHelper.setCachedFieldValue(GuiScreen.class, inst, "selectedButton", "field_73883_a", btn);
     }
 
     @SideOnly(Side.CLIENT)
     public static GuiButton getSelectedBtn(GuiScreen inst) {
-        return CachedReflectionHelper.getCachedFieldValue(GuiScreen.class, inst, "selectedButton", "field_73883_a");
+        return SAPReflectionHelper.getCachedFieldValue(GuiScreen.class, inst, "selectedButton", "field_73883_a");
     }
 
     public static String getTranslated(String key) {
@@ -309,8 +309,7 @@ public final class SAPUtils
         return null;
     }
 
-    public static int getMaxDmgFactorETM() {
-        return CachedReflectionHelper.getCachedFieldValue(EnumArmorMaterial.class, EnumArmorMaterial.IRON, "maxDamageFactor",
-                                                          "field_78048_f");
+    public static int getMaxDmgFactorAM(ItemArmor.ArmorMaterial aMaterial) {
+        return SAPReflectionHelper.getCachedFieldValue(ItemArmor.ArmorMaterial.class, aMaterial, "maxDamageFactor", "field_78048_f");
     }
 }

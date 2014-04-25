@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
-public final class CachedReflectionHelper
+public final class SAPReflectionHelper
 {
     private static Map<String, Method> cachedMethods = Maps.newHashMap();
     private static Map<String, Field> cachedFields = Maps.newHashMap();

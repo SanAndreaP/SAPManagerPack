@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.logging.Level;
 
-import sanandreasp.core.manpack.managers.TickHandlerUpdMgr;
 import sanandreasp.core.manpack.mod.client.packet.ClientPHandler;
 import sanandreasp.core.manpack.mod.packet.CommonPHandler;
 

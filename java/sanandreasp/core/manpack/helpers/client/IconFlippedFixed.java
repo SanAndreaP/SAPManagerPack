@@ -1,17 +1,18 @@
 package sanandreasp.core.manpack.helpers.client;
 
+import net.minecraft.util.IIcon;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.util.Icon;
 
 @SideOnly(Side.CLIENT)
-public class IconFlippedFixed implements Icon
+public class IconFlippedFixed implements IIcon
 {
-    private final Icon baseIcon;
+    private final IIcon baseIcon;
     private final boolean flipU;
     private final boolean flipV;
 
-    public IconFlippedFixed(Icon icon, boolean doFlipU, boolean doFlipV) {
+    public IconFlippedFixed(IIcon icon, boolean doFlipU, boolean doFlipV) {
         this.baseIcon = icon;
         this.flipU = doFlipU;
         this.flipV = doFlipV;
@@ -60,7 +61,7 @@ public class IconFlippedFixed implements Icon
 
     /**
      * Returns the minimum V coordinate to use when rendering with this icon.
-     * 
+     *
      * - This method is fixed to correctly flip V, since vanilla returns always
      *   this.baseIcon.getMinV() which causes texture errors - ~SanAndreasP
      */

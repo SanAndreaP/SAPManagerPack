@@ -8,8 +8,8 @@ public abstract class ItemHorseArmor
     extends Item
 {
 
-    public ItemHorseArmor(int par1) {
-        super(par1);
+    public ItemHorseArmor() {
+        super();
     }
 
     public abstract int getArmorValue(EntityHorse horse, ItemStack stack);

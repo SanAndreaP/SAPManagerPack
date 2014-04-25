@@ -8,9 +8,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.logging.log4j.Level;
 
 import net.minecraft.client.Minecraft;
 
@@ -20,8 +21,8 @@ import cpw.mods.fml.common.FMLLog;
 public class SAPUpdateManager
 {
 	private boolean checkedForUpdate = false;
-	private int majNmbr, minNmbr, revNmbr;
-	private String updURL, mdName, mdURL;
+	private final int majNmbr, minNmbr, revNmbr;
+	private final String updURL, mdName, mdURL;
 
 	public static List<SAPUpdateManager> updMgrs = new ArrayList<SAPUpdateManager>();
 
@@ -44,7 +45,7 @@ public class SAPUpdateManager
 
 	private void addMessage(String s, Level level) {
 		if( FMLCommonHandler.instance().getSide().isClient() ) {
-			Minecraft.getMinecraft().thePlayer.addChatMessage(s);
+			Minecraft.getMinecraft().thePlayer.sendChatMessage(s);
 		}
 		FMLLog.log("SAP-UpdateManager", level, s.replaceAll("\247.", ""));
 	}
@@ -90,8 +91,8 @@ public class SAPUpdateManager
 						}
 
 					    if( webVer[0] > maj ) {
-					    	SAPUpdateManager.this.addMessage(String.format("\247cNew major update (%s) for \2476%s \247cis out:", newVer, SAPUpdateManager.this.mdName), Level.WARNING);
-					    	SAPUpdateManager.this.addMessage("\247c"+mUrl, Level.WARNING);
+					    	SAPUpdateManager.this.addMessage(String.format("\247cNew major update (%s) for \2476%s \247cis out:", newVer, SAPUpdateManager.this.mdName), Level.WARN);
+					    	SAPUpdateManager.this.addMessage("\247c"+mUrl, Level.WARN);
 					    } else if( webVer[0] == maj && webVer[1] > min ) {
 					    	SAPUpdateManager.this.addMessage(String.format("\247eNew feature update (%s) for \2476%s \247eis out:", newVer, SAPUpdateManager.this.mdName), Level.INFO);
 					    	SAPUpdateManager.this.addMessage("\247e"+mUrl, Level.INFO);
@@ -102,9 +103,9 @@ public class SAPUpdateManager
 					    	FMLLog.log("SAP-UpdateManager", Level.INFO, "No new update for %s available. Everything is fine.", mName);
 					    }
 					} catch (MalformedURLException e) {
-						FMLLog.log("SAP-UpdateManager", Level.WARNING, "Update Check for %s failed - Malformed URL: >>%s<<", mName, udUrl);
+						FMLLog.log("SAP-UpdateManager", Level.WARN, "Update Check for %s failed - Malformed URL: >>%s<<", mName, udUrl);
 				    } catch (IOException e) {
-						FMLLog.log("SAP-UpdateManager", Level.WARNING, "Update Check for %s failed - Not accessible: >>%s<<", mName, udUrl);
+						FMLLog.log("SAP-UpdateManager", Level.WARN, "Update Check for %s failed - Not accessible: >>%s<<", mName, udUrl);
 				    }
 				}
 			}
