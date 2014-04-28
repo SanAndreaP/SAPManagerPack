@@ -136,6 +136,7 @@ public class ASMHelper
         throw new MethodNotFoundException(name, desc);
     }
 
+    @Deprecated
     public static String getNotchedMethod(String MCP, String SRG) {
     	if( ASMHelper.isMCP ) {
     		return MCP;
@@ -151,6 +152,7 @@ public class ASMHelper
     	}
     }
 
+    @Deprecated
     public static String getNotchedField(String MCP, String SRG) {
     	if( ASMHelper.isMCP ) {
     		return MCP;
@@ -173,6 +175,7 @@ public class ASMHelper
     	return SRG;
     }
 
+    @Deprecated
     public static String getNotchedClassName(String SRG) {
         if( ASMHelper.isMCP ) {
             return SRG;

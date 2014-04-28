@@ -26,7 +26,7 @@ public class ModCntManPack extends DummyModContainer
 	public static final String MOD_ID = "sapmanpack";
 	public static final String MOD_LOG = "SAPManPack";
 
-	public static final ChannelHandler MANPACK_CH_HANDLER = new ChannelHandler(ModCntManPack.MOD_ID, ModCntManPack.MOD_CHANNEL);
+	public static ChannelHandler MANPACK_CH_HANDLER;
 
 	public static File modLocation;
     private ModMetadata md;
@@ -56,6 +56,7 @@ public class ModCntManPack extends DummyModContainer
         	this.md.name = "SanAndreasPs Manager Pack CORE edition";
         	this.md.url = "http://www.minecraftforge.net/forum/index.php/topic,2828.0.html";
         }
+        MANPACK_CH_HANDLER = new ChannelHandler(ModCntManPack.MOD_ID, ModCntManPack.MOD_CHANNEL);
 	}
 
 	@Override

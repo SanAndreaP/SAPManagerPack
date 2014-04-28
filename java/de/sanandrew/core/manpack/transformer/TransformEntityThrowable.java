@@ -20,7 +20,9 @@ public class TransformEntityThrowable implements IClassTransformer, Opcodes
 {
     private String NTC_EntityThrowable;
     private String NTC_Vec3Pool;
+    private String NTC_Vec3;
     private String NTC_World;
+    private String NTC_MovingObjectPosition;
     private String NTM_onUpdate;
     private String NTM_getVecFromPool;
     private String NTM_rayTraceBlocks;
@@ -39,16 +41,18 @@ public class TransformEntityThrowable implements IClassTransformer, Opcodes
     }
 
     private void initiateMappings() {
-        this.NTC_EntityThrowable = ASMHelper.getNotchedClassName("net/minecraft/entity/projectile/EntityThrowable");
-        this.NTC_Vec3Pool = ASMHelper.getNotchedClassName("net/minecraft/util/Vec3Pool");
-        this.NTC_World = ASMHelper.getNotchedClassName("net/minecraft/world/World");
+        this.NTC_EntityThrowable = "net/minecraft/entity/projectile/EntityThrowable";
+        this.NTC_Vec3Pool = "net/minecraft/util/Vec3Pool";
+        this.NTC_Vec3 = "net/minecraft/util/Vec3";
+        this.NTC_World = "net/minecraft/world/World";
+        this.NTC_MovingObjectPosition = "net/minecraft/util/MovingObjectPosition";
 
-        this.NTM_onUpdate = ASMHelper.getNotchedMethod("onUpdate", "net/minecraft/entity/projectile/EntityThrowable/func_70071_h_");
-        this.NTM_getVecFromPool = ASMHelper.getNotchedMethod("getVecFromPool", "net/minecraft/util/Vec3Pool/func_72345_a");
-        this.NTM_rayTraceBlocks = ASMHelper.getNotchedMethod("rayTraceBlocks", "net/minecraft/world/World/func_72933_a");
+        this.NTM_onUpdate = ASMHelper.getRemappedMF("onUpdate", "func_70071_h_");
+        this.NTM_getVecFromPool = ASMHelper.getRemappedMF("getVecFromPool", "func_72345_a");
+        this.NTM_rayTraceBlocks = ASMHelper.getRemappedMF("rayTraceBlocks", "func_72933_a");
 
-        this.NTF_motionZ = ASMHelper.getNotchedField("motionZ", "net/minecraft/entity/Entity/field_70179_y");
-        this.NTF_worldObj = ASMHelper.getNotchedField("worldObj", "net/minecraft/entity/Entity/field_70170_p");
+        this.NTF_motionZ = ASMHelper.getRemappedMF("motionZ", "field_70179_y");
+        this.NTF_worldObj = ASMHelper.getRemappedMF("worldObj", "field_70170_p");
 
         this.RM_rayTraceBlocks = ASMHelper.getRemappedMF("rayTraceBlocks", "func_72901_a");
     }
@@ -78,18 +82,18 @@ public class TransformEntityThrowable implements IClassTransformer, Opcodes
 	        InsnList needle = new InsnList();
 	        needle.add(new FieldInsnNode(GETFIELD, this.NTC_EntityThrowable, this.NTF_motionZ, "D"));
 	        needle.add(new InsnNode(DADD));
-	        needle.add(new MethodInsnNode(INVOKEVIRTUAL, this.NTC_Vec3Pool, this.NTM_getVecFromPool, "(DDD)Lnet/minecraft/util/Vec3;"));
+	        needle.add(new MethodInsnNode(INVOKEVIRTUAL, this.NTC_Vec3Pool, this.NTM_getVecFromPool, "(DDD)L" + this.NTC_Vec3 + ";"));
 	        needle.add(new VarInsnNode(ASTORE, 2));
 	        needle.add(new LabelNode());
 	        needle.add(new LineNumberNode(-1, new LabelNode()));
 	        needle.add(new VarInsnNode(ALOAD, 0));
-	        needle.add(new FieldInsnNode(GETFIELD, this.NTC_EntityThrowable, this.NTF_worldObj, "Lnet/minecraft/world/World;"));
+	        needle.add(new FieldInsnNode(GETFIELD, this.NTC_EntityThrowable, this.NTF_worldObj, "L" + this.NTC_World + ";"));
 	        needle.add(new VarInsnNode(ALOAD, 1));
 	        needle.add(new VarInsnNode(ALOAD, 2));
 
 	        AbstractInsnNode insertPoint = ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
 
-	        needle.add(new MethodInsnNode(INVOKEVIRTUAL, this.NTC_World, this.NTM_rayTraceBlocks, "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;)Lnet/minecraft/util/MovingObjectPosition;"));
+	        needle.add(new MethodInsnNode(INVOKEVIRTUAL, this.NTC_World, this.NTM_rayTraceBlocks, "(L" + this.NTC_Vec3 + ";L" + this.NTC_Vec3 + ";)L" + this.NTC_MovingObjectPosition + ";"));
 
 	        ASMHelper.remLastNodeFromNeedle(method.instructions, needle);
 

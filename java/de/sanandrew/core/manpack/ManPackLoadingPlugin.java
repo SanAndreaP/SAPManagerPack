@@ -3,6 +3,10 @@ package de.sanandrew.core.manpack;
 import java.io.File;
 import java.util.Map;
 
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin.SortingIndex;
+
 import de.sanandrew.core.manpack.mod.ModCntManPack;
 import de.sanandrew.core.manpack.transformer.ASMHelper;
 import de.sanandrew.core.manpack.transformer.TransformBadPotionsATN;
@@ -11,10 +15,8 @@ import de.sanandrew.core.manpack.transformer.TransformEntityThrowable;
 import de.sanandrew.core.manpack.transformer.TransformHorseArmor;
 import de.sanandrew.core.manpack.transformer.TransformPlayerDismountCtrl;
 
-import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
-import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
-
 @TransformerExclusions({"de.sanandrew.core.manpack.transformer", "de.sanandrew.core.manpack.ManPackLoadingPlugin"})
+@SortingIndex(1001)
 public class ManPackLoadingPlugin implements IFMLLoadingPlugin
 {
 	@Override

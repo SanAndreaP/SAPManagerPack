@@ -24,7 +24,7 @@ public class TransformBadPotionsATN implements IClassTransformer, Opcodes
 	}
 
     private void initiateMappings() {
-        this.NTM_isBadEffect = ASMHelper.getNotchedMethod("isBadEffect", "net/minecraft/potion/Potion/func_76398_f");
+        this.NTM_isBadEffect = ASMHelper.getRemappedMF("isBadEffect", "func_76398_f");
         this.RF_isBadEffect = ASMHelper.getRemappedMF("isBadEffect", "field_76418_K");
     }
 
