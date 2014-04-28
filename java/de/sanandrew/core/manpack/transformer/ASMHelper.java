@@ -1,13 +1,8 @@
 package de.sanandrew.core.manpack.transformer;
 
-import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.ClassReader;
@@ -17,107 +12,11 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
 
-import com.google.common.base.CharMatcher;
-import com.google.common.base.Charsets;
-import com.google.common.base.Splitter;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Maps;
-import com.google.common.io.CharStreams;
-import com.google.common.io.InputSupplier;
-
-import net.minecraft.launchwrapper.LaunchClassLoader;
-
 import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
-import cpw.mods.fml.common.asm.transformers.deobf.LZMAInputSupplier;
 
 public class ASMHelper
 {
-	private static Map<String, Map<String, String>> methods = Maps.newHashMap();
-	private static Map<String, Map<String, String>> fields = Maps.newHashMap();
-	public static boolean isMCP = false;
-
-	public static void setup(File mcDir, LaunchClassLoader classLoader, String deobfFileName) {
-        try {
-            InputStream classData = ASMHelper.class.getResourceAsStream(deobfFileName);
-            LZMAInputSupplier zis = new LZMAInputSupplier(classData);
-            InputSupplier<InputStreamReader> srgSupplier = CharStreams.newReaderSupplier(zis,Charsets.UTF_8);
-            List<String> srgList = CharStreams.readLines(srgSupplier);
-            Splitter splitter = Splitter.on(CharMatcher.anyOf(": ")).omitEmptyStrings().trimResults();
-
-            for( String line : srgList ) {
-                String[] parts = Iterables.toArray(splitter.split(line),String.class);
-                String typ = parts[0];
-
-                if( "MD".equals(typ) ) {
-                	ASMHelper.parseMethod(parts);
-                } else if( "FD".equals(typ) ) {
-                	ASMHelper.parseField(parts);
-                }
-            }
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void writeClassToFile(byte[] classBytes, String file) {
-        try( FileOutputStream out = new FileOutputStream(file) ) {
-            out.write(classBytes);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-	}
-
-	public static void removeNeedleFromHaystack(InsnList haystack, InsnList needle) {
-	    int firstInd = haystack.indexOf(findFirstNodeFromNeedle(haystack, needle));
-	    int lastInd = haystack.indexOf(findLastNodeFromNeedle(haystack, needle));
-	    List<AbstractInsnNode> realNeedle = new ArrayList<AbstractInsnNode>();
-
-	    for( int i = firstInd; i <= lastInd; i++ ) {
-	        realNeedle.add(haystack.get(i));
-	    }
-
-	    for( AbstractInsnNode node : realNeedle ) {
-	        haystack.remove(node);
-	    }
-	}
-
-    private static void parseMethod(String[] parts) {
-        String oldSrg = parts[1];
-        int lastOld = oldSrg.lastIndexOf('/');
-        String cl = oldSrg.substring(0,lastOld);
-        String oldName = oldSrg.substring(lastOld+1);
-        String newSrg = parts[3];
-        int lastNew = newSrg.lastIndexOf('/');
-        String newName = newSrg.substring(lastNew+1);
-
-        if( !ASMHelper.methods.containsKey(cl) ) {
-        	ASMHelper.methods.put(cl, Maps.<String,String>newHashMap());
-        }
-        ASMHelper.methods.get(cl).put(newName, oldName);
-    }
-
-    private static void parseField(String[] parts) {
-        String oldSrg = parts[1];
-        int lastOld = oldSrg.lastIndexOf('/');
-        String cl = oldSrg.substring(0,lastOld);
-        String oldName = oldSrg.substring(lastOld+1);
-        String newSrg = parts[2];
-        int lastNew = newSrg.lastIndexOf('/');
-        String newName = newSrg.substring(lastNew+1);
-
-        if( !ASMHelper.fields.containsKey(cl) ) {
-        	ASMHelper.fields.put(cl, Maps.<String,String>newHashMap());
-        }
-        ASMHelper.fields.get(cl).put(newName, oldName);
-    }
-
-    public static ClassNode createClassNode(byte[] bytes) {
-        ClassNode cnode = new ClassNode();
-        ClassReader reader = new ClassReader(bytes);
-        reader.accept(cnode, ClassReader.EXPAND_FRAMES);
-        return cnode;
-    }
+    public static boolean isMCP = false;
 
     public static byte[] createBytes(ClassNode cnode, int i) {
         ClassWriter cw = new ClassWriter(i);
@@ -127,74 +26,11 @@ public class ASMHelper
         return bArr;
     }
 
-    public static MethodNode findMethod(String name, String desc, ClassNode cnode) {
-        for( MethodNode mnode : cnode.methods ) {
-            if( name.equals(mnode.name) && desc.equals(mnode.desc) ) {
-                return mnode;
-            }
-        }
-        throw new MethodNotFoundException(name, desc);
-    }
-
-    @Deprecated
-    public static String getNotchedMethod(String MCP, String SRG) {
-    	if( ASMHelper.isMCP ) {
-    		return MCP;
-    	}
-
-    	String clazz = getNotchedClassName(SRG.substring(0, SRG.lastIndexOf('/')));
-    	SRG = SRG.substring(SRG.lastIndexOf('/')+1);
-
-    	if( ASMHelper.methods.containsKey(clazz) && ASMHelper.methods.get(clazz).containsKey(SRG) ) {
-			return ASMHelper.methods.get(clazz).get(SRG);
-    	} else {
-    		return SRG;
-    	}
-    }
-
-    @Deprecated
-    public static String getNotchedField(String MCP, String SRG) {
-    	if( ASMHelper.isMCP ) {
-    		return MCP;
-    	}
-
-    	String clazz = getNotchedClassName(SRG.substring(0, SRG.lastIndexOf('/')));
-    	SRG = SRG.substring(SRG.lastIndexOf('/')+1);
-
-    	if( ASMHelper.fields.containsKey(clazz) && ASMHelper.fields.get(clazz).containsKey(SRG) ) {
-			return ASMHelper.fields.get(clazz).get(SRG);
-    	} else {
-    		return SRG;
-    	}
-    }
-
-    public static String getRemappedMF(String MCP, String SRG) {
-    	if( ASMHelper.isMCP ) {
-    		return MCP;
-    	}
-    	return SRG;
-    }
-
-    @Deprecated
-    public static String getNotchedClassName(String SRG) {
-        if( ASMHelper.isMCP ) {
-            return SRG;
-        }
-    	return FMLDeobfuscatingRemapper.INSTANCE.unmap(SRG);
-    }
-
-    public static AbstractInsnNode findLastNodeFromNeedle(InsnList haystack, InsnList needle) {
-        List<AbstractInsnNode> ret = InstructionComparator.insnListFindEnd(haystack, needle);
-
-        if( ret.size() != 1 ) {
-            throw new InvalidNeedleException(ret.size());
-        }
-
-        return ret.get(0);
-    }
-
-    public static void remLastNodeFromNeedle(InsnList haystack, InsnList needle) {
-        haystack.remove(ASMHelper.findLastNodeFromNeedle(haystack, needle));
+    public static ClassNode createClassNode(byte[] bytes) {
+        ClassNode cnode = new ClassNode();
+        ClassReader reader = new ClassReader(bytes);
+        reader.accept(cnode, ClassReader.EXPAND_FRAMES);
+        return cnode;
     }
 
     public static AbstractInsnNode findFirstNodeFromNeedle(InsnList haystack, InsnList needle) {
@@ -207,8 +43,70 @@ public class ASMHelper
         return ret.get(0);
     }
 
+    public static boolean hasClassMethodName(ClassNode cn, String methodName) {
+        for( MethodNode method : cn.methods ) {
+            if( method.name.equals(methodName) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static AbstractInsnNode findLastNodeFromNeedle(InsnList haystack, InsnList needle) {
+        List<AbstractInsnNode> ret = InstructionComparator.insnListFindEnd(haystack, needle);
+
+        if( ret.size() != 1 ) {
+            throw new InvalidNeedleException(ret.size());
+        }
+
+        return ret.get(0);
+    }
+
+    public static MethodNode findMethod(String name, String desc, ClassNode cnode) {
+        for( MethodNode mnode : cnode.methods ) {
+            if( name.equals(mnode.name) && desc.equals(mnode.desc) ) {
+                return mnode;
+            }
+        }
+        throw new MethodNotFoundException(name, desc);
+    }
+
+    public static String getRemappedMF(String MCP, String SRG) {
+        if( ASMHelper.isMCP ) {
+            return MCP;
+        }
+        return SRG;
+    }
+
     public static void remFirstNodeFromNeedle(InsnList haystack, InsnList needle) {
         haystack.remove(ASMHelper.findFirstNodeFromNeedle(haystack, needle));
+    }
+
+    public static void remLastNodeFromNeedle(InsnList haystack, InsnList needle) {
+        haystack.remove(ASMHelper.findLastNodeFromNeedle(haystack, needle));
+    }
+
+    public static void removeNeedleFromHaystack(InsnList haystack, InsnList needle) {
+        int firstInd = haystack.indexOf(findFirstNodeFromNeedle(haystack, needle));
+        int lastInd = haystack.indexOf(findLastNodeFromNeedle(haystack, needle));
+        List<AbstractInsnNode> realNeedle = new ArrayList<AbstractInsnNode>();
+
+        for( int i = firstInd; i <= lastInd; i++ ) {
+            realNeedle.add(haystack.get(i));
+        }
+
+        for( AbstractInsnNode node : realNeedle ) {
+            haystack.remove(node);
+        }
+    }
+
+    public static void writeClassToFile(byte[] classBytes, String file) {
+        try( FileOutputStream out = new FileOutputStream(file) ) {
+            out.write(classBytes);
+        } catch( Throwable e ) {
+            e.printStackTrace();
+        }
     }
 
     public static class InvalidNeedleException
@@ -227,7 +125,8 @@ public class ASMHelper
         private static final long serialVersionUID = 7439846361566319105L;
 
         public MethodNotFoundException(String methodName, String methodDesc) {
-            super(String.format("Could not find any method matching the name < %s > and description < %s >", methodName, methodDesc));
+            super(String.format("Could not find any method matching the name < %s > and description < %s >",
+                                methodName, methodDesc));
         }
     }
 }

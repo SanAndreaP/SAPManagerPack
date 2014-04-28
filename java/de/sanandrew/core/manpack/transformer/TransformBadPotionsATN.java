@@ -10,39 +10,31 @@ import net.minecraft.launchwrapper.IClassTransformer;
 
 public class TransformBadPotionsATN implements IClassTransformer, Opcodes
 {
-    private String NTM_isBadEffect;
-    private String RF_isBadEffect;
+    private static final String F_isBadEffect = ASMHelper.getRemappedMF("isBadEffect", "field_76418_K");
+    private static final String M_isBadEffect = ASMHelper.getRemappedMF("isBadEffect", "func_76398_f");
 
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes) {
 		if( transformedName.equals("net.minecraft.potion.Potion") ) {
-		    this.initiateMappings();
 			return this.transformPotion(bytes);
 		}
 
 		return bytes;
 	}
 
-    private void initiateMappings() {
-        this.NTM_isBadEffect = ASMHelper.getRemappedMF("isBadEffect", "func_76398_f");
-        this.RF_isBadEffect = ASMHelper.getRemappedMF("isBadEffect", "field_76418_K");
-    }
-
 	private byte[] transformPotion(byte[] bytes) {
 		ClassNode cn = ASMHelper.createClassNode(bytes);
 
-		for( MethodNode method : cn.methods ) {
-			if( method.name.equals(this.NTM_isBadEffect) ) {
-				return bytes;
-			}
+		if( ASMHelper.hasClassMethodName(cn, M_isBadEffect) ) {
+			return bytes;
 		}
 
-		MethodNode method = new MethodNode(ACC_PUBLIC, this.NTM_isBadEffect, "()Z", null, null);
+		MethodNode method = new MethodNode(ACC_PUBLIC, M_isBadEffect, "()Z", null, null);
 		method.visitCode();
 		Label l0 = new Label();
 		method.visitLabel(l0);
 		method.visitVarInsn(ALOAD, 0);
-		method.visitFieldInsn(GETFIELD, "net/minecraft/potion/Potion", this.RF_isBadEffect, "Z");
+		method.visitFieldInsn(GETFIELD, "net/minecraft/potion/Potion", F_isBadEffect, "Z");
 		method.visitInsn(IRETURN);
 		Label l1 = new Label();
 		method.visitLabel(l1);

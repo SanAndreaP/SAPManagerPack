@@ -1,7 +1,7 @@
 package de.sanandrew.core.manpack.mod.client;
 
-import de.sanandrew.core.manpack.helpers.client.RenderBlockGlowOverlay;
 import de.sanandrew.core.manpack.mod.CommonProxy;
+import de.sanandrew.core.manpack.util.client.RenderBlockGlowOverlay;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
