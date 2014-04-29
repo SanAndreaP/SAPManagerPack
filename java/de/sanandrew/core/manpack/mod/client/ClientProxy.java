@@ -1,15 +1,17 @@
 package de.sanandrew.core.manpack.mod.client;
 
-import de.sanandrew.core.manpack.mod.CommonProxy;
-import de.sanandrew.core.manpack.util.client.RenderBlockGlowOverlay;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.util.ResourceLocation;
 
+import net.minecraftforge.common.MinecraftForge;
+
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import de.sanandrew.core.manpack.mod.CommonProxy;
+import de.sanandrew.core.manpack.util.client.RenderBlockGlowOverlay;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy
@@ -19,6 +21,7 @@ public class ClientProxy extends CommonProxy
         RenderBlockGlowOverlay.renderID = RenderingRegistry.getNextAvailableRenderId();
         RenderingRegistry.registerBlockHandler(RenderBlockGlowOverlay.renderID, new RenderBlockGlowOverlay());
         this.applyCapesToCertainPlayers();
+        MinecraftForge.EVENT_BUS.register(new RenderUpdateOverlay());
 	}
 
 	@Override
