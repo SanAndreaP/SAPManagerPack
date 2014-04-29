@@ -9,6 +9,6 @@ public interface IPacket
 {
     public void readBytes(ByteBuf bytes);
     public void writeBytes(ByteBuf bytes);
-    public void handleClientSide(NetHandlerPlayClient player);
-    public void handleServerSide(NetHandlerPlayServer player);
+    public void handleClientSide(NetHandlerPlayClient nhClient);
+    public void handleServerSide(NetHandlerPlayServer nhServer);
 }

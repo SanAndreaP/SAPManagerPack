@@ -22,7 +22,7 @@ import de.sanandrew.core.manpack.mod.packet.ChannelHandler;
 public class ModCntManPack
     extends DummyModContainer
 {
-    public static ChannelHandler MANPACK_CH_HANDLER;
+    public static ChannelHandler channelHandler;
     public static final String MOD_CHANNEL = "sapmanpack";
     public static final String MOD_ID = "sapmanpack";
     public static final String MOD_LOG = "SAPManPack";
@@ -58,7 +58,8 @@ public class ModCntManPack
             this.md.name = "SanAndreasPs Manager Pack CORE edition";
             this.md.url = "http://www.minecraftforge.net/forum/index.php/topic,2828.0.html";
         }
-        MANPACK_CH_HANDLER = new ChannelHandler(ModCntManPack.MOD_ID, ModCntManPack.MOD_CHANNEL);
+
+        channelHandler = new ChannelHandler(ModCntManPack.MOD_ID, ModCntManPack.MOD_CHANNEL);
     }
 
     @Override
@@ -88,20 +89,20 @@ public class ModCntManPack
 
     @Subscribe
     public void init(FMLInitializationEvent evt) {
-        MANPACK_CH_HANDLER.initialise();
+        channelHandler.initialise();
         FMLCommonHandler.instance().bus().register(new TickEventUpdMgr());
         ModCntManPack.proxy.registerRenderStuff();
     }
 
     @Subscribe
     public void postInit(FMLPostInitializationEvent evt) {
-        MANPACK_CH_HANDLER.postInitialise();
+        channelHandler.postInitialise();
     }
 
     @Subscribe
     public void preInit(FMLPreInitializationEvent evt) {
         ModCntManPack.proxy.registerPackets();
-        // MANPACK_CH_HANDLER.registerPacket(ExamplePacket.class);
+        // channelHandler.registerPacket(ExamplePacket.class);
     }
 
     @Override

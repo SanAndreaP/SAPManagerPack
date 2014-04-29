@@ -24,7 +24,7 @@ public class SAPUpdateManager
 	private final int majNmbr, minNmbr, revNmbr;
 	private final String updURL, mdName, mdURL;
 
-	public static List<SAPUpdateManager> updMgrs = new ArrayList<SAPUpdateManager>();
+	public static final List<SAPUpdateManager> UPD_MANAGERS = new ArrayList<SAPUpdateManager>();
 
 	public SAPUpdateManager(String modName, int majorNr, int minorNr, int revisionNr, String updateURL, String modURL) {
 		this.mdName = modName;
@@ -33,7 +33,7 @@ public class SAPUpdateManager
 		this.revNmbr = revisionNr;
 		this.updURL = updateURL;
 		this.mdURL = modURL;
-		SAPUpdateManager.updMgrs.add(this);
+		SAPUpdateManager.UPD_MANAGERS.add(this);
 	}
 
 	public String getFormattedVersion() {

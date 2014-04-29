@@ -18,13 +18,6 @@ import net.minecraft.launchwrapper.IClassTransformer;
 public class TransformPlayerDismountCtrl
     implements IClassTransformer, Opcodes
 {
-    private static final String F_isRemote =        ASMHelper.getRemappedMF("isRemote", "field_72995_K");
-    private static final String F_worldObj =        ASMHelper.getRemappedMF("worldObj", "field_70170_p");
-    private static final String F_ridingEntity =    ASMHelper.getRemappedMF("ridingEntity", "field_70154_o");
-
-    private static final String M_isSneaking =   ASMHelper.getRemappedMF("updateRidden", "func_70098_U");
-    private static final String M_updateRidden = ASMHelper.getRemappedMF("isSneaking", "func_70093_af");
-
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
         if( transformedName.equals("net.minecraft.entity.player.EntityPlayer") ) {
@@ -62,23 +55,23 @@ public class TransformPlayerDismountCtrl
 
     private byte[] transformPlayer(byte[] bytes) {
         ClassNode clazz = ASMHelper.createClassNode(bytes);
-        MethodNode method = ASMHelper.findMethod(M_updateRidden, "()V", clazz);
+        MethodNode method = ASMHelper.findMethod(ASMNames.M_updateRidden, "()V", clazz);
 
         InsnList needle = new InsnList();
         needle.add(new VarInsnNode(ALOAD, 0));
-        needle.add(new FieldInsnNode(GETFIELD, "net/minecraft/entity/player/EntityPlayer", F_worldObj, "Lnet/minecraft/world/World;"));
-        needle.add(new FieldInsnNode(GETFIELD, "net/minecraft/world/World", F_isRemote, "Z"));
+        needle.add(new FieldInsnNode(GETFIELD, "net/minecraft/entity/player/EntityPlayer", ASMNames.F_worldObj, "Lnet/minecraft/world/World;"));
+        needle.add(new FieldInsnNode(GETFIELD, "net/minecraft/world/World", ASMNames.F_isRemote, "Z"));
         LabelNode ln1 = new LabelNode();
         needle.add(new JumpInsnNode(IFNE, ln1));
         needle.add(new VarInsnNode(ALOAD, 0));
-        needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/player/EntityPlayer", M_isSneaking, "()Z"));
+        needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/player/EntityPlayer", ASMNames.M_isSneaking, "()Z"));
         needle.add(new JumpInsnNode(IFEQ, ln1));
 
         AbstractInsnNode insertPoint = ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
 
         InsnList injectList = new InsnList();
         injectList.add(new VarInsnNode(ALOAD, 0));
-        injectList.add(new FieldInsnNode(GETFIELD, "net/minecraft/entity/player/EntityPlayer", F_ridingEntity, "Lnet/minecraft/entity/Entity;"));
+        injectList.add(new FieldInsnNode(GETFIELD, "net/minecraft/entity/player/EntityPlayer", ASMNames.F_ridingEntity, "Lnet/minecraft/entity/Entity;"));
         injectList.add(new VarInsnNode(ALOAD, 0));
         injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/Entity", "_SAP_canDismountWithLSHIFT", "(Lnet/minecraft/entity/player/EntityPlayer;)Z"));
         injectList.add(new JumpInsnNode(IFEQ, ((JumpInsnNode) insertPoint).label));

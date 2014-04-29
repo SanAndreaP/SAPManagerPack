@@ -10,9 +10,6 @@ import net.minecraft.launchwrapper.IClassTransformer;
 
 public class TransformBadPotionsATN implements IClassTransformer, Opcodes
 {
-    private static final String F_isBadEffect = ASMHelper.getRemappedMF("isBadEffect", "field_76418_K");
-    private static final String M_isBadEffect = ASMHelper.getRemappedMF("isBadEffect", "func_76398_f");
-
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes) {
 		if( transformedName.equals("net.minecraft.potion.Potion") ) {
@@ -25,16 +22,16 @@ public class TransformBadPotionsATN implements IClassTransformer, Opcodes
 	private byte[] transformPotion(byte[] bytes) {
 		ClassNode cn = ASMHelper.createClassNode(bytes);
 
-		if( ASMHelper.hasClassMethodName(cn, M_isBadEffect) ) {
+		if( ASMHelper.hasClassMethodName(cn, ASMNames.M_isBadEffect) ) {
 			return bytes;
 		}
 
-		MethodNode method = new MethodNode(ACC_PUBLIC, M_isBadEffect, "()Z", null, null);
+		MethodNode method = new MethodNode(ACC_PUBLIC, ASMNames.M_isBadEffect, "()Z", null, null);
 		method.visitCode();
 		Label l0 = new Label();
 		method.visitLabel(l0);
 		method.visitVarInsn(ALOAD, 0);
-		method.visitFieldInsn(GETFIELD, "net/minecraft/potion/Potion", F_isBadEffect, "Z");
+		method.visitFieldInsn(GETFIELD, "net/minecraft/potion/Potion", ASMNames.F_isBadEffect, "Z");
 		method.visitInsn(IRETURN);
 		Label l1 = new Label();
 		method.visitLabel(l1);

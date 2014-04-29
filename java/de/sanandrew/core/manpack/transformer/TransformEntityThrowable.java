@@ -19,13 +19,6 @@ import net.minecraft.launchwrapper.IClassTransformer;
 public class TransformEntityThrowable
     implements IClassTransformer, Opcodes
 {
-    private static final String F_motionZ =     ASMHelper.getRemappedMF("motionZ", "field_70179_y");
-    private static final String F_worldObj =    ASMHelper.getRemappedMF("worldObj", "field_70170_p");
-
-    private static final String M_getVecFromPool =  ASMHelper.getRemappedMF("getVecFromPool", "func_72345_a");
-    private static final String M_onUpdate =        ASMHelper.getRemappedMF("onUpdate", "func_70071_h_");
-    private static final String M_rayTraceBlocks =  ASMHelper.getRemappedMF("rayTraceBlocks", "func_72933_a");
-
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
         if( transformedName.equals("net.minecraft.entity.projectile.EntityThrowable") ) {
@@ -56,30 +49,30 @@ public class TransformEntityThrowable
         }
 
         {
-            MethodNode method = ASMHelper.findMethod(M_onUpdate, "()V", clazz);
+            MethodNode method = ASMHelper.findMethod(ASMNames.M_onUpdate, "()V", clazz);
 
             InsnList needle = new InsnList();
-            needle.add(new FieldInsnNode(GETFIELD, "net/minecraft/entity/projectile/EntityThrowable", F_motionZ, "D"));
+            needle.add(new FieldInsnNode(GETFIELD, "net/minecraft/entity/projectile/EntityThrowable", ASMNames.F_motionZ, "D"));
             needle.add(new InsnNode(DADD));
-            needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/util/Vec3Pool", M_getVecFromPool, "(DDD)Lnet/minecraft/util/Vec3;"));
+            needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/util/Vec3Pool", ASMNames.M_getVecFromPool, "(DDD)Lnet/minecraft/util/Vec3;"));
             needle.add(new VarInsnNode(ASTORE, 2));
             needle.add(new LabelNode());
             needle.add(new LineNumberNode(-1, new LabelNode()));
             needle.add(new VarInsnNode(ALOAD, 0));
-            needle.add(new FieldInsnNode(GETFIELD, "net/minecraft/entity/projectile/EntityThrowable", F_worldObj, "Lnet/minecraft/world/World;"));
+            needle.add(new FieldInsnNode(GETFIELD, "net/minecraft/entity/projectile/EntityThrowable", ASMNames.F_worldObj, "Lnet/minecraft/world/World;"));
             needle.add(new VarInsnNode(ALOAD, 1));
             needle.add(new VarInsnNode(ALOAD, 2));
 
             AbstractInsnNode insertPoint = ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
 
-            needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/world/World", M_rayTraceBlocks, "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;)Lnet/minecraft/util/MovingObjectPosition;"));
+            needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/world/World", ASMNames.M_rayTraceBlocks, "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;)Lnet/minecraft/util/MovingObjectPosition;"));
 
             ASMHelper.remLastNodeFromNeedle(method.instructions, needle);
 
             InsnList injectList = new InsnList();
             injectList.add(new VarInsnNode(ALOAD, 0));
             injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/projectile/EntityThrowable", "_SAP_canImpactOnLiquid", "()Z"));
-            injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/world/World", M_rayTraceBlocks, "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;Z)Lnet/minecraft/util/MovingObjectPosition;"));
+            injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/world/World", ASMNames.M_rayTraceBlocks, "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;Z)Lnet/minecraft/util/MovingObjectPosition;"));
 
             method.instructions.insert(insertPoint, injectList);
         }

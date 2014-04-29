@@ -55,7 +55,7 @@ sourceSets {
 
 jar {
     manifest {
-        attributes 'FMLCorePlugin': 'de.sanandrew.core.manpack.ManPackLoadingPlugin'
+        attributes 'FMLCorePlugin': 'de.sanandrew.core.manpack.init.ManPackLoadingPlugin'
         attributes 'FMLCorePluginContainsFMLMod' : 'true'
     }
 }

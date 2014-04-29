@@ -11,7 +11,7 @@ public class TickEventUpdMgr
     @SubscribeEvent
     public void onWorldTickStart(TickEvent.WorldTickEvent event) {
         if(event.phase == Phase.END) {
-            for( SAPUpdateManager udm : SAPUpdateManager.updMgrs ) {
+            for( SAPUpdateManager udm : SAPUpdateManager.UPD_MANAGERS ) {
     //            if( (!ManPackLoadingPlugin.isServer() && Minecraft.getMinecraft().thePlayer != null) || ManPackLoadingPlugin.isServer() ) {
                     udm.checkForUpdate();
     //            }

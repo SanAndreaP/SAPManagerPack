@@ -11,9 +11,6 @@ import net.minecraft.launchwrapper.IClassTransformer;
 public class TransformELBAttackingPlayer
     implements IClassTransformer, Opcodes
 {
-    private static final String F_attackingPlayer = ASMHelper.getRemappedMF("attackingPlayer", "field_70717_bb");
-    private static final String F_recentlyHit =     ASMHelper.getRemappedMF("recentlyHit", "field_70718_bc");
-
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
         if( transformedName.equals("net.minecraft.entity.EntityLivingBase") ) {
@@ -121,7 +118,7 @@ public class TransformELBAttackingPlayer
             Label l0 = new Label();
             method.visitLabel(l0);
             method.visitVarInsn(ALOAD, 0);
-            method.visitFieldInsn(GETFIELD, "net/minecraft/entity/EntityLivingBase", F_attackingPlayer, "Lnet/minecraft/entity/player/EntityPlayer;");
+            method.visitFieldInsn(GETFIELD, "net/minecraft/entity/EntityLivingBase", ASMNames.F_attackingPlayer, "Lnet/minecraft/entity/player/EntityPlayer;");
             method.visitInsn(ARETURN);
             Label l1 = new Label();
             method.visitLabel(l1);
@@ -139,7 +136,7 @@ public class TransformELBAttackingPlayer
             method.visitLabel(l0);
             method.visitVarInsn(ALOAD, 0);
             method.visitVarInsn(ALOAD, 1);
-            method.visitFieldInsn(PUTFIELD, "net/minecraft/entity/EntityLivingBase", F_attackingPlayer, "Lnet/minecraft/entity/player/EntityPlayer;");
+            method.visitFieldInsn(PUTFIELD, "net/minecraft/entity/EntityLivingBase", ASMNames.F_attackingPlayer, "Lnet/minecraft/entity/player/EntityPlayer;");
             Label l1 = new Label();
             method.visitLabel(l1);
             method.visitInsn(RETURN);
@@ -159,7 +156,7 @@ public class TransformELBAttackingPlayer
             Label l0 = new Label();
             method.visitLabel(l0);
             method.visitVarInsn(ALOAD, 0);
-            method.visitFieldInsn(GETFIELD, "net/minecraft/entity/EntityLivingBase", F_recentlyHit, "I");
+            method.visitFieldInsn(GETFIELD, "net/minecraft/entity/EntityLivingBase", ASMNames.F_recentlyHit, "I");
             method.visitInsn(IRETURN);
             Label l1 = new Label();
             method.visitLabel(l1);
@@ -177,7 +174,7 @@ public class TransformELBAttackingPlayer
             method.visitLabel(l0);
             method.visitVarInsn(ALOAD, 0);
             method.visitVarInsn(ILOAD, 1);
-            method.visitFieldInsn(PUTFIELD, "net/minecraft/entity/EntityLivingBase", F_recentlyHit, "I");
+            method.visitFieldInsn(PUTFIELD, "net/minecraft/entity/EntityLivingBase", ASMNames.F_recentlyHit, "I");
             Label l1 = new Label();
             method.visitLabel(l1);
             method.visitInsn(RETURN);
@@ -190,7 +187,7 @@ public class TransformELBAttackingPlayer
             clazz.methods.add(method);
         }
 
-        bytes = ASMHelper.createBytes(clazz, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+        bytes = ASMHelper.createBytes(clazz, /*ClassWriter.COMPUTE_FRAMES |*/ ClassWriter.COMPUTE_MAXS);
 
         return bytes;
     }
