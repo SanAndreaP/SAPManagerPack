@@ -1,108 +1,55 @@
 package de.sanandrew.core.manpack.mod;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.Arrays;
+
+import org.apache.logging.log4j.Level;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
 import cpw.mods.fml.common.DummyModContainer;
-import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.LoadController;
-import cpw.mods.fml.common.MetadataCollection;
 import cpw.mods.fml.common.ModMetadata;
-import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLConstructionEvent;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.relauncher.Side;
 
+import de.sanandrew.core.manpack.managers.SAPUpdateManager;
 import de.sanandrew.core.manpack.mod.packet.ChannelHandler;
+import de.sanandrew.core.manpack.util.javatuples.Triplet;
 
 public class ModCntManPack
     extends DummyModContainer
 {
-    public static ChannelHandler channelHandler;
     public static final String MOD_CHANNEL = "sapmanpack";
     public static final String MOD_ID = "sapmanpack";
     public static final String MOD_LOG = "SAPManPack";
+    public static final String UPD_LOG = "SAPUpdateMgr";
 
-    public static final String MOD_VERSION = "1.6.4-2.0.0";
+    public static final String MOD_VERSION = "1.7.2-2.0.0";
 
-    public static File modLocation;
-
-    @SidedProxy(clientSide = "de.sanandrew.core.manpack.mod.client.ClientProxy", serverSide = "de.sanandrew.core.manpack.mod.CommonProxy")
+    // Annotation does not work in a productive MC environment (see below)
+    //@SidedProxy(clientSide = "de.sanandrew.core.manpack.mod.client.ClientProxy", serverSide = "de.sanandrew.core.manpack.mod.CommonProxy")
     public static CommonProxy proxy;
 
-    private ModMetadata md;
+    public static ChannelHandler channelHandler;
 
     public ModCntManPack() {
         super(new ModMetadata());
-        this.md = super.getMetadata();
-        File mcmod = new File(ModCntManPack.modLocation, "mcmod.info");
-        MetadataCollection mc = null;
-        try( FileInputStream fis = new FileInputStream(mcmod) ) {
-            mc = MetadataCollection.from(fis, ModCntManPack.modLocation.getName());
-            System.out.println(String.format("Found an mcmod.info file in directory %s", ModCntManPack.modLocation.getName()));
-        } catch( Throwable e1 ) {
-            System.out.println(String.format("No mcmod.info file found in directory %s", ModCntManPack.modLocation.getName()));
-        }
-
-        if( mc != null ) {
-            this.md = mc.getMetadataForId(ModCntManPack.MOD_ID, null);
-        } else {
-            this.md.authorList = Arrays.asList(new String[] { "SanAndreasP" });
-            this.md.description = "A helper coremod which is needed for all my mods.";
-            this.md.modId = ModCntManPack.MOD_ID;
-            this.md.version = ModCntManPack.MOD_VERSION;
-            this.md.name = "SanAndreasPs Manager Pack CORE edition";
-            this.md.url = "http://www.minecraftforge.net/forum/index.php/topic,2828.0.html";
-        }
-
-        channelHandler = new ChannelHandler(ModCntManPack.MOD_ID, ModCntManPack.MOD_CHANNEL);
-    }
-
-    @Override
-    public String getDisplayVersion() {
-        return this.md.version;
-    }
-
-    @Override
-    public ModMetadata getMetadata() {
-        return this.md;
-    }
-
-    @Override
-    public String getModId() {
-        return this.md.modId;
-    }
-
-    @Override
-    public String getName() {
-        return this.md.name;
-    }
-
-    @Override
-    public String getVersion() {
-        return this.md.version;
-    }
-
-    @Subscribe
-    public void init(FMLInitializationEvent evt) {
-        channelHandler.initialise();
-        FMLCommonHandler.instance().bus().register(new TickEventUpdMgr());
-        ModCntManPack.proxy.registerRenderStuff();
-    }
-
-    @Subscribe
-    public void postInit(FMLPostInitializationEvent evt) {
-        channelHandler.postInitialise();
-    }
-
-    @Subscribe
-    public void preInit(FMLPreInitializationEvent evt) {
-        ModCntManPack.proxy.registerPackets();
-        // channelHandler.registerPacket(ExamplePacket.class);
+        ModMetadata meta = super.getMetadata();
+        meta.modId = ModCntManPack.MOD_ID;
+        meta.name = "SanAndreasPs Manager Pack CORE edition";
+        meta.version = ModCntManPack.MOD_VERSION;
+        meta.authorList = Arrays.asList(new String[] { "SanAndreasP" });
+        meta.description = "A helper coremod which is needed for all my mods.";
+        meta.url = "http://www.minecraftforge.net/forum/index.php/topic,2828.0.html";
+        meta.screenshots = new String[0];
+        meta.logoFile = "";
     }
 
     @Override
@@ -111,8 +58,53 @@ public class ModCntManPack
         return true;
     }
 
-    @Override
-    public String toString() {
-        return this.md != null ? this.getModId() : "Container (" + ModCntManPack.MOD_ID + ") @" + System.identityHashCode(this);
+    @Subscribe
+    public void modConstruction(FMLConstructionEvent event) {
+        System.out.println(event.getASMHarvestedData().getAnnotationsFor(this));
+        NetworkRegistry.INSTANCE.register(this, this.getClass(), null, event.getASMHarvestedData());
+
+        // for some reason the proxy annotation does not work in a coremod within a productive MC environment,
+        // so I just initialize it on my own here until I find a "proper" solution.
+        if( proxy == null ) {
+            FMLLog.log(MOD_LOG, Level.INFO, "Inject missing Proxy class for sapmanpack");
+            String proxyClsName = "de.sanandrew.core.manpack.mod.CommonProxy";
+            if( event.getSide() == Side.CLIENT ) {
+                proxyClsName = "de.sanandrew.core.manpack.mod.client.ClientProxy";
+            }
+
+            try {
+                Class<?> cls = Class.forName(proxyClsName);
+                proxy = (CommonProxy) cls.newInstance();
+            } catch( ClassNotFoundException | SecurityException | InstantiationException | IllegalAccessException e ) {
+                e.printStackTrace();
+            }
+        }
+
+        channelHandler = new ChannelHandler(ModCntManPack.MOD_ID, ModCntManPack.MOD_CHANNEL);
+    }
+
+    @Subscribe
+    public void preInit(FMLPreInitializationEvent evt) {
+        ModCntManPack.proxy.registerPackets();
+    }
+
+    @Subscribe
+    public void init(FMLInitializationEvent evt) {
+        channelHandler.initialise();
+        ModCntManPack.proxy.registerRenderStuff();
+    }
+
+    @Subscribe
+    public void postInit(FMLPostInitializationEvent evt) {
+        channelHandler.postInitialise();
+
+        for( Triplet<SAPUpdateManager, Boolean, String> udm : SAPUpdateManager.UPD_MANAGERS ) {
+            udm.getValue0().checkForUpdate();
+        }
+    }
+
+    @Subscribe
+    public void serverStarting(FMLServerStartingEvent event) {
+        event.registerServerCommand(new CommandSAPManPack());
     }
 }

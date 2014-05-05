@@ -1,6 +1,5 @@
 package de.sanandrew.core.manpack.init;
 
-import java.io.File;
 import java.util.Map;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
@@ -13,6 +12,7 @@ import de.sanandrew.core.manpack.transformer.ASMHelper;
 import de.sanandrew.core.manpack.transformer.ASMNames;
 import de.sanandrew.core.manpack.transformer.TransformBadPotionsATN;
 import de.sanandrew.core.manpack.transformer.TransformELBAttackingPlayer;
+import de.sanandrew.core.manpack.transformer.TransformEnderman;
 import de.sanandrew.core.manpack.transformer.TransformEntityThrowable;
 import de.sanandrew.core.manpack.transformer.TransformHorseArmor;
 import de.sanandrew.core.manpack.transformer.TransformPlayerDismountCtrl;
@@ -35,7 +35,8 @@ public class ManPackLoadingPlugin
                          TransformEntityThrowable.class.getName(),
                          TransformELBAttackingPlayer.class.getName(),
                          TransformPlayerDismountCtrl.class.getName(),
-                         TransformHorseArmor.class.getName()
+                         TransformHorseArmor.class.getName(),
+                         TransformEnderman.class.getName()
                };
     }
 
@@ -52,7 +53,7 @@ public class ManPackLoadingPlugin
     @Override
     public void injectData(Map<String, Object> data) {
         ASMHelper.isMCP = !((Boolean) data.get("runtimeDeobfuscationEnabled")).booleanValue();
-        ModCntManPack.modLocation = (File) data.get("coremodLocation");
+//        ModCntManPack.modLocation = (File) data.get("coremodLocation");
         ASMNames.initialize();
     }
 }
