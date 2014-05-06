@@ -204,7 +204,7 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
 	private void transformArmorTexture(MethodNode method) {
 	    InsnList needle = new InsnList();
 	    needle.add(new VarInsnNode(ALOAD, 0));
-	    needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/passive/EntityHorse", ASMNames.F_func110241cb, "()I"));
+	    needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/passive/EntityHorse", ASMNames.M_func110241cb, "()I"));
 	    needle.add(new VarInsnNode(ISTORE, 3));
 
 	    AbstractInsnNode node = ASMHelper.findLastNodeFromNeedle(method.instructions, needle);

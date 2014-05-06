@@ -16,10 +16,11 @@ public class ASMNames
     public static String F_ironShovel;
     public static String F_iron_horse_armor;
     public static String F_diamondHorseArmor;
-    public static String F_func110241cb;
     public static String F_armorValues;
     public static String F_isRemote;
     public static String F_ridingEntity;
+    public static String F_inventory;
+    public static String F_armorInventory;
 
     public static String M_isBadEffect;
     public static String M_getVecFromPool;
@@ -44,6 +45,8 @@ public class ASMNames
     public static String M_getTotalArmorValue;
     public static String M_isSneaking;
     public static String M_updateRidden;
+    public static String M_shouldAttackPlayer;
+    public static String M_onLivingUpdate;
 
     public static void initialize() {
         if( isInitialized ) {
@@ -62,10 +65,11 @@ public class ASMNames
         F_ironShovel =        ASMHelper.getRemappedMF("iron_shovel",         "field_151037_a");
         F_iron_horse_armor =  ASMHelper.getRemappedMF("iron_horse_armor",    "field_151138_bX");
         F_diamondHorseArmor = ASMHelper.getRemappedMF("diamond_horse_armor", "field_151125_bZ");
-        F_func110241cb =      ASMHelper.getRemappedMF("func_110241_cb",      "func_110241_cb");
         F_armorValues =       ASMHelper.getRemappedMF("armorValues",         "field_110272_by");
         F_isRemote =          ASMHelper.getRemappedMF("isRemote",            "field_72995_K");
         F_ridingEntity =      ASMHelper.getRemappedMF("ridingEntity",        "field_70154_o");
+        F_inventory =         ASMHelper.getRemappedMF("inventory",           "field_71071_by");
+        F_armorInventory =    ASMHelper.getRemappedMF("armorInventory",      "field_70460_b");
 
         M_isBadEffect =          ASMHelper.getRemappedMF("isBadEffect",                 "func_76398_f");
         M_getVecFromPool =       ASMHelper.getRemappedMF("getVecFromPool",              "func_72345_a");
@@ -90,6 +94,8 @@ public class ASMNames
         M_getTotalArmorValue =   ASMHelper.getRemappedMF("getTotalArmorValue",          "func_70658_aO");
         M_isSneaking =           ASMHelper.getRemappedMF("isSneaking",                  "func_70093_af");
         M_updateRidden =         ASMHelper.getRemappedMF("updateRidden",                "func_70098_U");
+        M_shouldAttackPlayer =   ASMHelper.getRemappedMF("shouldAttackPlayer",          "func_70821_d");
+        M_onLivingUpdate =       ASMHelper.getRemappedMF("onLivingUpdate",              "func_70636_d");
 
 
         isInitialized = true;
