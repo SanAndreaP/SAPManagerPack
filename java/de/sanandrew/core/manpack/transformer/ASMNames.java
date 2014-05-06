@@ -47,6 +47,7 @@ public class ASMNames
     public static String M_updateRidden;
     public static String M_shouldAttackPlayer;
     public static String M_onLivingUpdate;
+    public static String M_teleportTo;
 
     public static void initialize() {
         if( isInitialized ) {
@@ -96,7 +97,7 @@ public class ASMNames
         M_updateRidden =         ASMHelper.getRemappedMF("updateRidden",                "func_70098_U");
         M_shouldAttackPlayer =   ASMHelper.getRemappedMF("shouldAttackPlayer",          "func_70821_d");
         M_onLivingUpdate =       ASMHelper.getRemappedMF("onLivingUpdate",              "func_70636_d");
-
+        M_teleportTo =           ASMHelper.getRemappedMF("teleportTo",                  "func_70825_j");
 
         isInitialized = true;
     }
