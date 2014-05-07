@@ -33,8 +33,8 @@ public class TransformEnderman
             this.transformOnLivingUpdate(ASMHelper.findMethod(ASMNames.M_onLivingUpdate, "()V", cn));
             this.transformTeleportTo(ASMHelper.findMethod(ASMNames.M_teleportTo, "(DDD)Z", cn));
 
-            basicClass = ASMHelper.createBytes(cn, /**/ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-            ASMHelper.writeClassToFile(basicClass, "C:/JavaClasses/EntityEnderman.class");
+            basicClass = ASMHelper.createBytes(cn, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+            
             return basicClass;
         }
         return basicClass;
