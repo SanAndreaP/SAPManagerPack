@@ -11,6 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.init.Blocks;
@@ -78,6 +79,9 @@ public class UpdateOverlayManager extends Gui
             }
         }
         this.renderInfobox();
+        if( !(this.mc.currentScreen instanceof GuiMainMenu) ) {
+            this.hideUpdates();
+        }
     }
 
     public void renderInfobox() {

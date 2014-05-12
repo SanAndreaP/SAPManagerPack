@@ -13,7 +13,6 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
-import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
@@ -34,7 +33,7 @@ public class TransformEnderman
             this.transformTeleportTo(ASMHelper.findMethod(ASMNames.M_teleportTo, "(DDD)Z", cn));
 
             basicClass = ASMHelper.createBytes(cn, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-            
+
             return basicClass;
         }
         return basicClass;
@@ -128,7 +127,7 @@ public class TransformEnderman
         newInstr.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "de/sanandrew/core/manpack/util/event/entity/EnderSpawnParticleEvent", "getD3", "()D"));
         newInstr.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/world/World", "spawnParticle", "(Ljava/lang/String;DDDDDD)V"));
         newInstr.add(l17);
-        
+
         method.instructions.insert(node, newInstr);
     }
 
