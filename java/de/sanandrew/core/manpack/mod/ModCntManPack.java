@@ -45,7 +45,7 @@ public class ModCntManPack
         meta.modId = ModCntManPack.MOD_ID;
         meta.name = "SanAndreasPs Manager Pack CORE edition";
         meta.version = ModCntManPack.MOD_VERSION;
-        meta.authorList = Arrays.asList(new String[] { "SanAndreasP" });
+        meta.authorList = Arrays.asList("SanAndreasP");
         meta.description = "A helper coremod which is needed for all my mods.";
         meta.url = "http://www.minecraftforge.net/forum/index.php/topic,2828.0.html";
         meta.screenshots = new String[0];
