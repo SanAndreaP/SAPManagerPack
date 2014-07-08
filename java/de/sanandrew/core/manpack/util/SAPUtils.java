@@ -1,16 +1,10 @@
 package de.sanandrew.core.manpack.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import org.apache.logging.log4j.Level;
-
+import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import de.sanandrew.core.manpack.mod.ModCntManPack;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -19,24 +13,22 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
+import net.minecraft.item.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.logging.log4j.Level;
 
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import de.sanandrew.core.manpack.mod.ModCntManPack;
+import java.io.File;
+import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * A helper class for common used stuff, which is not found somewhere else and
@@ -202,6 +194,8 @@ public final class SAPUtils
         return list.toArray((T[]) Array.newInstance(clazz, list.size()));
     }
 
+    /** DO NOT USE THIS ANYMORE! */
+    @Deprecated
     public static void registerBlocks(String prefix, Block... blocks) {
         int cnt = 0;
         for( Block blk : blocks ) {
@@ -210,11 +204,31 @@ public final class SAPUtils
         }
     }
 
+    /** DO NOT USE THIS ANYMORE! */
+    @Deprecated
     public static void registerItems(String prefix, Item... items) {
         int cnt = 0;
         for( Item itm : items ) {
             String suffix = (new String("0000" + (++cnt)));
             GameRegistry.registerItem(itm, prefix + "_" + suffix.substring(suffix.length() - 4));
+        }
+    }
+
+    public static void registerBlocks(Block... blocks) {
+        int cnt = 0;
+        for( Block block : blocks ) {
+            String blockName = block.getUnlocalizedName();
+            blockName = blockName.substring(blockName.lastIndexOf(':'));
+            GameRegistry.registerBlock(block, blockName);
+        }
+    }
+
+    public static void registerItems(Item... items) {
+        int cnt = 0;
+        for( Item item : items ) {
+            String itemName = item.getUnlocalizedName();
+            itemName = itemName.substring(itemName.lastIndexOf(':'));
+            GameRegistry.registerItem(item, itemName);
         }
     }
 
