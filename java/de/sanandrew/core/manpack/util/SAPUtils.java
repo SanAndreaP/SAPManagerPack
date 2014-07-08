@@ -218,7 +218,7 @@ public final class SAPUtils
         int cnt = 0;
         for( Block block : blocks ) {
             String blockName = block.getUnlocalizedName();
-            blockName = blockName.substring(blockName.lastIndexOf(':'));
+            blockName = blockName.substring(blockName.lastIndexOf(':')+1);
             GameRegistry.registerBlock(block, blockName);
         }
     }
@@ -227,7 +227,7 @@ public final class SAPUtils
         int cnt = 0;
         for( Item item : items ) {
             String itemName = item.getUnlocalizedName();
-            itemName = itemName.substring(itemName.lastIndexOf(':'));
+            itemName = itemName.substring(itemName.lastIndexOf(':')+1);
             GameRegistry.registerItem(item, itemName);
         }
     }
