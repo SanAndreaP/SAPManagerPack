@@ -1,23 +1,16 @@
 package de.sanandrew.core.manpack.mod.client;
 
-import org.lwjgl.input.Keyboard;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ThreadDownloadImageData;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.ResourceLocation;
-
-import net.minecraftforge.common.MinecraftForge;
-
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
 import de.sanandrew.core.manpack.managers.SAPUpdateManager;
 import de.sanandrew.core.manpack.mod.CommonProxy;
 import de.sanandrew.core.manpack.util.client.RenderBlockGlowOverlay;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.common.MinecraftForge;
+import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy
@@ -52,13 +45,14 @@ public class ClientProxy extends CommonProxy
 	}
 
 	private void applyCapesToCertainPlayers() {
-	    String capeURL = "http://i.imgur.com/4SpmGSv.png";
-        String[] owners = {"sanandreasMC", "SilverChiren"};
-
-        ThreadDownloadImageData image = new ThreadDownloadImageData(capeURL, null, null);
-
-        for( String username : owners ) {
-            Minecraft.getMinecraft().renderEngine.loadTexture(new ResourceLocation("cloaks/" + username), image);
-        }
+        //TODO: removed hook. There will be something better for our modders ;)
+//	    String capeURL = "http://i.imgur.com/4SpmGSv.png";
+//        String[] owners = {"sanandreasMC", "SilverChiren"};
+//
+//        ThreadDownloadImageData image = new ThreadDownloadImageData(capeURL, null, null);
+//
+//        for( String username : owners ) {
+//            Minecraft.getMinecraft().renderEngine.loadTexture(new ResourceLocation("cloaks/" + username), image);
+//        }
 	}
 }

@@ -1,24 +1,16 @@
 package de.sanandrew.core.manpack.init;
 
-import java.util.Map;
-
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.SortingIndex;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
-
 import de.sanandrew.core.manpack.mod.ModCntManPack;
-import de.sanandrew.core.manpack.transformer.ASMHelper;
-import de.sanandrew.core.manpack.transformer.ASMNames;
-import de.sanandrew.core.manpack.transformer.TransformBadPotionsATN;
-import de.sanandrew.core.manpack.transformer.TransformELBAttackingPlayer;
-import de.sanandrew.core.manpack.transformer.TransformEnderman;
-import de.sanandrew.core.manpack.transformer.TransformEntityThrowable;
-import de.sanandrew.core.manpack.transformer.TransformHorseArmor;
-import de.sanandrew.core.manpack.transformer.TransformPlayerDismountCtrl;
+import de.sanandrew.core.manpack.transformer.*;
+
+import java.util.Map;
 
 @SortingIndex(1001)
-@MCVersion("1.7.2")
+@MCVersion("1.7.10")
 @TransformerExclusions({ "de.sanandrew.core.manpack.transformer", "de.sanandrew.core.manpack.init" })
 public class ManPackLoadingPlugin
     implements IFMLLoadingPlugin
