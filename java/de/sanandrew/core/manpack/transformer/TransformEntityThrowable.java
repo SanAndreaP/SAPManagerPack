@@ -1,20 +1,10 @@
 package de.sanandrew.core.manpack.transformer;
 
+import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.LineNumberNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.VarInsnNode;
-
-import net.minecraft.launchwrapper.IClassTransformer;
+import org.objectweb.asm.tree.*;
 
 public class TransformEntityThrowable
     implements IClassTransformer, Opcodes
@@ -54,7 +44,7 @@ public class TransformEntityThrowable
             InsnList needle = new InsnList();
             needle.add(new FieldInsnNode(GETFIELD, "net/minecraft/entity/projectile/EntityThrowable", ASMNames.F_motionZ, "D"));
             needle.add(new InsnNode(DADD));
-            needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/util/Vec3Pool", ASMNames.M_getVecFromPool, "(DDD)Lnet/minecraft/util/Vec3;"));
+            needle.add(new MethodInsnNode(INVOKESTATIC, "net/minecraft/util/Vec3", ASMNames.M_createVectorHelper, "(DDD)Lnet/minecraft/util/Vec3;"));
             needle.add(new VarInsnNode(ASTORE, 2));
             needle.add(new LabelNode());
             needle.add(new LineNumberNode(-1, new LabelNode()));

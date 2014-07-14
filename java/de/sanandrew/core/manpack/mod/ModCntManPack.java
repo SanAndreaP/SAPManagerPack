@@ -1,27 +1,20 @@
 package de.sanandrew.core.manpack.mod;
 
-import java.util.Arrays;
-
-import org.apache.logging.log4j.Level;
-
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-
 import cpw.mods.fml.common.DummyModContainer;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.LoadController;
 import cpw.mods.fml.common.ModMetadata;
-import cpw.mods.fml.common.event.FMLConstructionEvent;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
-
 import de.sanandrew.core.manpack.managers.SAPUpdateManager;
 import de.sanandrew.core.manpack.mod.packet.ChannelHandler;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
+import org.apache.logging.log4j.Level;
+
+import java.util.Arrays;
 
 public class ModCntManPack
     extends DummyModContainer
@@ -31,7 +24,7 @@ public class ModCntManPack
     public static final String MOD_LOG = "SAPManPack";
     public static final String UPD_LOG = "SAPUpdateMgr";
 
-    public static final String MOD_VERSION = "1.7.2-2.0.0";
+    public static final String MOD_VERSION = "2.0.0";
 
     // Annotation does not work in a productive MC environment (see below)
     //@SidedProxy(clientSide = "de.sanandrew.core.manpack.mod.client.ClientProxy", serverSide = "de.sanandrew.core.manpack.mod.CommonProxy")

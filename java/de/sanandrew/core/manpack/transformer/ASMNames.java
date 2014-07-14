@@ -23,7 +23,7 @@ public class ASMNames
     public static String F_armorInventory;
 
     public static String M_isBadEffect;
-    public static String M_getVecFromPool;
+    public static String M_createVectorHelper;
     public static String M_onUpdate;
     public static String M_rayTraceBlocks;
     public static String M_updateObject;
@@ -73,7 +73,7 @@ public class ASMNames
         F_armorInventory =    ASMHelper.getRemappedMF("armorInventory",      "field_70460_b");
 
         M_isBadEffect =          ASMHelper.getRemappedMF("isBadEffect",                 "func_76398_f");
-        M_getVecFromPool =       ASMHelper.getRemappedMF("getVecFromPool",              "func_72345_a");
+        M_createVectorHelper =   ASMHelper.getRemappedMF("createVectorHelper",          "func_72443_a");
         M_onUpdate =             ASMHelper.getRemappedMF("onUpdate",                    "func_70071_h_");
         M_rayTraceBlocks =       ASMHelper.getRemappedMF("rayTraceBlocks",              "func_72933_a");
         M_updateObject =         ASMHelper.getRemappedMF("updateObject",                "func_75692_b");

@@ -1,20 +1,17 @@
 package de.sanandrew.core.manpack.mod.client;
 
+import de.sanandrew.core.manpack.managers.SAPUpdateManager;
+import de.sanandrew.core.manpack.util.SAPUtils;
+import net.minecraft.client.gui.*;
+import net.minecraft.client.renderer.Tessellator;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiSlot;
-import net.minecraft.client.gui.GuiYesNo;
-import net.minecraft.client.renderer.Tessellator;
-
-import de.sanandrew.core.manpack.managers.SAPUpdateManager;
-import de.sanandrew.core.manpack.util.SAPUtils;
-
 public class GuiModUpdate
     extends GuiScreen
+    implements GuiYesNoCallback
 {
     private GuiButton restartMC;
     private GuiButton back2Menu;

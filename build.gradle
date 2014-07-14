@@ -69,8 +69,12 @@ task sourceJar(type: Jar) {
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
-    appendix = 'compile'
+    appendix = 'deobf'
     archiveName = baseName + "-" + version + "-" + appendix + ".jar"
+    manifest {
+        attributes 'FMLCorePlugin': 'de.sanandrew.core.manpack.init.ManPackLoadingPlugin'
+        attributes 'FMLCorePluginContainsFMLMod' : 'true'
+    }
 }
 
 repositories {
