@@ -1,34 +1,29 @@
 package de.sanandrew.core.manpack.util;
 
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import de.sanandrew.core.manpack.mod.ModCntManPack;
+import de.sanandrew.core.manpack.util.javatuples.Quartet;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.*;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTool;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
-import org.apache.logging.log4j.Level;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * A helper class for common used stuff, which is not found somewhere else and
@@ -62,11 +57,7 @@ public final class SAPUtils
      * @return The stackSize-decreased ItemStack or null if stackSize <= 0
      **/
     public static ItemStack decrStackSize(ItemStack is, int amount) {
-        is.stackSize -= amount;
-        if( is.stackSize <= 0 ) {
-            return null;
-        }
-        return is;
+        return ItemHelper.decrStackSize(is, amount);
     }
 
     /**
@@ -74,20 +65,12 @@ public final class SAPUtils
      * the block wildcard as damage value, only the item instances will be
      * compared.
      *
-     * @param is1
-     *            The first ItemStack
-     * @param is2
-     *            the second ItemStack
+     * @param is1 The first ItemStack
+     * @param is2 the second ItemStack
      * @return true, if stacks are equal, false otherwise.
      */
     public static boolean areStacksEqualWithWCV(ItemStack is1, ItemStack is2) {
-        if( is1.isItemEqual(is2) ) {
-            return true;
-        }
-        if( is1.getItemDamage() == OreDictionary.WILDCARD_VALUE || is2.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
-            return is1.getItem() == is2.getItem();
-        }
-        return false;
+        return ItemHelper.areStacksEqualWithWCV(is1, is2);
     }
 
     /**
@@ -101,22 +84,7 @@ public final class SAPUtils
      *         Array.
      */
     public static ItemStack[] getGoodItemStacks(ItemStack is) {
-        List<ItemStack> isMap = new ArrayList<ItemStack>();
-        if( is.stackSize <= is.getMaxStackSize() && is.stackSize > 0 ) {
-            isMap.add(is);
-        } else if( is.stackSize > 0 ) {
-            int stk = is.stackSize;
-            for( int i = 0; i < MathHelper.ceiling_float_int((float) is.stackSize / (float) is.getMaxStackSize()); i++ ) {
-                ItemStack is1 = is.copy();
-                if( stk > is.getMaxStackSize() ) {
-                    stk -= is1.stackSize = is.getMaxStackSize();
-                } else {
-                    is1.stackSize = stk;
-                }
-                isMap.add(is1);
-            }
-        }
-        return isMap.toArray(new ItemStack[isMap.size()]);
+        return ItemHelper.getGoodItemStacks(is);
     }
 
     public static int getInBetweenVal(int var1, int var2) {
@@ -142,16 +110,14 @@ public final class SAPUtils
     }
 
     public static boolean isItemInStackArray(ItemStack base, ItemStack... stackArray) {
-        for( ItemStack stack : stackArray ) {
-            if( base != null && stack != null && areStacksEqualWithWCV(base, stack) ) {
-                return true;
-            }
-        }
-        return false;
+        return ItemHelper.isItemInStackArray(base, stackArray);
     }
 
+    @SuppressWarnings("unchecked")
     public static Block[] getToolBlocks(ItemTool tool) {
-        return SAPReflectionHelper.getCachedFieldValue(ItemTool.class, tool, "blocksEffectiveAgainst", "field_77863_c");
+        Set set = SAPReflectionHelper.getCachedFieldValue(ItemTool.class, tool, "field_150914_c", "field_150914_c");
+        Set<Block> blockSet = (Set<Block>) set;
+        return getArrayFromCollection(blockSet, Block.class);
     }
 
     public static boolean isToolEffective(Block[] effectives, Block block) {
@@ -164,116 +130,41 @@ public final class SAPUtils
     }
 
     public static boolean areItemInstEqual(Object instance1, Object instance2) {
-        if( instance1 instanceof Item ) {
-            if( instance2 instanceof Item ) {
-                return instance1 == instance2;
-            } else if( instance2 instanceof ItemStack ) {
-                return instance1 == ((ItemStack) instance2).getItem();
-            }
-        } else if( instance1 instanceof Block ) {
-            if( instance2 instanceof Block ) {
-                return instance1 == instance2;
-            } else if( instance2 instanceof ItemStack && ((ItemStack) instance2).getItem() instanceof ItemBlock ) {
-                return instance1 == Block.getBlockFromItem(((ItemStack)instance2).getItem());
-            }
-        } else if( instance1 instanceof ItemStack ) {
-            if( instance2 instanceof Block || instance2 instanceof Item ) {
-                return SAPUtils.areItemInstEqual(instance2, instance1);
-            } else if( instance2 instanceof ItemStack ) {
-                return SAPUtils.areStacksEqualWithWCV((ItemStack) instance1, (ItemStack) instance2);
-            }
-        }
-        return false;
+        return ItemHelper.areItemInstEqual(instance1, instance2);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static <T> T[] getArrayFromList(List<T> list, Class clazz) {
-        if( list.size() == 0 ) {
+    public static <T> T[] getArrayFromCollection(Collection<T> collection, Class clazz) {
+        if( collection.size() == 0 ) {
             return null;
         }
-        return list.toArray((T[]) Array.newInstance(clazz, list.size()));
-    }
-
-    /** DO NOT USE THIS ANYMORE! */
-    @Deprecated
-    public static void registerBlocks(String prefix, Block... blocks) {
-        int cnt = 0;
-        for( Block blk : blocks ) {
-            String suffix = (new String("0000" + (++cnt)));
-            GameRegistry.registerBlock(blk, prefix + "_" + suffix.substring(suffix.length() - 4));
-        }
-    }
-
-    /** DO NOT USE THIS ANYMORE! */
-    @Deprecated
-    public static void registerItems(String prefix, Item... items) {
-        int cnt = 0;
-        for( Item itm : items ) {
-            String suffix = (new String("0000" + (++cnt)));
-            GameRegistry.registerItem(itm, prefix + "_" + suffix.substring(suffix.length() - 4));
-        }
+        T[] myArray = (T[]) Array.newInstance(clazz, collection.size());
+        collection.toArray(myArray);
+        return myArray;
     }
 
     public static void registerBlocks(Block... blocks) {
-        int cnt = 0;
         for( Block block : blocks ) {
             String blockName = block.getUnlocalizedName();
             blockName = blockName.substring(blockName.lastIndexOf(':')+1);
-            GameRegistry.registerBlock(block, blockName);
+            GameRegistry.registerBlock(block, blockName.toLowerCase());
         }
     }
 
     public static void registerItems(Item... items) {
-        int cnt = 0;
         for( Item item : items ) {
             String itemName = item.getUnlocalizedName();
             itemName = itemName.substring(itemName.lastIndexOf(':')+1);
-            GameRegistry.registerItem(item, itemName);
+            GameRegistry.registerItem(item, itemName.toLowerCase());
         }
     }
 
     public static ItemStack addItemStackToInventory(ItemStack is, IInventory inv) {
-        int invSize = inv.getSizeInventory() - (inv instanceof InventoryPlayer ? 4 : 0);
-        for( int i1 = 0; i1 < invSize && is != null; i1++ ) {
-            ItemStack invIS = inv.getStackInSlot(i1);
-            if( invIS != null && is.isItemEqual(invIS) ) {
-                int combinedCount = is.stackSize + invIS.stackSize;
-                int maxStack = Math.min(invIS.getMaxStackSize(), inv.getInventoryStackLimit());
-                if( combinedCount <= maxStack ) {
-                    invIS.stackSize = combinedCount;
-                    inv.setInventorySlotContents(i1, invIS.copy());
-                    is = null;
-                    break;
-                } else {
-                    int rest = combinedCount - maxStack;
-                    invIS.stackSize = maxStack;
-                    inv.setInventorySlotContents(i1, invIS.copy());
-                    is.stackSize = rest;
-                }
-            }
-        }
-
-        // if the given stack is not empty yet, search for an empty slot and put it there
-        for( int i2 = 0; i2 < invSize && is != null; i2++ ) {
-            ItemStack invIS = inv.getStackInSlot(i2);
-            if( invIS == null && inv.isItemValidForSlot(i2, is) ) {
-                if( is.stackSize <= inv.getInventoryStackLimit() ) {
-                    inv.setInventorySlotContents(i2, is.copy());
-                    is = null;
-                    break;
-                } else {
-                    int rest = is.stackSize - inv.getInventoryStackLimit();
-                    is.stackSize = inv.getInventoryStackLimit();
-                    inv.setInventorySlotContents(i2, is.copy());
-                    is.stackSize = rest;
-                }
-            }
-        }
-        return is;
+        return ItemHelper.addItemStackToInventory(is, inv);
     }
 
-    public static File getMCDir(String path) {
-        return new File(".", path);
+    public static RGBAValues getRgbaFromColorInt(int rgba) {
+        return new RGBAValues(((rgba) >> 16) & 255, ((rgba) >> 8) & 255, rgba & 255, ((rgba) >> 24) & 255);
     }
 
     @SideOnly(Side.CLIENT)
@@ -296,6 +187,15 @@ public final class SAPUtils
         return I18n.format(key, data);
     }
 
+    public static File getMcDir(String path) {
+        return AppHelper.getMcDir(path);
+    }
+
+    public static void restartApp() throws IOException {
+        AppHelper.restartApp();
+    }
+
+    @Deprecated
     public static DamageSource getNewDamageSource(String type) {
         try {
             Constructor<DamageSource> dmgsrcConst = DamageSource.class.getDeclaredConstructor(String.class);
@@ -307,67 +207,32 @@ public final class SAPUtils
         return null;
     }
 
+    @Deprecated
     public static int getMaxDmgFactorAM(ItemArmor.ArmorMaterial aMaterial) {
         return SAPReflectionHelper.getCachedFieldValue(ItemArmor.ArmorMaterial.class, aMaterial, "maxDamageFactor", "field_78048_f");
     }
 
-    public static void restartApp() throws IOException {
-        try {
+    public static class RGBAValues {
+        private final Quartet<Integer, Integer, Integer, Integer> value;
 
-            String java = System.getProperty("java.home") + "/bin/javaw"; // java binary
+        private RGBAValues(int r, int g, int b, int a) {
+            this.value = Quartet.with(r, g, b, a);
+        }
 
-            List<String> vmArguments = ManagementFactory.getRuntimeMXBean().getInputArguments(); // vm arguments
-            StringBuffer vmArgsOneLine = new StringBuffer();
-            for (String arg : vmArguments) {
-                if (!arg.contains("-agentlib")) { // if it's the agent argument : we ignore it otherwise the
-                    vmArgsOneLine.append(arg);    // address of the old application and the new one will be in conflict
-                    vmArgsOneLine.append(" ");
-                }
-            }
+        public int getRed() {
+            return this.value.getValue0();
+        }
 
-            final StringBuffer cmd = new StringBuffer("\"" + java + "\" " + vmArgsOneLine); // init the command to execute, add the vm args
+        public int getGreen() {
+            return this.value.getValue1();
+        }
 
-            String[] mainCommand = System.getProperty("sun.java.command").split(" "); // program main and program arguments
-            if( mainCommand[0].endsWith(".jar") ) { // program main is a jar, add -jar mainJar
-                cmd.append("-jar " + new File(mainCommand[0]).getPath());
-            } else { // else it's a .class, add the classpath and mainClass
-                cmd.append("-cp \"" + System.getProperty("java.class.path") + "\" " + mainCommand[0]);
-            }
+        public int getBlue() {
+            return this.value.getValue2();
+        }
 
-            for (int i = 1; i < mainCommand.length; i++) { // finally add program arguments
-                cmd.append(" ");
-                cmd.append(mainCommand[i]);
-            }
-
-            // execute the command in a shutdown hook, to be sure that all the
-            // resources have been disposed before restarting the application
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        ProcessBuilder builder = new ProcessBuilder(cmd.toString());
-                        builder.inheritIO();    // inherit the console output from the super process (the process initiating the restart)
-                        builder.start();        // start the new process
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-            // exit
-            try {
-                System.out.println();
-                FMLLog.log(ModCntManPack.MOD_LOG, Level.INFO, "---=== Restarting Minecraft Client! ===---");    // try to shutdown Minecraft applet
-                System.out.println();
-                Minecraft.getMinecraft().shutdownMinecraftApplet();
-            } catch( NoClassDefFoundError ex ) {
-                System.out.println();
-                FMLLog.log(ModCntManPack.MOD_LOG, Level.INFO, "---=== Restarting Minecraft Server! ===---");    // if Minecraft class was not found
-                System.out.println();                                                                           // (usually the case on a dedi-server),
-                MinecraftServer.getServer().initiateShutdown();                                                 // then shutdown server
-            }
-        } catch (Throwable e) {
-            throw new IOException("Error while trying to restart the application", e);
+        public int getAlpha() {
+            return this.value.getValue3();
         }
     }
 }

@@ -1,4 +1,4 @@
-package de.sanandrew.core.manpack.util;
+package de.sanandrew.core.manpack.item;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlockWithMetadata;
