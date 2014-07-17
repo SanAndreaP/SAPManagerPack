@@ -1,33 +1,43 @@
 package de.sanandrew.core.manpack.util.client;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
 public final class ItemRenderHelper
 {
     private static final ResourceLocation glintPNG = new ResourceLocation("textures/misc/enchanted_item_glint.png");
 
+    protected static RenderItem itemRender = new RenderItem();
+
 	public static void renderItem(EntityLivingBase living, ItemStack stack, int layer) {
 		renderItem(living, stack, layer, false);
 	}
 
+    public static void renderItemInGui(Minecraft mc, ItemStack stack, int x, int y) {
+        if( stack != null ) {
+            GL11.glTranslatef(0.0F, 0.0F, 32.0F);
+            itemRender.zLevel = 200.0F;
+            itemRender.renderItemIntoGUI(null, mc.getTextureManager(), stack, x, y);
+            itemRender.zLevel = 0.0F;
+        }
+    }
+
 	public static void renderItem(EntityLivingBase living, ItemStack stack, int layer, boolean isGlowing) {
 		GL11.glPushMatrix();
 
-        IIcon icon = living.getItemIcon(stack, layer);
+        IIcon icon = getItemIcon(stack, layer);
 
         if( icon == null ) {
             GL11.glPopMatrix();
@@ -154,5 +164,10 @@ public final class ItemRenderHelper
             tessellator.addVertexWithUV(minU + 0, minV + 0, zLevel, (f2 + 0.0F) * f, (f3 + 0.0F) * f1);
             tessellator.draw();
         }
+    }
+
+    public static IIcon getItemIcon(ItemStack stack, int layer)
+    {
+        return stack.getItem().requiresMultipleRenderPasses() ? stack.getItem().getIconFromDamageForRenderPass(stack.getItemDamage(), layer) : stack.getIconIndex();
     }
 }

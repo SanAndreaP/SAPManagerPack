@@ -21,7 +21,6 @@ final class AppHelper
 {
     static void restartApp() throws IOException {
         try {
-
             String java = System.getProperty("java.home") + "/bin/javaw"; // java binary
 
             List<String> vmArguments = ManagementFactory.getRuntimeMXBean().getInputArguments(); // vm arguments
