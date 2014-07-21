@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
@@ -21,8 +20,8 @@ public final class ItemRenderHelper
 
     protected static RenderItem itemRender = new RenderItem();
 
-	public static void renderItem(EntityLivingBase living, ItemStack stack, int layer) {
-		renderItem(living, stack, layer, false);
+	public static void renderItem(ItemStack stack, int layer) {
+		renderItem(stack, layer, false);
 	}
 
     public static void renderItemInGui(Minecraft mc, ItemStack stack, int x, int y) {
@@ -34,7 +33,76 @@ public final class ItemRenderHelper
         }
     }
 
-	public static void renderItem(EntityLivingBase living, ItemStack stack, int layer, boolean isGlowing) {
+    public static void renderItemIn3D(ItemStack stack, int layer) {
+        GL11.glPushMatrix();
+
+        IIcon icon = getItemIcon(stack, layer);
+
+        if( icon == null ) {
+            GL11.glPopMatrix();
+            return;
+        }
+
+        float minU = icon.getMinU();
+        float maxU = icon.getMaxU();
+        float minV = icon.getMinV();
+        float maxV = icon.getMaxV();
+
+        Tessellator tessellator = Tessellator.instance;
+
+        Minecraft.getMinecraft().renderEngine.bindTexture(
+                Minecraft.getMinecraft().renderEngine.getResourceLocation(stack.getItemSpriteNumber())
+        );
+
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+
+        renderItemIn2D(tessellator, maxU, minV, minU, maxV, icon.getIconWidth(), icon.getIconHeight(), 0.0625F, true);
+
+        if( stack != null && stack.hasEffect(layer) ) {
+            float baseClr = 0.76F;
+            float glintScale = 0.125F;
+            float glintTransX = Minecraft.getSystemTime() % 3000L / 3000.0F * 8.0F;
+
+            GL11.glDepthFunc(GL11.GL_EQUAL);
+            GL11.glDisable(GL11.GL_LIGHTING);
+
+            Minecraft.getMinecraft().renderEngine.bindTexture(glintPNG);
+
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
+            GL11.glColor4f(0.5F * baseClr, 0.25F * baseClr, 0.8F * baseClr, 1.0F);
+            GL11.glMatrixMode(GL11.GL_TEXTURE);
+            GL11.glPushMatrix();
+            GL11.glScalef(glintScale, glintScale, glintScale);
+            GL11.glTranslatef(glintTransX, 0.0F, 0.0F);
+            GL11.glRotatef(-50.0F, 0.0F, 0.0F, 1.0F);
+
+            renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.0625F, false);
+
+            GL11.glPopMatrix();
+            GL11.glPushMatrix();
+            GL11.glScalef(glintScale, glintScale, glintScale);
+
+            glintTransX = Minecraft.getSystemTime() % 4873L / 4873.0F * 8.0F;
+
+            GL11.glTranslatef(-glintTransX, 0.0F, 0.0F);
+            GL11.glRotatef(10.0F, 0.0F, 0.0F, 1.0F);
+
+            renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.0625F, false);
+
+            GL11.glPopMatrix();
+            GL11.glColor4f(1F, 1F, 1F, 1.0F);
+            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glDepthFunc(GL11.GL_LEQUAL);
+        }
+
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GL11.glPopMatrix();
+    }
+
+	public static void renderItem(ItemStack stack, int layer, boolean isGlowing) {
 		GL11.glPushMatrix();
 
         IIcon icon = getItemIcon(stack, layer);
