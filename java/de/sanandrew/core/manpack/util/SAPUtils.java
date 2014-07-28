@@ -34,7 +34,7 @@ import java.util.Set;
  */
 public final class SAPUtils
 {
-    public static final Random RANDOM = new Random();
+    public static final Random RNG = new Random();
 
     /**
      * decreases the ItemStack stackSize by 1

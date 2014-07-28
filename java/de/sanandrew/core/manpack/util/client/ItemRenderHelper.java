@@ -2,11 +2,17 @@ package de.sanandrew.core.manpack.util.client;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemCloth;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
@@ -19,6 +25,7 @@ public final class ItemRenderHelper
     private static final ResourceLocation glintPNG = new ResourceLocation("textures/misc/enchanted_item_glint.png");
 
     protected static RenderItem itemRender = new RenderItem();
+    protected static RenderBlocks renderBlocksRi = new RenderBlocks();
 
 	public static void renderItem(ItemStack stack, int layer) {
 		renderItem(stack, layer, false);
@@ -33,10 +40,169 @@ public final class ItemRenderHelper
         }
     }
 
-    public static void renderItemIn3D(ItemStack stack, int layer) {
+    public static void renderIconIn3D(IIcon icon, boolean isBlock, boolean hasAlpha, int color) {
         GL11.glPushMatrix();
 
-        IIcon icon = getItemIcon(stack, layer);
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+
+        if( isBlock ) {
+            Minecraft.getMinecraft().renderEngine.bindTexture(Minecraft.getMinecraft().renderEngine.getResourceLocation(0));
+            if( hasAlpha ) {
+                GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
+                GL11.glEnable(GL11.GL_BLEND);
+                OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+            }
+
+            GL11.glTranslatef(0.5F, 0.5F, 0.0F);
+            GL11.glScalef(0.5F, 0.5F, 0.5F);
+
+            GL11.glPushMatrix();
+
+            Tessellator tessellator = Tessellator.instance;
+
+            float red = (float)(color >> 16 & 255) / 255.0F;
+            float green = (float)(color >> 8 & 255) / 255.0F;
+            float blue = (float)(color & 255) / 255.0F;
+            GL11.glColor4f(red, green, blue, 1.0F);
+
+            Blocks.stone.setBlockBoundsForItemRender();
+            renderBlocksRi.setRenderBoundsFromBlock(Blocks.stone);
+            GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
+            GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+
+            tessellator.startDrawingQuads();
+            tessellator.setNormal(0.0F, -1.0F, 0.0F);
+            renderBlocksRi.renderFaceYNeg(Blocks.stone, 0.0D, 0.0D, 0.0D, icon);
+            tessellator.draw();
+            tessellator.startDrawingQuads();
+            tessellator.setNormal(0.0F, 1.0F, 0.0F);
+            renderBlocksRi.renderFaceYPos(Blocks.stone, 0.0D, 0.0D, 0.0D, icon);
+            tessellator.draw();
+            tessellator.startDrawingQuads();
+            tessellator.setNormal(0.0F, 0.0F, -1.0F);
+            renderBlocksRi.renderFaceZNeg(Blocks.stone, 0.0D, 0.0D, 0.0D, icon);
+            tessellator.draw();
+            tessellator.startDrawingQuads();
+            tessellator.setNormal(0.0F, 0.0F, 1.0F);
+            renderBlocksRi.renderFaceZPos(Blocks.stone, 0.0D, 0.0D, 0.0D, icon);
+            tessellator.draw();
+            tessellator.startDrawingQuads();
+            tessellator.setNormal(-1.0F, 0.0F, 0.0F);
+            renderBlocksRi.renderFaceXNeg(Blocks.stone, 0.0D, 0.0D, 0.0D, icon);
+            tessellator.draw();
+            tessellator.startDrawingQuads();
+            tessellator.setNormal(1.0F, 0.0F, 0.0F);
+            renderBlocksRi.renderFaceXPos(Blocks.stone, 0.0D, 0.0D, 0.0D, icon);
+            tessellator.draw();
+
+            GL11.glPopMatrix();
+
+            if( hasAlpha ) {
+                GL11.glDisable(GL11.GL_BLEND);
+            }
+        } else {
+            float f5;
+
+            if( hasAlpha ) {
+                GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
+                GL11.glEnable(GL11.GL_BLEND);
+                OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+            }
+
+            float red = (float)(color >> 16 & 255) / 255.0F;
+            float green = (float)(color >> 8 & 255) / 255.0F;
+            float blue = (float)(color & 255) / 255.0F;
+            GL11.glColor4f(red, green, blue, 1.0F);
+            renderItemIn3D(icon, false, 0, 1);
+
+            if( hasAlpha ) {
+                GL11.glDisable(GL11.GL_BLEND);
+            }
+        }
+
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GL11.glPopMatrix();
+        TextureUtil.func_147945_b();
+    }
+
+    public static void renderItemIn3D(ItemStack stack) {
+        if( stack.getItem() != null ) {
+            GL11.glPushMatrix();
+
+            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+
+            if( stack.getItemSpriteNumber() == 0 && stack.getItem() instanceof ItemBlock
+                    && RenderBlocks.renderItemIn3d(Block.getBlockFromItem(stack.getItem()).getRenderType()) )
+            {
+                Minecraft.getMinecraft().renderEngine.bindTexture(Minecraft.getMinecraft().renderEngine.getResourceLocation(stack.getItemSpriteNumber()));
+
+                Block block = Block.getBlockFromItem(stack.getItem());
+
+                float blockScale = 0.5F;
+                int renderType = block.getRenderType();
+
+                if( renderType == 1 || renderType == 19 || renderType == 12 || renderType == 2 ) {
+                    blockScale = 1.0F;
+                }
+
+                if( block.getRenderBlockPass() > 0 ) {
+                    GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
+                    GL11.glEnable(GL11.GL_BLEND);
+                    OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+                }
+
+                GL11.glTranslatef(0.5F, 0.5F, 0.0F);
+                GL11.glScalef(blockScale, blockScale, blockScale);
+
+                GL11.glPushMatrix();
+                renderBlocksRi.renderBlockAsItem(block, stack.getItemDamage(), 1.0F);
+                GL11.glPopMatrix();
+
+                if( block.getRenderBlockPass() > 0 ) {
+                    GL11.glDisable(GL11.GL_BLEND);
+                }
+            } else {
+                if( stack.getItem().requiresMultipleRenderPasses() ) {
+                    for( int j = 0; j < stack.getItem().getRenderPasses(stack.getItemDamage()); j++ ) {
+                        IIcon icon = stack.getItem().getIcon(stack, j);
+
+                        int color = stack.getItem().getColorFromItemStack(stack, j);
+                        float red = (float)(color >> 16 & 255) / 255.0F;
+                        float green = (float)(color >> 8 & 255) / 255.0F;
+                        float blue = (float)(color & 255) / 255.0F;
+                        GL11.glColor4f(red, green, blue, 1.0F);
+                        renderItemIn3D(icon, stack.hasEffect(j), j, 1);
+                    }
+                } else {
+                    IIcon icon = stack.getItem().getIcon(stack, 0);
+
+                    if( stack.getItem() instanceof ItemCloth ) {
+                        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
+                        GL11.glEnable(GL11.GL_BLEND);
+                        OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+                    }
+
+                    int color = stack.getItem().getColorFromItemStack(stack, 0);
+                    float red = (float)(color >> 16 & 255) / 255.0F;
+                    float green = (float)(color >> 8 & 255) / 255.0F;
+                    float blue = (float)(color & 255) / 255.0F;
+                    GL11.glColor4f(red, green, blue, 1.0F);
+                    renderItemIn3D(icon, stack.hasEffect(0), 0, 1);
+
+                    if( stack.getItem() instanceof ItemCloth ) {
+                        GL11.glDisable(GL11.GL_BLEND);
+                    }
+                }
+            }
+
+            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+            GL11.glPopMatrix();
+            TextureUtil.func_147945_b();
+        }
+    }
+
+    private static void renderItemIn3D(IIcon icon, boolean withEffect, int layer, int spriteIndex) {
+        GL11.glPushMatrix();
 
         if( icon == null ) {
             GL11.glPopMatrix();
@@ -51,14 +217,14 @@ public final class ItemRenderHelper
         Tessellator tessellator = Tessellator.instance;
 
         Minecraft.getMinecraft().renderEngine.bindTexture(
-                Minecraft.getMinecraft().renderEngine.getResourceLocation(stack.getItemSpriteNumber())
+                Minecraft.getMinecraft().renderEngine.getResourceLocation(spriteIndex)
         );
 
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
-        renderItemIn2D(tessellator, maxU, minV, minU, maxV, icon.getIconWidth(), icon.getIconHeight(), 0.0625F, true);
+        renderItemIn2D(tessellator, maxU, minV, minU, maxV, icon.getIconWidth(), icon.getIconHeight(), 0.0625F, false);
 
-        if( stack != null && stack.hasEffect(layer) ) {
+        if( withEffect ) {
             float baseClr = 0.76F;
             float glintScale = 0.125F;
             float glintTransX = Minecraft.getSystemTime() % 3000L / 3000.0F * 8.0F;
