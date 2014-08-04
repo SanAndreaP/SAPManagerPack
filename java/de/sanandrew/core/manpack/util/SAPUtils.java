@@ -10,10 +10,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
+import net.minecraft.item.*;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
@@ -149,6 +146,12 @@ public final class SAPUtils
             blockName = blockName.substring(blockName.lastIndexOf(':')+1);
             GameRegistry.registerBlock(block, blockName.toLowerCase());
         }
+    }
+
+    public static <A> void registerBlockWithItem(Block block, Class<? extends ItemBlock> itemClass) {
+        String blockName = block.getUnlocalizedName();
+        blockName = blockName.substring(blockName.lastIndexOf(':') + 1);
+        GameRegistry.registerBlock(block, itemClass, blockName.toLowerCase());
     }
 
     public static void registerItems(Item... items) {
