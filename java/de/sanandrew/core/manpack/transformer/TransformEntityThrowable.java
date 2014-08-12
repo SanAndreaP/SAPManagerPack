@@ -62,7 +62,7 @@ public class TransformEntityThrowable
             InsnList injectList = new InsnList();
             injectList.add(new VarInsnNode(ALOAD, 0));
             injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/projectile/EntityThrowable", "_SAP_canImpactOnLiquid", "()Z"));
-            injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/world/World", ASMNames.M_rayTraceBlocks, "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;Z)Lnet/minecraft/util/MovingObjectPosition;"));
+            injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/world/World", ASMNames.M_rayTraceBlocksB, "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;Z)Lnet/minecraft/util/MovingObjectPosition;"));
 
             method.instructions.insert(insertPoint, injectList);
         }

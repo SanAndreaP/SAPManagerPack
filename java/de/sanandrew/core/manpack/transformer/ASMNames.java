@@ -32,6 +32,7 @@ public class ASMNames
     public static String M_createVectorHelper;
     public static String M_onUpdate;
     public static String M_rayTraceBlocks;
+    public static String M_rayTraceBlocksB;
     public static String M_updateObject;
     public static String M_getStackInSlot;
     public static String M_addObject;
@@ -89,6 +90,7 @@ public class ASMNames
         M_createVectorHelper =   ASMHelper.getRemappedMF("createVectorHelper",          "func_72443_a");
         M_onUpdate =             ASMHelper.getRemappedMF("onUpdate",                    "func_70071_h_");
         M_rayTraceBlocks =       ASMHelper.getRemappedMF("rayTraceBlocks",              "func_72933_a");
+        M_rayTraceBlocksB =      ASMHelper.getRemappedMF("rayTraceBlocks",              "func_72901_a");
         M_updateObject =         ASMHelper.getRemappedMF("updateObject",                "func_75692_b");
         M_getStackInSlot =       ASMHelper.getRemappedMF("getStackInSlot",              "func_70301_a");
         M_addObject =            ASMHelper.getRemappedMF("addObject",                   "func_75682_a");
