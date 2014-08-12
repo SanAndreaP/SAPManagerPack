@@ -21,6 +21,12 @@ public class ASMNames
     public static String F_ridingEntity;
     public static String F_inventory;
     public static String F_armorInventory;
+    public static String F_posX;
+    public static String F_posY;
+    public static String F_posZ;
+    public static String F_rand;
+    public static String F_width;
+    public static String F_height;
 
     public static String M_isBadEffect;
     public static String M_createVectorHelper;
@@ -48,6 +54,7 @@ public class ASMNames
     public static String M_shouldAttackPlayer;
     public static String M_onLivingUpdate;
     public static String M_teleportTo;
+    public static String M_spawnParticle;
 
     public static void initialize() {
         if( isInitialized ) {
@@ -71,6 +78,12 @@ public class ASMNames
         F_ridingEntity =      ASMHelper.getRemappedMF("ridingEntity",        "field_70154_o");
         F_inventory =         ASMHelper.getRemappedMF("inventory",           "field_71071_by");
         F_armorInventory =    ASMHelper.getRemappedMF("armorInventory",      "field_70460_b");
+        F_posX =              ASMHelper.getRemappedMF("posX",                "field_70165_t");
+        F_posY =              ASMHelper.getRemappedMF("posY",                "field_70163_u");
+        F_posZ =              ASMHelper.getRemappedMF("posZ",                "field_70161_v");
+        F_rand =              ASMHelper.getRemappedMF("rand",                "field_70146_Z");
+        F_width =             ASMHelper.getRemappedMF("width",               "field_70130_N");
+        F_height =            ASMHelper.getRemappedMF("height",              "field_70131_O");
 
         M_isBadEffect =          ASMHelper.getRemappedMF("isBadEffect",                 "func_76398_f");
         M_createVectorHelper =   ASMHelper.getRemappedMF("createVectorHelper",          "func_72443_a");
@@ -98,6 +111,7 @@ public class ASMNames
         M_shouldAttackPlayer =   ASMHelper.getRemappedMF("shouldAttackPlayer",          "func_70821_d");
         M_onLivingUpdate =       ASMHelper.getRemappedMF("onLivingUpdate",              "func_70636_d");
         M_teleportTo =           ASMHelper.getRemappedMF("teleportTo",                  "func_70825_j");
+        M_spawnParticle =        ASMHelper.getRemappedMF("spawnParticle",               "func_72869_a");
 
         isInitialized = true;
     }
