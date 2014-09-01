@@ -29,12 +29,18 @@ final class ItemHelper
     }
 
     static boolean areStacksEqualWithWCV(ItemStack is1, ItemStack is2) {
+        if( is1 == null || is2 == null ) {
+            return false;
+        }
+
         if( is1.isItemEqual(is2) ) {
             return true;
         }
+
         if( is1.getItemDamage() == OreDictionary.WILDCARD_VALUE || is2.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
             return is1.getItem() == is2.getItem();
         }
+
         return false;
     }
 

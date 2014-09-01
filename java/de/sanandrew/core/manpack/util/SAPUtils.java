@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -108,6 +109,10 @@ public final class SAPUtils
 
     public static boolean isItemInStackArray(ItemStack base, ItemStack... stackArray) {
         return ItemHelper.isItemInStackArray(base, stackArray);
+    }
+
+    public static boolean isItemInStackArray(ItemStack base, List<ItemStack> stackArray) {
+        return ItemHelper.isItemInStackArray(base, stackArray.toArray(new ItemStack[stackArray.size()]));
     }
 
     @SuppressWarnings("unchecked")
