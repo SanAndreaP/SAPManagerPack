@@ -7,10 +7,9 @@
 package de.sanandrew.core.manpack.mod.client.particle;
 
 import net.minecraft.client.particle.EntityFX;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public abstract class EntityParticle
+public class EntityParticle
     extends EntityFX
 {
 
@@ -22,5 +21,13 @@ public abstract class EntityParticle
         super(world, x, y, z, motX, motY, motZ);
     }
 
-    public abstract ResourceLocation getParticleTexture();
+    @Override
+    public int getFXLayer() {
+        return SAPEffectRenderer.INSTANCE.getDefaultFxLayer();
+    }
+
+    public void setParticleTextureIndex(int index) {
+        this.particleTextureIndexX = index % 16;
+        this.particleTextureIndexY = index / 16;
+    }
 }

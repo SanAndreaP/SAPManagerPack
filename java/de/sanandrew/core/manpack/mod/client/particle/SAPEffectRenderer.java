@@ -6,16 +6,12 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.mod.client.particle;
 
-import cpw.mods.fml.common.FMLLog;
-import de.sanandrew.core.manpack.mod.ModCntManPack;
 import de.sanandrew.core.manpack.util.javatuples.Pair;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import org.apache.logging.log4j.Level;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -23,13 +19,17 @@ import java.util.List;
 
 public class SAPEffectRenderer
 {
-    private static final ResourceLocation particleTextures = new ResourceLocation("textures/particle/particles.png");
+    private static final ResourceLocation PARTICLE_TEXTURES = new ResourceLocation("textures/particle/particles.png");
+    private int defaultFxLayer = 0;
     private List<Pair<ResourceLocation, ArrayList<EntityParticle>>> fxLayers = new ArrayList<>();
     private TextureManager textureManager;
-    private World worldObj;
 
     private static boolean isInitialized = false;
     public static final SAPEffectRenderer INSTANCE = new SAPEffectRenderer();
+
+    public int getDefaultFxLayer() {
+        return this.defaultFxLayer;
+    }
 
     public void addEffect(EntityParticle particle) {
         fxLayers.get(particle.getFXLayer()).getValue1().add(particle);
@@ -78,10 +78,10 @@ public class SAPEffectRenderer
                 this.textureManager.bindTexture(layer.getValue0());
 
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                GL11.glDepthMask(false);
-                GL11.glEnable(GL11.GL_BLEND);
-                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569F);
+//                GL11.glDepthMask(false);
+//                GL11.glEnable(GL11.GL_BLEND);
+//                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+//                GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569F);
                 Tessellator tessellator = Tessellator.instance;
                 tessellator.startDrawingQuads();
 
@@ -100,22 +100,23 @@ public class SAPEffectRenderer
                 }
 
                 tessellator.draw();
-                GL11.glDisable(GL11.GL_BLEND);
-                GL11.glDepthMask(true);
-                GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
+//                GL11.glDisable(GL11.GL_BLEND);
+//                GL11.glDepthMask(true);
+//                GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
             }
         }
     }
 
-    public static void initialize(World world, TextureManager texManager) {
+    public static void initialize(TextureManager texManager) {
         if( isInitialized ) {
-            FMLLog.log(ModCntManPack.MOD_LOG, Level.ERROR, "Cannot reinitialize SAP-EffectRenderer!");
+//            FMLLog.log(ModCntManPack.MOD_LOG, Level.ERROR, "Cannot reinitialize SAP-EffectRenderer!");
             return;
         }
 
         isInitialized = true;
 
         INSTANCE.textureManager = texManager;
-        INSTANCE.worldObj = world;
+
+        INSTANCE.defaultFxLayer = INSTANCE.registerFxLayer(PARTICLE_TEXTURES);
     }
 }

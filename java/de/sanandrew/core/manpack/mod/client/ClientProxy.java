@@ -7,7 +7,10 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.managers.SAPUpdateManager;
 import de.sanandrew.core.manpack.mod.CommonProxy;
+import de.sanandrew.core.manpack.mod.client.event.EventWorldRenderLast;
+import de.sanandrew.core.manpack.mod.client.particle.SAPEffectRenderer;
 import de.sanandrew.core.manpack.util.client.RenderBlockGlowOverlay;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
@@ -32,6 +35,11 @@ public class ClientProxy extends CommonProxy
         KeyHandler kHandler = new KeyHandler();
         FMLCommonHandler.instance().bus().register(kHandler);
         MinecraftForge.EVENT_BUS.register(kHandler);
+
+        SAPEffectRenderer.initialize(Minecraft.getMinecraft().getTextureManager());
+        EventWorldRenderLast wrlEvent = new EventWorldRenderLast();
+        MinecraftForge.EVENT_BUS.register(wrlEvent);
+        FMLCommonHandler.instance().bus().register(wrlEvent);
 	}
 
 	@Override
