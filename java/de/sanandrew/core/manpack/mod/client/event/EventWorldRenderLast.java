@@ -24,7 +24,7 @@ public class EventWorldRenderLast
 
     @SubscribeEvent
     public void onClientPostTick(ClientTickEvent event) {
-        if( event.phase == Phase.START && !Minecraft.getMinecraft().isGamePaused() ) {
+        if( event.phase == Phase.END && !Minecraft.getMinecraft().isGamePaused() ) {
             SAPEffectRenderer.INSTANCE.updateEffects();
         }
     }

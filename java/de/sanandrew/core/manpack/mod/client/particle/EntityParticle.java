@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 public class EntityParticle
     extends EntityFX
 {
+    protected int brightness = -1;
 
     public EntityParticle(World world, double x, double y, double z) {
         super(world, x, y, z);
@@ -29,5 +30,20 @@ public class EntityParticle
     public void setParticleTextureIndex(int index) {
         this.particleTextureIndexX = index % 16;
         this.particleTextureIndexY = index / 16;
+    }
+
+    public void setParticleColor(float red, float green, float blue) {
+        this.particleRed = red;
+        this.particleGreen = green;
+        this.particleBlue = blue;
+    }
+
+    @Override
+    public int getBrightnessForRender(float partTicks) {
+        return this.brightness < 0 ? super.getBrightnessForRender(partTicks) : this.brightness;
+    }
+
+    public void setBrightness(int bright) {
+        this.brightness = bright;
     }
 }

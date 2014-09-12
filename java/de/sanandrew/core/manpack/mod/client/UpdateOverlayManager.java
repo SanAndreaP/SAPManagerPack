@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import de.sanandrew.core.manpack.mod.client.gui.GuiModUpdate;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 

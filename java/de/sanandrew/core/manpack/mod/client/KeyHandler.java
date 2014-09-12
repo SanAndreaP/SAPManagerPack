@@ -1,5 +1,6 @@
 package de.sanandrew.core.manpack.mod.client;
 
+import de.sanandrew.core.manpack.mod.client.gui.GuiModUpdate;
 import org.lwjgl.input.Keyboard;
 
 import net.minecraft.client.Minecraft;

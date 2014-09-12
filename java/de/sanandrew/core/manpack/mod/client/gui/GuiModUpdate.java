@@ -1,4 +1,4 @@
-package de.sanandrew.core.manpack.mod.client;
+package de.sanandrew.core.manpack.mod.client.gui;
 
 import de.sanandrew.core.manpack.managers.SAPUpdateManager;
 import de.sanandrew.core.manpack.util.SAPUtils;
