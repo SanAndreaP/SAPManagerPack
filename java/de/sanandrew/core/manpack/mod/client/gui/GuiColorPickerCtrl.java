@@ -6,8 +6,8 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.mod.client.gui;
 
+import de.sanandrew.core.manpack.util.client.GuiUtils;
 import net.minecraft.client.gui.Gui;
-import org.lwjgl.opengl.GL11;
 
 public class GuiColorPickerCtrl
     extends Gui
@@ -47,11 +47,12 @@ public class GuiColorPickerCtrl
     }
 
     public void drawControl() {
-        GL11.glTranslatef(0F, 90F + xPos*2, 0F);
-        GL11.glRotatef(-90F, 0F, 0F, 1F);
-        drawGradientRect(xPos, yPos, 90 + xPos, 90 + yPos, 0xFFFFFFFF, this.resColorHued);
-        GL11.glRotatef(90F, 0F, 0F, 1F);
-        GL11.glTranslatef(0F, -90F - xPos*2, 0F);
+//        GL11.glTranslatef(0F, 90F + xPos*2, 0F);
+//        GL11.glRotatef(-90F, 0F, 0F, 1F);
+        GuiUtils.drawGradientRect(xPos, yPos, 90 + xPos, 90 + yPos, 0xFFFFFFFF, this.resColorHued, this.zLevel);
+//        drawGradientRect(xPos, yPos, 90 + xPos, 90 + yPos, 0xFFFFFFFF, this.resColorHued);
+//        GL11.glRotatef(90F, 0F, 0F, 1F);
+//        GL11.glTranslatef(0F, -90F - xPos*2, 0F);
         drawGradientRect(xPos, yPos, 90 + xPos, 90 + yPos, 0x0, 0xFF000000);
 
         int x1 = 105 + xPos;
