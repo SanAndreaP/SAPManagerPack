@@ -38,6 +38,13 @@ public class EntityParticle
         this.particleBlue = blue;
     }
 
+    public void setParticleColorRNG(float red, float green, float blue) {
+        float shade = this.rand.nextFloat() * 0.2F;
+        this.particleRed = Math.max(red - 0.2F, 0.0F) + shade;
+        this.particleGreen = Math.max(green - 0.2F, 0.0F) + shade;
+        this.particleBlue = Math.max(blue - 0.2F, 0.0F) + shade;
+    }
+
     @Override
     public int getBrightnessForRender(float partTicks) {
         return this.brightness < 0 ? super.getBrightnessForRender(partTicks) : this.brightness;

@@ -242,5 +242,9 @@ public final class SAPUtils
         public int getAlpha() {
             return this.value.getValue3();
         }
+
+        public float[] getColorFloatArray() {
+            return new float[] {this.getRed() / 255.0F, this.getGreen() / 255.0F, this.getBlue() / 255.0F, this.getAlpha() / 255.0F};
+        }
     }
 }
