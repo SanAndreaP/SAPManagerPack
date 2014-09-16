@@ -1,5 +1,12 @@
 package de.sanandrew.core.manpack.managers;
 
+import com.google.common.collect.Maps;
+import cpw.mods.fml.common.FMLLog;
+import de.sanandrew.core.manpack.mod.ModCntManPack;
+import de.sanandrew.core.manpack.util.javatuples.Quartet;
+import de.sanandrew.core.manpack.util.javatuples.Triplet;
+import org.apache.logging.log4j.Level;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,16 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.logging.log4j.Level;
-
-import com.google.common.collect.Maps;
-
-import cpw.mods.fml.common.FMLLog;
-
-import de.sanandrew.core.manpack.mod.ModCntManPack;
-import de.sanandrew.core.manpack.util.javatuples.Quartet;
-import de.sanandrew.core.manpack.util.javatuples.Triplet;
 
 public class SAPUpdateManager
 {
@@ -89,8 +86,7 @@ public class SAPUpdateManager
 
 	    String[] patterns = new String[] {
 	        "\\d+\\.\\d+[\\.|_]\\d+-(\\d+)\\.(\\d+)[\\.|_](\\d+)",     // 1.7.2-1.0.4 or 1.7_01-1.5_02
-	        "(\\d+)\\.(\\d+)[\\.|_](\\d+)",                            // 1.0.4 or 1.5_02
-	        "major:(\\d+);minor:(\\d+);revision:(\\d+)"                // major:1;minor:0;revision:4 (deprecated! TODO remove this in next version)
+	        "(\\d+)\\.(\\d+)[\\.|_](\\d+)"                             // 1.0.4 or 1.5_02
 	    };
 
 	    int i = 0;

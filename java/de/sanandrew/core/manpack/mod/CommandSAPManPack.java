@@ -1,12 +1,11 @@
 package de.sanandrew.core.manpack.mod;
 
-import java.io.IOException;
-
+import de.sanandrew.core.manpack.util.SAPUtils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 
-import de.sanandrew.core.manpack.util.SAPUtils;
+import java.io.IOException;
 
 public class CommandSAPManPack
     extends CommandBase
@@ -19,7 +18,6 @@ public class CommandSAPManPack
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        // TODO Auto-generated method stub
         return "commands.sapmanpack.usage";
     }
 
