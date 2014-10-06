@@ -203,6 +203,10 @@ public final class SAPUtils
         AppHelper.restartApp();
     }
 
+    public static boolean isIndexInRange(Object[] array, int index) {
+        return index >= 0 && index < array.length;
+    }
+
     @Deprecated
     public static DamageSource getNewDamageSource(String type) {
         try {

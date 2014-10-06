@@ -1,0 +1,2 @@
+2.0.1
+- added in-range-check for arrays in SAPUtils
