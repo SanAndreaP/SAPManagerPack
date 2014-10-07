@@ -27,65 +27,77 @@ import java.util.Set;
  */
 public final class SAPUtils
 {
+    /** My personal RNG Deity, to be used whenever a global RNG is needed */
     public static final Random RNG = new Random();
 
     /**
      * decreases the ItemStack stackSize by 1
      *
-     * @param is
-     *            ItemStack, whose stackSize will be decreased
+     * @param stack ItemStack, whose stackSize will be decreased
      * @return The stackSize-decreased ItemStack or null if stackSize <= 0
      **/
-    public static ItemStack decrStackSize(ItemStack is) {
-        return decrStackSize(is, 1);
+    public static ItemStack decrStackSize(ItemStack stack) {
+        return decrStackSize(stack, 1);
     }
 
     /**
      * decreases the ItemStack stackSize by the amount value
      *
-     * @param is
-     *            ItemStack, whose stackSize will be decreased
-     * @param amount
-     *            The amount which will be subtracted from the stackSize
+     * @param stack ItemStack, whose stackSize will be decreased
+     * @param amount The amount which will be subtracted from the stackSize
      * @return The stackSize-decreased ItemStack or null if stackSize <= 0
      **/
-    public static ItemStack decrStackSize(ItemStack is, int amount) {
-        return ItemHelper.decrStackSize(is, amount);
+    public static ItemStack decrStackSize(ItemStack stack, int amount) {
+        return ItemHelper.decrStackSize(stack, amount);
     }
 
     /**
      * Compares two ItemStacks if they are equal. If one of the ItemStacks has
-     * the block wildcard as damage value, only the item instances will be
+     * the metadata wildcard as damage value, only the item instances will be
      * compared.
      *
-     * @param is1 The first ItemStack
-     * @param is2 the second ItemStack
+     * @param stack1 The first ItemStack
+     * @param stack2 the second ItemStack
      * @return true, if stacks are equal, false otherwise.
      */
-    public static boolean areStacksEqualWithWCV(ItemStack is1, ItemStack is2) {
-        return ItemHelper.areStacksEqualWithWCV(is1, is2);
+    public static boolean areStacksEqualWithWCV(ItemStack stack1, ItemStack stack2) {
+        return ItemHelper.areStacksEqualWithWCV(stack1, stack2);
     }
 
     /**
      * Splits the ItemStack into multiple ("good") ones if stackSize >
      * getMaxStackSize().
      *
-     * @param is
-     *            The ItemStack which shall be splitted into "good" ItemStacks
+     * @param stack The ItemStack which shall be splitted into "good" ItemStacks
      * @return An Array of "good" ItemStacks. If stackSize was smaller than the
      *         maxStackSize, the original ItemStack is in Field 0 inside the
      *         Array.
      */
-    public static ItemStack[] getGoodItemStacks(ItemStack is) {
-        return ItemHelper.getGoodItemStacks(is);
+    public static ItemStack[] getGoodItemStacks(ItemStack stack) {
+        return ItemHelper.getGoodItemStacks(stack);
     }
 
-    public static int getInBetweenVal(int var1, int var2) {
-        int maxVal = Math.max(var1, var2);
-        int minVal = Math.min(var1, var2);
-        return maxVal - Math.round((maxVal - minVal) / 2F);
+    /**
+     * Gets a value in the middle of 2 values, for example val1 is 1 and val2 is 5, the value returned would be 3.
+     * Note: val1 doesn't have to be smaller than val2
+     * @param val1 the first value
+     * @param val2 the second value
+     * @return
+     */
+    public static int getInBetweenVal(int val1, int val2) {
+        int maxVal = Math.max(val1, val2);
+        int minVal = Math.min(val1, val2);
+        return Math.round((maxVal + minVal) / 2F);
     }
 
+    /**
+     * Gets the dropped block stack as if the block was mined with a Silk Touch-enchanted tool.
+     * public reflection getter for {@link net.minecraft.block.Block#createStackedBlock(int)}
+     * @param block The block which
+     * @param meta
+     * @return
+     */
+    @SuppressWarnings("unused")
     public static ItemStack getSilkBlock(Block block, int meta) {
         Class<?>[] methodPT = new Class[] { int.class };
         Object[] methodPV = new Object[] { meta };
