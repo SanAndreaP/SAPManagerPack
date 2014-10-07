@@ -6,16 +6,30 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.util.client;
 
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import net.minecraft.client.particle.EffectRenderer;
-import net.minecraft.client.particle.EntityFX;
-
-import java.util.List;
+import de.sanandrew.core.manpack.util.SAPReflectionHelper;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.StatCollector;
 
 public class SAPClientUtils
 {
-    @SuppressWarnings("unchecked")
-    public static void addEffectWithNoLimit(EffectRenderer effectRenderer, EntityFX particle) {
-        ((List[]) ObfuscationReflectionHelper.getPrivateValue(EffectRenderer.class, effectRenderer, "fxLayers", ""))[particle.getFXLayer()].add(particle);
+    public static void setSelectedBtn(GuiScreen inst, GuiButton btn) {
+        SAPReflectionHelper.setCachedFieldValue(GuiScreen.class, inst, "selectedButton", "field_73883_a", btn);
+    }
+
+    public static GuiButton getSelectedBtn(GuiScreen inst) {
+        return SAPReflectionHelper.getCachedFieldValue(GuiScreen.class, inst, "selectedButton", "field_73883_a");
+    }
+
+    public static String translate(String key) {
+        return StatCollector.translateToLocal(key);
+    }
+
+    public static String translatePostFormat(String key, Object... data) {
+        return String.format(StatCollector.translateToLocal(key), data);
+    }
+
+    public static String translatePreFormat(String key, Object... data) {
+        return StatCollector.translateToLocal(String.format(key, data));
     }
 }

@@ -1,13 +1,8 @@
 package de.sanandrew.core.manpack.util;
 
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.util.javatuples.Quartet;
 import net.minecraft.block.Block;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.*;
@@ -173,26 +168,6 @@ public final class SAPUtils
 
     public static RGBAValues getRgbaFromColorInt(int rgba) {
         return new RGBAValues(((rgba) >> 16) & 255, ((rgba) >> 8) & 255, rgba & 255, ((rgba) >> 24) & 255);
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static void setSelectedBtn(GuiScreen inst, GuiButton btn) {
-        SAPReflectionHelper.setCachedFieldValue(GuiScreen.class, inst, "selectedButton", "field_73883_a", btn);
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static GuiButton getSelectedBtn(GuiScreen inst) {
-        return SAPReflectionHelper.getCachedFieldValue(GuiScreen.class, inst, "selectedButton", "field_73883_a");
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static String getTranslated(String key) {
-        return I18n.format(key);
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static String getTranslated(String key, Object... data) {
-        return I18n.format(key, data);
     }
 
     public static File getMcDir(String path) {
