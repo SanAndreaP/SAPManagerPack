@@ -181,10 +181,10 @@ public class GuiItemTab extends GuiButton
             }
 
             tessellator.startDrawingQuads();
-            tessellator.addVertexWithUV(x + 0, y + height, this.zLevel, (f2 + height * f4) * f, (f3 + height) * f1);
+            tessellator.addVertexWithUV(x, y + height, this.zLevel, (f2 + height * f4) * f, (f3 + height) * f1);
             tessellator.addVertexWithUV(x + width, y + height, this.zLevel, (f2 + width + height * f4) * f, (f3 + height) * f1);
-            tessellator.addVertexWithUV(x + width, y + 0, this.zLevel, (f2 + width) * f, (f3 + 0.0F) * f1);
-            tessellator.addVertexWithUV(x + 0, y + 0, this.zLevel, (f2 + 0.0F) * f, (f3 + 0.0F) * f1);
+            tessellator.addVertexWithUV(x + width, y, this.zLevel, (f2 + width) * f, (f3 + 0.0F) * f1);
+            tessellator.addVertexWithUV(x, y, this.zLevel, (f2 + 0.0F) * f, (f3 + 0.0F) * f1);
             tessellator.draw();
         }
     }

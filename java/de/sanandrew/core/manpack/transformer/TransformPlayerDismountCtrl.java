@@ -64,7 +64,7 @@ public class TransformPlayerDismountCtrl
         LabelNode ln1 = new LabelNode();
         needle.add(new JumpInsnNode(IFNE, ln1));
         needle.add(new VarInsnNode(ALOAD, 0));
-        needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/player/EntityPlayer", ASMNames.M_isSneaking, "()Z"));
+        needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/player/EntityPlayer", ASMNames.M_isSneaking, "()Z", false));
         needle.add(new JumpInsnNode(IFEQ, ln1));
 
         AbstractInsnNode insertPoint = ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
@@ -73,7 +73,7 @@ public class TransformPlayerDismountCtrl
         injectList.add(new VarInsnNode(ALOAD, 0));
         injectList.add(new FieldInsnNode(GETFIELD, "net/minecraft/entity/player/EntityPlayer", ASMNames.F_ridingEntity, "Lnet/minecraft/entity/Entity;"));
         injectList.add(new VarInsnNode(ALOAD, 0));
-        injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/Entity", "_SAP_canDismountWithLSHIFT", "(Lnet/minecraft/entity/player/EntityPlayer;)Z"));
+        injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/Entity", "_SAP_canDismountWithLSHIFT", "(Lnet/minecraft/entity/player/EntityPlayer;)Z", false));
         injectList.add(new JumpInsnNode(IFEQ, ((JumpInsnNode) insertPoint).label));
 
         method.instructions.insert(insertPoint, injectList);

@@ -1,22 +1,5 @@
 package de.sanandrew.core.manpack.mod.packet;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.EnumMap;
-import java.util.LinkedList;
-
-import org.apache.logging.log4j.Level;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.INetHandler;
-import net.minecraft.network.NetHandlerPlayServer;
-
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.network.FMLEmbeddedChannel;
 import cpw.mods.fml.common.network.FMLIndexedMessageToMessageCodec;
@@ -24,12 +7,26 @@ import cpw.mods.fml.common.network.FMLOutboundHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.INetHandler;
+import net.minecraft.network.NetHandlerPlayServer;
+import org.apache.logging.log4j.Level;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.EnumMap;
+import java.util.LinkedList;
 
 public class ChannelHandler
     extends FMLIndexedMessageToMessageCodec<IPacket>
 {
-    public EnumMap<Side, FMLEmbeddedChannel> channels;
-    private LinkedList<Class<? extends IPacket>> packets = new LinkedList<Class<? extends IPacket>>();
+    private EnumMap<Side, FMLEmbeddedChannel> channels;
+    private LinkedList<Class<? extends IPacket>> packets = new LinkedList<>();
     private boolean isPostInitialised = false;
     private final String logger;
     private final String channelName;
@@ -102,7 +99,7 @@ public class ChannelHandler
     }
 
     @SideOnly(Side.CLIENT)
-    private EntityPlayer getClientPlayer() {
+    private static EntityPlayer getClientPlayer() {
         return Minecraft.getMinecraft().thePlayer;
     }
 

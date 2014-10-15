@@ -82,7 +82,7 @@ public final class SAPUtils
      * Note: val1 doesn't have to be smaller than val2
      * @param val1 the first value
      * @param val2 the second value
-     * @return
+     * @return the value in between val1 and val2
      */
     public static int getInBetweenVal(int val1, int val2) {
         int maxVal = Math.max(val1, val2);
@@ -91,11 +91,10 @@ public final class SAPUtils
     }
 
     /**
-     * Gets the dropped block stack as if the block was mined with a Silk Touch-enchanted tool.
-     * public reflection getter for {@link net.minecraft.block.Block#createStackedBlock(int)}
-     * @param block The block which
-     * @param meta
-     * @return
+     * public reflection getter for {@link net.minecraft.block.Block#createStackedBlock(int)}. Look at it's javadoc for more info.
+     * @param block The block which will invoke the method
+     * @param meta the metadata of the invoking block
+     * @return the return value from the invoked method
      */
     @SuppressWarnings("unused")
     public static ItemStack getSilkBlock(Block block, int meta) {
@@ -104,10 +103,9 @@ public final class SAPUtils
         return SAPReflectionHelper.invokeCachedMethod(Block.class, block, "createStackedBlock", "func_71880_c_", methodPT, methodPV);
     }
 
-    public static ItemStack dropBlockAsItem(Block block, World world, int x, int y, int z, ItemStack stack) {
+    public static void dropBlockAsItem(Block block, World world, int x, int y, int z, ItemStack stack) {
         EntityItem item = new EntityItem(world, x + 0.5D, y + 0.5D, z + 0.5D, stack);
         world.spawnEntityInWorld(item);
-        return null;
     }
 
     public static void dropBlockXP(Block block, World world, int x, int y, int z, int meta, int fortune) {
@@ -188,6 +186,10 @@ public final class SAPUtils
 
     public static void restartApp() throws IOException {
         AppHelper.restartApp();
+    }
+
+    public static void shutdownApp() {
+        AppHelper.shutdownApp();
     }
 
     public static boolean isIndexInRange(Object[] array, int index) {

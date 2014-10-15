@@ -43,7 +43,7 @@ final class ItemHelper
     }
 
     static ItemStack[] getGoodItemStacks(ItemStack is) {
-        List<ItemStack> isMap = new ArrayList<ItemStack>();
+        List<ItemStack> isMap = new ArrayList<>();
         if( is.stackSize <= is.getMaxStackSize() && is.stackSize > 0 ) {
             isMap.add(is);
         } else if( is.stackSize > 0 ) {

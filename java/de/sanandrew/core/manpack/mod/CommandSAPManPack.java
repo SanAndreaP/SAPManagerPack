@@ -10,7 +10,6 @@ import java.io.IOException;
 public class CommandSAPManPack
     extends CommandBase
 {
-
     @Override
     public String getCommandName() {
         return "sapmanpack";
@@ -39,5 +38,4 @@ public class CommandSAPManPack
     public int getRequiredPermissionLevel() {
         return 2;
     }
-
 }

@@ -8,13 +8,17 @@ import cpw.mods.fml.common.LoadController;
 import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.relauncher.FMLInjectionData;
 import cpw.mods.fml.relauncher.Side;
 import de.sanandrew.core.manpack.managers.SAPUpdateManager;
 import de.sanandrew.core.manpack.mod.packet.ChannelHandler;
+import de.sanandrew.core.manpack.util.SAPUtils;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import org.apache.logging.log4j.Level;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class ModCntManPack
     extends DummyModContainer
@@ -25,6 +29,8 @@ public class ModCntManPack
     public static final String UPD_LOG = "SAPUpdateMgr";
 
     public static final String MOD_VERSION = "2.0.1";
+
+    public static final int FORGE_BULD_MIN = 1227;
 
     // Annotation does not work in a productive MC environment (see below)
     //@SidedProxy(clientSide = "de.sanandrew.core.manpack.mod.client.ClientProxy", serverSide = "de.sanandrew.core.manpack.mod.CommonProxy")
@@ -38,7 +44,7 @@ public class ModCntManPack
         meta.modId = ModCntManPack.MOD_ID;
         meta.name = "SanAndreasPs Manager Pack CORE edition";
         meta.version = ModCntManPack.MOD_VERSION;
-        meta.authorList = Arrays.asList("SanAndreasP");
+        meta.authorList = Collections.singletonList("SanAndreasP");
         meta.description = "A helper coremod which is needed for all my mods.";
         meta.url = "http://www.minecraftforge.net/forum/index.php/topic,2828.0.html";
         meta.screenshots = new String[0];
@@ -53,7 +59,17 @@ public class ModCntManPack
 
     @Subscribe
     public void modConstruction(FMLConstructionEvent event) {
-        System.out.println(event.getASMHarvestedData().getAnnotationsFor(this));
+        if( Integer.parseInt(FMLInjectionData.data()[3].toString()) < FORGE_BULD_MIN ) {
+            FMLLog.log(MOD_LOG, Level.FATAL, "The installed version of Forge is outdated! Minimum build required is %d, installed is build %s. " +
+                           "Either update Forge or remove this mod. Exiting now.", FORGE_BULD_MIN, FMLInjectionData.data()[3]);
+            try {
+                SAPUtils.shutdownApp();
+            } catch( IOException e ) {
+                e.printStackTrace();
+            }
+            throw new RuntimeException("Outdated Forge version!");
+        }
+
         NetworkRegistry.INSTANCE.register(this, this.getClass(), null, event.getASMHarvestedData());
 
         // for some reason the proxy annotation does not work in a coremod within a productive MC environment,

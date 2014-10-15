@@ -392,10 +392,10 @@ public final class ItemRenderHelper
             }
 
             tessellator.startDrawingQuads();
-            tessellator.addVertexWithUV(minU + 0, minV + maxV, zLevel, (f2 + maxV * f4) * f, (f3 + maxV) * f1);
+            tessellator.addVertexWithUV(minU, minV + maxV, zLevel, (f2 + maxV * f4) * f, (f3 + maxV) * f1);
             tessellator.addVertexWithUV(minU + maxU, minV + maxV, zLevel, (f2 + maxU + maxV * f4) * f, (f3 + maxV) * f1);
-            tessellator.addVertexWithUV(minU + maxU, minV + 0, zLevel, (f2 + maxU) * f, (f3 + 0.0F) * f1);
-            tessellator.addVertexWithUV(minU + 0, minV + 0, zLevel, (f2 + 0.0F) * f, (f3 + 0.0F) * f1);
+            tessellator.addVertexWithUV(minU + maxU, minV, zLevel, (f2 + maxU) * f, (f3 + 0.0F) * f1);
+            tessellator.addVertexWithUV(minU, minV, zLevel, (f2 + 0.0F) * f, (f3 + 0.0F) * f1);
             tessellator.draw();
         }
     }

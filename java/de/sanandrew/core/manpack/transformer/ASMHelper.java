@@ -1,9 +1,6 @@
 package de.sanandrew.core.manpack.transformer;
 
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
+import cpw.mods.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -12,7 +9,9 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
 
-import cpw.mods.fml.common.FMLLog;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ASMHelper
 {
@@ -90,7 +89,7 @@ public class ASMHelper
     public static void removeNeedleFromHaystack(InsnList haystack, InsnList needle) {
         int firstInd = haystack.indexOf(findFirstNodeFromNeedle(haystack, needle));
         int lastInd = haystack.indexOf(findLastNodeFromNeedle(haystack, needle));
-        List<AbstractInsnNode> realNeedle = new ArrayList<AbstractInsnNode>();
+        List<AbstractInsnNode> realNeedle = new ArrayList<>();
 
         for( int i = firstInd; i <= lastInd; i++ ) {
             realNeedle.add(haystack.get(i));

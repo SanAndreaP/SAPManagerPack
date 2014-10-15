@@ -35,7 +35,7 @@ public class TransformELBAttackingPlayer
                 Label l0 = new Label();
                 method.visitLabel(l0);
                 method.visitVarInsn(ALOAD, 0);
-                method.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/entity/EntityLivingBase", "_SAP_getAttackingPlayer", "()Lnet/minecraft/entity/player/EntityPlayer;");
+                method.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/entity/EntityLivingBase", "_SAP_getAttackingPlayer", "()Lnet/minecraft/entity/player/EntityPlayer;", false);
                 method.visitInsn(ARETURN);
                 Label l1 = new Label();
                 method.visitLabel(l1);
@@ -51,7 +51,7 @@ public class TransformELBAttackingPlayer
                 method.visitLabel(l0);
                 method.visitVarInsn(ALOAD, 1);
                 method.visitVarInsn(ALOAD, 0);
-                method.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/entity/EntityLivingBase", "_SAP_setAttackingPlayer", "(Lnet/minecraft/entity/player/EntityPlayer;)V");
+                method.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/entity/EntityLivingBase", "_SAP_setAttackingPlayer", "(Lnet/minecraft/entity/player/EntityPlayer;)V", false);
                 Label l1 = new Label();
                 method.visitLabel(l1);
                 method.visitInsn(RETURN);
@@ -69,7 +69,7 @@ public class TransformELBAttackingPlayer
                 Label l0 = new Label();
                 method.visitLabel(l0);
                 method.visitVarInsn(ALOAD, 0);
-                method.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/entity/EntityLivingBase", "_SAP_getRecentlyHit", "()I");
+                method.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/entity/EntityLivingBase", "_SAP_getRecentlyHit", "()I", false);
                 method.visitInsn(IRETURN);
                 Label l1 = new Label();
                 method.visitLabel(l1);
@@ -85,7 +85,7 @@ public class TransformELBAttackingPlayer
                 method.visitLabel(l0);
                 method.visitVarInsn(ALOAD, 1);
                 method.visitVarInsn(ILOAD, 0);
-                method.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/entity/EntityLivingBase", "_SAP_setRecentlyHit", "(I)V");
+                method.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/entity/EntityLivingBase", "_SAP_setRecentlyHit", "(I)V", false);
                 Label l1 = new Label();
                 method.visitLabel(l1);
                 method.visitInsn(RETURN);

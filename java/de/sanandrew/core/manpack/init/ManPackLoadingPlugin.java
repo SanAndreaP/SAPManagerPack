@@ -1,6 +1,7 @@
 package de.sanandrew.core.manpack.init;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin.DependsOn;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.SortingIndex;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 @SortingIndex(1001)
 @MCVersion("1.7.10")
+@DependsOn("forge")
 @TransformerExclusions({ "de.sanandrew.core.manpack.transformer", "de.sanandrew.core.manpack.init" })
 public class ManPackLoadingPlugin
     implements IFMLLoadingPlugin
@@ -44,7 +46,7 @@ public class ManPackLoadingPlugin
 
     @Override
     public void injectData(Map<String, Object> data) {
-        ASMHelper.isMCP = !((Boolean) data.get("runtimeDeobfuscationEnabled")).booleanValue();
+        ASMHelper.isMCP = !(Boolean) data.get("runtimeDeobfuscationEnabled");
 //        ModCntManPack.modLocation = (File) data.get("coremodLocation");
         ASMNames.initialize();
     }

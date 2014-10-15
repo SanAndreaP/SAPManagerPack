@@ -122,7 +122,7 @@ public class SAPUpdateManager
                         if( in.ready() ) {
                             try {
                                 SAPUpdateManager.this.directDL = new URL(in.readLine());
-                            } catch( MalformedURLException ex ) {  }
+                            } catch( MalformedURLException ignored ) {  }
                         }
                     }
 

@@ -73,7 +73,7 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
         method.visitVarInsn(ALOAD, 0);
         method.visitFieldInsn(GETFIELD, "net/minecraft/entity/passive/EntityHorse", ASMNames.F_dataWatcher, "Lnet/minecraft/entity/DataWatcher;");
         method.visitIntInsn(BIPUSH, 23);
-        method.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/entity/DataWatcher", ASMNames.M_getWatchableObjectIS, "(I)Lnet/minecraft/item/ItemStack;");
+        method.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/entity/DataWatcher", ASMNames.M_getWatchableObjectIS, "(I)Lnet/minecraft/item/ItemStack;", false);
         method.visitInsn(ARETURN);
         Label l1 = new Label();
         method.visitLabel(l1);
@@ -96,7 +96,7 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
         method.visitInsn(DUP);
         method.visitFieldInsn(GETSTATIC, "net/minecraft/init/Items", ASMNames.F_ironShovel, "Lnet/minecraft/item/Item;");
         method.visitInsn(ICONST_0);
-        method.visitMethodInsn(INVOKESPECIAL, "net/minecraft/item/ItemStack", "<init>", "(Lnet/minecraft/item/Item;I)V");
+        method.visitMethodInsn(INVOKESPECIAL, "net/minecraft/item/ItemStack", "<init>", "(Lnet/minecraft/item/Item;I)V", false);
         method.visitVarInsn(ASTORE, 1);
         method.visitLabel(l1);
         method.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
@@ -104,7 +104,7 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
         method.visitFieldInsn(GETFIELD, "net/minecraft/entity/passive/EntityHorse", ASMNames.F_dataWatcher, "Lnet/minecraft/entity/DataWatcher;");
         method.visitIntInsn(BIPUSH, 23);
         method.visitVarInsn(ALOAD, 1);
-        method.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/entity/DataWatcher", ASMNames.M_updateObject, "(ILjava/lang/Object;)V");
+        method.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/entity/DataWatcher", ASMNames.M_updateObject, "(ILjava/lang/Object;)V", false);
         Label l3 = new Label();
         method.visitLabel(l3);
         method.visitInsn(RETURN);
@@ -124,7 +124,7 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
         needle.add(new LineNumberNode(-1, new LabelNode()));
         needle.add(new FieldInsnNode(GETSTATIC, "net/minecraft/entity/passive/EntityHorse", ASMNames.F_armorValues, "[I"));
         needle.add(new VarInsnNode(ALOAD, 0));
-        needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/passive/EntityHorse", ASMNames.M_func110241cb, "()I"));
+        needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/passive/EntityHorse", ASMNames.M_func110241cb, "()I", false));
 
         AbstractInsnNode pointer = ASMHelper.findFirstNodeFromNeedle(method.instructions, needle);
 
@@ -132,21 +132,21 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
 
         newInstr.add(new LabelNode());
         newInstr.add(new VarInsnNode(ALOAD, 0));
-        newInstr.add(new MethodInsnNode(INVOKESPECIAL, "net/minecraft/entity/passive/EntityHorse", "_SAP_getCustomArmorItem", "()Lnet/minecraft/item/ItemStack;"));
+        newInstr.add(new MethodInsnNode(INVOKESPECIAL, "net/minecraft/entity/passive/EntityHorse", "_SAP_getCustomArmorItem", "()Lnet/minecraft/item/ItemStack;", false));
         newInstr.add(new VarInsnNode(ASTORE, 1));
         newInstr.add(new LabelNode());
         newInstr.add(new VarInsnNode(ALOAD, 1));
-        newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_getItem, "()Lnet/minecraft/item/Item;"));
+        newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_getItem, "()Lnet/minecraft/item/Item;", false));
         newInstr.add(new TypeInsnNode(INSTANCEOF, "de/sanandrew/core/manpack/item/ItemHorseArmor"));
         LabelNode l2 = new LabelNode();
         newInstr.add(new JumpInsnNode(IFEQ, l2));
         newInstr.add(new LabelNode());
         newInstr.add(new VarInsnNode(ALOAD, 1));
-        newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_getItem, "()Lnet/minecraft/item/Item;"));
+        newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_getItem, "()Lnet/minecraft/item/Item;", false));
         newInstr.add(new TypeInsnNode(CHECKCAST, "de/sanandrew/core/manpack/item/ItemHorseArmor"));
         newInstr.add(new VarInsnNode(ALOAD, 0));
         newInstr.add(new VarInsnNode(ALOAD, 1));
-        newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "de/sanandrew/core/manpack/item/ItemHorseArmor", "getArmorValue", "(Lnet/minecraft/entity/passive/EntityHorse;Lnet/minecraft/item/ItemStack;)I"));
+        newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "de/sanandrew/core/manpack/item/ItemHorseArmor", "getArmorValue", "(Lnet/minecraft/entity/passive/EntityHorse;Lnet/minecraft/item/ItemStack;)I", false));
         newInstr.add(new InsnNode(IRETURN));
         newInstr.add(l2);
 
@@ -156,7 +156,7 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
     private void transformOnInvChanged(MethodNode method) {
         InsnList needle = new InsnList();
         needle.add(new VarInsnNode(ALOAD, 0));
-        needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/passive/EntityHorse", ASMNames.M_isHorseSaddled, "()Z"));
+        needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/passive/EntityHorse", ASMNames.M_isHorseSaddled, "()Z", false));
         needle.add(new VarInsnNode(ISTORE, 3));
 
         AbstractInsnNode pointer = ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
@@ -165,7 +165,7 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
 
         newInstr.add(new LabelNode());
         newInstr.add(new VarInsnNode(ALOAD, 0));
-        newInstr.add(new MethodInsnNode(INVOKESPECIAL, "net/minecraft/entity/passive/EntityHorse", "_SAP_getCustomArmorItem", "()Lnet/minecraft/item/ItemStack;"));
+        newInstr.add(new MethodInsnNode(INVOKESPECIAL, "net/minecraft/entity/passive/EntityHorse", "_SAP_getCustomArmorItem", "()Lnet/minecraft/item/ItemStack;", false));
         newInstr.add(new VarInsnNode(ASTORE, 4));
 
         method.instructions.insert(pointer, newInstr);
@@ -174,28 +174,28 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
         needle.add(new LdcInsnNode("mob.horse.armor"));
         needle.add(new LdcInsnNode(new Float("0.5")));
         needle.add(new InsnNode(FCONST_1));
-        needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/passive/EntityHorse", ASMNames.M_playSound, "(Ljava/lang/String;FF)V"));
+        needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/passive/EntityHorse", ASMNames.M_playSound, "(Ljava/lang/String;FF)V", false));
         needle.add(new LabelNode());
 
         pointer = ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
 
         newInstr = new InsnList();
         newInstr.add(new VarInsnNode(ALOAD, 4));
-        newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_getItem, "()Lnet/minecraft/item/Item;"));
+        newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_getItem, "()Lnet/minecraft/item/Item;", false));
         newInstr.add(new FieldInsnNode(GETSTATIC, "net/minecraft/init/Items", ASMNames.F_ironShovel, "Lnet/minecraft/item/Item;"));
         LabelNode l9 = new LabelNode();
         newInstr.add(new JumpInsnNode(IF_ACMPNE, l9));
         newInstr.add(new VarInsnNode(ALOAD, 4));
         newInstr.add(new VarInsnNode(ALOAD, 0));
-        newInstr.add(new MethodInsnNode(INVOKESPECIAL, "net/minecraft/entity/passive/EntityHorse", "_SAP_getCustomArmorItem", "()Lnet/minecraft/item/ItemStack;"));
-        newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_isItemEqual, "(Lnet/minecraft/item/ItemStack;)Z"));
+        newInstr.add(new MethodInsnNode(INVOKESPECIAL, "net/minecraft/entity/passive/EntityHorse", "_SAP_getCustomArmorItem", "()Lnet/minecraft/item/ItemStack;", false));
+        newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_isItemEqual, "(Lnet/minecraft/item/ItemStack;)Z", false));
         newInstr.add(new JumpInsnNode(IFNE, l9));
         newInstr.add(new LabelNode());
         newInstr.add(new VarInsnNode(ALOAD, 0));
         newInstr.add(new LdcInsnNode("mob.horse.armor"));
         newInstr.add(new LdcInsnNode(new Float("0.5")));
         newInstr.add(new InsnNode(FCONST_1));
-        newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/passive/EntityHorse", ASMNames.M_playSound, "(Ljava/lang/String;FF)V"));
+        newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/passive/EntityHorse", ASMNames.M_playSound, "(Ljava/lang/String;FF)V", false));
         newInstr.add(l9);
 
         method.instructions.insert(pointer, newInstr);
@@ -204,7 +204,7 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
 	private void transformArmorTexture(MethodNode method) {
 	    InsnList needle = new InsnList();
 	    needle.add(new VarInsnNode(ALOAD, 0));
-	    needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/passive/EntityHorse", ASMNames.M_func110241cb, "()I"));
+	    needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/passive/EntityHorse", ASMNames.M_func110241cb, "()I", false));
 	    needle.add(new VarInsnNode(ISTORE, 3));
 
 	    AbstractInsnNode node = ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
@@ -213,12 +213,12 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
 	    LabelNode l17 = new LabelNode();
 	    newInstr.add(l17);
 	    newInstr.add(new VarInsnNode(ALOAD, 0));
-	    newInstr.add(new MethodInsnNode(INVOKESPECIAL, "net/minecraft/entity/passive/EntityHorse", "_SAP_getCustomArmorItem", "()Lnet/minecraft/item/ItemStack;"));
+	    newInstr.add(new MethodInsnNode(INVOKESPECIAL, "net/minecraft/entity/passive/EntityHorse", "_SAP_getCustomArmorItem", "()Lnet/minecraft/item/ItemStack;", false));
 	    newInstr.add(new VarInsnNode(ASTORE, 4));
 	    LabelNode l18 = new LabelNode();
 	    newInstr.add(l18);
 	    newInstr.add(new VarInsnNode(ALOAD, 4));
-	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_getItem, "()Lnet/minecraft/item/Item;"));
+	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_getItem, "()Lnet/minecraft/item/Item;", false));
 	    newInstr.add(new TypeInsnNode(INSTANCEOF, "de/sanandrew/core/manpack/item/ItemHorseArmor"));
 	    LabelNode l19 = new LabelNode();
 	    newInstr.add(new JumpInsnNode(IFEQ, l19));
@@ -228,11 +228,11 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
 	    newInstr.add(new FieldInsnNode(GETFIELD, "net/minecraft/entity/passive/EntityHorse", ASMNames.F_field110280bR, "[Ljava/lang/String;"));
 	    newInstr.add(new InsnNode(ICONST_2));
 	    newInstr.add(new VarInsnNode(ALOAD, 4));
-	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_getItem, "()Lnet/minecraft/item/Item;"));
+	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_getItem, "()Lnet/minecraft/item/Item;", false));
 	    newInstr.add(new TypeInsnNode(CHECKCAST, "de/sanandrew/core/manpack/item/ItemHorseArmor"));
 	    newInstr.add(new VarInsnNode(ALOAD, 0));
 	    newInstr.add(new VarInsnNode(ALOAD, 4));
-	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "de/sanandrew/core/manpack/item/ItemHorseArmor", "getArmorTexture", "(Lnet/minecraft/entity/passive/EntityHorse;Lnet/minecraft/item/ItemStack;)Ljava/lang/String;"));
+	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "de/sanandrew/core/manpack/item/ItemHorseArmor", "getArmorTexture", "(Lnet/minecraft/entity/passive/EntityHorse;Lnet/minecraft/item/ItemStack;)Ljava/lang/String;", false));
 	    newInstr.add(new InsnNode(AASTORE));
 	    LabelNode l21 = new LabelNode();
 	    newInstr.add(l21);
@@ -241,14 +241,14 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
 	    newInstr.add(new InsnNode(DUP));
 	    newInstr.add(new VarInsnNode(ALOAD, 0));
 	    newInstr.add(new FieldInsnNode(GETFIELD, "net/minecraft/entity/passive/EntityHorse", ASMNames.F_field110286bQ, "Ljava/lang/String;"));
-	    newInstr.add(new MethodInsnNode(INVOKESTATIC, "java/lang/String", "valueOf", "(Ljava/lang/Object;)Ljava/lang/String;"));
-	    newInstr.add(new MethodInsnNode(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V"));
+	    newInstr.add(new MethodInsnNode(INVOKESTATIC, "java/lang/String", "valueOf", "(Ljava/lang/Object;)Ljava/lang/String;", false));
+	    newInstr.add(new MethodInsnNode(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V", false));
 	    newInstr.add(new LdcInsnNode("cst-"));
-	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;"));
+	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false));
 	    newInstr.add(new VarInsnNode(ALOAD, 4));
-	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_getUnlocalizedName, "()Ljava/lang/String;"));
-	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;"));
-	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;"));
+	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_getUnlocalizedName, "()Ljava/lang/String;", false));
+	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false));
+	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;", false));
 	    newInstr.add(new FieldInsnNode(PUTFIELD, "net/minecraft/entity/passive/EntityHorse", ASMNames.F_field110286bQ, "Ljava/lang/String;"));
 	    newInstr.add(new InsnNode(RETURN));
 	    newInstr.add(l19);
@@ -270,8 +270,8 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
 	    newInstr.add(new VarInsnNode(ALOAD, 0));
 	    newInstr.add(new FieldInsnNode(GETFIELD, "net/minecraft/entity/passive/EntityHorse", ASMNames.F_horseChest, "Lnet/minecraft/inventory/AnimalChest;"));
 	    newInstr.add(new InsnNode(ICONST_1));
-	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/inventory/AnimalChest", ASMNames.M_getStackInSlot, "(I)Lnet/minecraft/item/ItemStack;"));
-	    newInstr.add(new MethodInsnNode(INVOKESPECIAL, "net/minecraft/entity/passive/EntityHorse", "_SAP_setCustomArmorItem", "(Lnet/minecraft/item/ItemStack;)V"));
+	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/inventory/AnimalChest", ASMNames.M_getStackInSlot, "(I)Lnet/minecraft/item/ItemStack;", false));
+	    newInstr.add(new MethodInsnNode(INVOKESPECIAL, "net/minecraft/entity/passive/EntityHorse", "_SAP_setCustomArmorItem", "(Lnet/minecraft/item/ItemStack;)V", false));
 	    newInstr.add(new LabelNode());
 
 	    method.instructions.insertBefore(pointer, newInstr);
@@ -283,8 +283,8 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
         needle.add(new FieldInsnNode(GETFIELD, "net/minecraft/entity/passive/EntityHorse", ASMNames.F_dataWatcher, "Lnet/minecraft/entity/DataWatcher;"));
         needle.add(new IntInsnNode(BIPUSH, 22));
         needle.add(new InsnNode(ICONST_0));
-        needle.add(new MethodInsnNode(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;"));
-        needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/DataWatcher", ASMNames.M_addObject, "(ILjava/lang/Object;)V"));
+        needle.add(new MethodInsnNode(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false));
+        needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/DataWatcher", ASMNames.M_addObject, "(ILjava/lang/Object;)V", false));
 
         AbstractInsnNode pointer = ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
 
@@ -297,8 +297,8 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
         newInstr.add(new InsnNode(DUP));
         newInstr.add(new FieldInsnNode(GETSTATIC, "net/minecraft/init/Items", ASMNames.F_ironShovel, "Lnet/minecraft/item/Item;"));
         newInstr.add(new InsnNode(ICONST_0));
-        newInstr.add(new MethodInsnNode(INVOKESPECIAL, "net/minecraft/item/ItemStack", "<init>", "(Lnet/minecraft/item/Item;I)V"));
-        newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/DataWatcher", ASMNames.M_addObject, "(ILjava/lang/Object;)V"));
+        newInstr.add(new MethodInsnNode(INVOKESPECIAL, "net/minecraft/item/ItemStack", "<init>", "(Lnet/minecraft/item/Item;I)V", false));
+        newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/DataWatcher", ASMNames.M_addObject, "(ILjava/lang/Object;)V", false));
 
         method.instructions.insert(pointer, newInstr);
 	}
@@ -341,7 +341,7 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
 
 	    InsnList newInstr = new InsnList();
 	    newInstr.add(new VarInsnNode(ALOAD, 2));
-        newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_getItem, "()Lnet/minecraft/item/Item;"));
+        newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_getItem, "()Lnet/minecraft/item/Item;", false));
         newInstr.add(new TypeInsnNode(INSTANCEOF, "de/sanandrew/core/manpack/item/ItemHorseArmor"));
         LabelNode l8 = new LabelNode();
         newInstr.add(new JumpInsnNode(IFEQ, l8));

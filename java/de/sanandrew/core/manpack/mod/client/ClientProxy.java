@@ -18,7 +18,7 @@ import org.lwjgl.input.Keyboard;
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy
 {
-    public static final UpdateOverlayManager UPDATE_OVERLY_MGR = new UpdateOverlayManager();
+    private static final UpdateOverlayManager UPDATE_OVERLY_MGR = new UpdateOverlayManager();
     public static final KeyBinding KEY_UPDATE_GUI = new KeyBinding("key.sapmp.updateKey", Keyboard.KEY_U, "key.categories.misc");
 
 	@Override

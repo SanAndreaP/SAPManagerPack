@@ -44,7 +44,7 @@ public class TransformEntityThrowable
             InsnList needle = new InsnList();
             needle.add(new FieldInsnNode(GETFIELD, "net/minecraft/entity/projectile/EntityThrowable", ASMNames.F_motionZ, "D"));
             needle.add(new InsnNode(DADD));
-            needle.add(new MethodInsnNode(INVOKESTATIC, "net/minecraft/util/Vec3", ASMNames.M_createVectorHelper, "(DDD)Lnet/minecraft/util/Vec3;"));
+            needle.add(new MethodInsnNode(INVOKESTATIC, "net/minecraft/util/Vec3", ASMNames.M_createVectorHelper, "(DDD)Lnet/minecraft/util/Vec3;", false));
             needle.add(new VarInsnNode(ASTORE, 2));
             needle.add(new LabelNode());
             needle.add(new LineNumberNode(-1, new LabelNode()));
@@ -55,14 +55,14 @@ public class TransformEntityThrowable
 
             AbstractInsnNode insertPoint = ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
 
-            needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/world/World", ASMNames.M_rayTraceBlocks, "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;)Lnet/minecraft/util/MovingObjectPosition;"));
+            needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/world/World", ASMNames.M_rayTraceBlocks, "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;)Lnet/minecraft/util/MovingObjectPosition;", false));
 
             ASMHelper.remLastNodeFromNeedle(method.instructions, needle);
 
             InsnList injectList = new InsnList();
             injectList.add(new VarInsnNode(ALOAD, 0));
-            injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/projectile/EntityThrowable", "_SAP_canImpactOnLiquid", "()Z"));
-            injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/world/World", ASMNames.M_rayTraceBlocksB, "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;Z)Lnet/minecraft/util/MovingObjectPosition;"));
+            injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/projectile/EntityThrowable", "_SAP_canImpactOnLiquid", "()Z", false));
+            injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/world/World", ASMNames.M_rayTraceBlocksB, "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;Z)Lnet/minecraft/util/MovingObjectPosition;", false));
 
             method.instructions.insert(insertPoint, injectList);
         }

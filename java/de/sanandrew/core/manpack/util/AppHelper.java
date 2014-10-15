@@ -24,7 +24,7 @@ final class AppHelper
             String java = System.getProperty("java.home") + "/bin/javaw"; // java binary
 
             List<String> vmArguments = ManagementFactory.getRuntimeMXBean().getInputArguments(); // vm arguments
-            StringBuffer vmArgsOneLine = new StringBuffer();
+            StringBuilder vmArgsOneLine = new StringBuilder();
             for (String arg : vmArguments) {
                 if (!arg.contains("-agentlib")) { // if it's the agent argument : we ignore it otherwise the
                     vmArgsOneLine.append(arg);    // address of the old application and the new one will be in conflict
@@ -63,11 +63,12 @@ final class AppHelper
 
             // exit
             try {
+                Class.forName("net.minecraft.client.Minecraft");    // force-load the class. If it throws an exception, we're on a dedicated server.
                 System.out.println();
                 FMLLog.log(ModCntManPack.MOD_LOG, Level.INFO, "---=== Restarting Minecraft Client! ===---");    // try to shutdown Minecraft applet
                 System.out.println();
                 Minecraft.getMinecraft().shutdownMinecraftApplet();
-            } catch( NoClassDefFoundError ex ) {
+            } catch( ClassNotFoundException | NoClassDefFoundError ex ) {
                 System.out.println();
                 FMLLog.log(ModCntManPack.MOD_LOG, Level.INFO, "---=== Restarting Minecraft Server! ===---");    // if Minecraft class was not found
                 System.out.println();                                                                           // (usually the case on a dedi-server),
@@ -75,6 +76,21 @@ final class AppHelper
             }
         } catch (Throwable e) {
             throw new IOException("Error while trying to restart the application", e);
+        }
+    }
+
+    static void shutdownApp() {
+        try {
+            Class.forName("net.minecraft.client.Minecraft");    // force-load the class. If it throws an exception, we're on a dedicated server.
+            System.out.println();
+            FMLLog.log(ModCntManPack.MOD_LOG, Level.INFO, "---=== Shutdown Minecraft Client! ===---");      // try to shutdown Minecraft applet
+            System.out.println();
+            Minecraft.getMinecraft().shutdownMinecraftApplet();
+        } catch( ClassNotFoundException | NoClassDefFoundError ex ) {
+            System.out.println();
+            FMLLog.log(ModCntManPack.MOD_LOG, Level.INFO, "---=== Shutdown Minecraft Server! ===---");      // if Minecraft class was not found
+            System.out.println();                                                                           // (usually the case on a dedi-server),
+            MinecraftServer.getServer().initiateShutdown();                                                 // then shutdown server
         }
     }
 
