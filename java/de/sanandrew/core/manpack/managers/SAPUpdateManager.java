@@ -90,7 +90,7 @@ public class SAPUpdateManager
 	    };
 
 	    int i = 0;
-	    boolean isValid = false;
+	    boolean isValid;
 	    do {
     	    pattern = Pattern.compile(patterns[i++]);
     	    matcher = pattern.matcher(version);
@@ -138,12 +138,12 @@ public class SAPUpdateManager
                         FMLLog.log(ModCntManPack.UPD_LOG, Level.INFO, "New major update for %s is out: %s", SAPUpdateManager.this.getModName(), fileVersion);
                         SAPUpdateManager.setHasUpdate(SAPUpdateManager.this.mgrId, fileVersion);
                         return;
-                    } else if( webVersion.getValue0() == SAPUpdateManager.this.getVersion().getValue0() ) {
+                    } else if( webVersion.getValue0().intValue() == SAPUpdateManager.this.getVersion().getValue0().intValue() ) {
                         if( webVersion.getValue1() > SAPUpdateManager.this.getVersion().getValue1() ) {
                             FMLLog.log(ModCntManPack.UPD_LOG, Level.INFO, "New minor update for %s is out: %s", SAPUpdateManager.this.getModName(), fileVersion);
                             SAPUpdateManager.setHasUpdate(SAPUpdateManager.this.mgrId, fileVersion);
                             return;
-                        } else if( webVersion.getValue1() == SAPUpdateManager.this.getVersion().getValue1() ) {
+                        } else if( webVersion.getValue1().intValue() == SAPUpdateManager.this.getVersion().getValue1().intValue() ) {
                             if( webVersion.getValue2() > SAPUpdateManager.this.getVersion().getValue2() ) {
                                 FMLLog.log(ModCntManPack.UPD_LOG, Level.INFO, "New bugfix update for %s is out: %s", SAPUpdateManager.this.getModName(), fileVersion);
                                 SAPUpdateManager.setHasUpdate(SAPUpdateManager.this.mgrId, fileVersion);

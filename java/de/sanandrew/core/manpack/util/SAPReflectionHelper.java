@@ -43,7 +43,7 @@ public final class SAPReflectionHelper
     }
 
     public static Field getCachedField(Class<?> classToAccess, String mcpName, String srgName) {
-        String key = classToAccess.getCanonicalName() + "_" + srgName;
+        String key = classToAccess.getCanonicalName() + '_' + srgName;
         if( cachedFields.containsKey(key) ) {
             return cachedFields.get(key);
         }
@@ -52,7 +52,7 @@ public final class SAPReflectionHelper
 
     private static Field cacheAccessedField(Class<?> classToAccess, String mcpName, String srgName) {
         Field method;
-        String key = classToAccess.getCanonicalName() + "_" + srgName;
+        String key = classToAccess.getCanonicalName() + '_' + srgName;
         try {
             method = classToAccess.getDeclaredField(srgName);
             method.setAccessible(true);
@@ -71,7 +71,7 @@ public final class SAPReflectionHelper
     }
 
     public static Method getCachedMethod(Class<?> classToAccess, String mcpName, String srgName, Class<?>... parameterTypes) {
-        String key = classToAccess.getCanonicalName() + "_" + srgName;
+        String key = classToAccess.getCanonicalName() + '_' + srgName;
         if( cachedMethods.containsKey(key) ) {
             return cachedMethods.get(key);
         }
@@ -80,7 +80,7 @@ public final class SAPReflectionHelper
 
     private static Method cacheAccessedMethod(Class<?> classToAccess, String mcpName, String srgName, Class<?>... parameterTypes) {
         Method method;
-        String key = classToAccess.getCanonicalName() + "_" + srgName;
+        String key = classToAccess.getCanonicalName() + '_' + srgName;
         try {
             method = classToAccess.getDeclaredMethod(srgName, parameterTypes);
             method.setAccessible(true);

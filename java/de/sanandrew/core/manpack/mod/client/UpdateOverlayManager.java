@@ -45,7 +45,7 @@ public class UpdateOverlayManager extends Gui
     @SubscribeEvent
     public void onStitchPost(TextureStitchEvent.Post event) {
         if( event.map.getTextureType() == 0 ) {
-            String str = (String) SAPReflectionHelper.invokeCachedMethod(Block.class, Blocks.cobblestone, "getTextureName", "func_149641_N", null, null);
+            String str = SAPReflectionHelper.invokeCachedMethod(Block.class, Blocks.cobblestone, "getTextureName", "func_149641_N", null, null);
             TextureAtlasSprite sprite = event.map.getTextureExtry(str);
             ResourceLocation resLoc = new ResourceLocation(sprite.getIconName());
             this.frameTex = new ResourceLocation(resLoc.getResourceDomain(), "textures/blocks/" + resLoc.getResourcePath() + ".png");

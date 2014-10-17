@@ -20,12 +20,7 @@
 package de.sanandrew.core.manpack.util.javatuples;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -186,11 +181,7 @@ public abstract class Tuple implements Iterable<Object>, Serializable, Comparabl
 
     @Override
     public final int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result
-                + ((this.valueList == null) ? 0 : this.valueList.hashCode());
-        return result;
+        return 31 + this.valueList.hashCode();
     }
 
 

@@ -12,12 +12,9 @@ import cpw.mods.fml.relauncher.FMLInjectionData;
 import cpw.mods.fml.relauncher.Side;
 import de.sanandrew.core.manpack.managers.SAPUpdateManager;
 import de.sanandrew.core.manpack.mod.packet.ChannelHandler;
-import de.sanandrew.core.manpack.util.SAPUtils;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import org.apache.logging.log4j.Level;
 
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class ModCntManPack
@@ -61,13 +58,7 @@ public class ModCntManPack
     public void modConstruction(FMLConstructionEvent event) {
         if( Integer.parseInt(FMLInjectionData.data()[3].toString()) < FORGE_BULD_MIN ) {
             FMLLog.log(MOD_LOG, Level.FATAL, "The installed version of Forge is outdated! Minimum build required is %d, installed is build %s. " +
-                           "Either update Forge or remove this mod. Exiting now.", FORGE_BULD_MIN, FMLInjectionData.data()[3]);
-            try {
-                SAPUtils.shutdownApp();
-            } catch( IOException e ) {
-                e.printStackTrace();
-            }
-            throw new RuntimeException("Outdated Forge version!");
+                           "Either update Forge or remove this mod, it will cause problems otherwise!", FORGE_BULD_MIN, FMLInjectionData.data()[3]);
         }
 
         NetworkRegistry.INSTANCE.register(this, this.getClass(), null, event.getASMHarvestedData());

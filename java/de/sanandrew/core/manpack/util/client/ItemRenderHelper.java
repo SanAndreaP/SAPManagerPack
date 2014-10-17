@@ -101,8 +101,6 @@ public final class ItemRenderHelper
                 GL11.glDisable(GL11.GL_BLEND);
             }
         } else {
-            float f5;
-
             if( hasAlpha ) {
                 GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
                 GL11.glEnable(GL11.GL_BLEND);
@@ -269,6 +267,10 @@ public final class ItemRenderHelper
     }
 
 	public static void renderItem(ItemStack stack, int layer, boolean isGlowing) {
+        if( stack == null ) {
+            return;
+        }
+
 		GL11.glPushMatrix();
 
         IIcon icon = getItemIcon(stack, layer);
@@ -300,7 +302,7 @@ public final class ItemRenderHelper
 
         renderItemIn2D(tessellator, maxU, minV, minU, maxV, icon.getIconWidth(), icon.getIconHeight(), 0.0625F, isGlowing);
 
-        if( stack != null && stack.hasEffect(layer) ) {
+        if( stack.hasEffect(layer) ) {
             float baseClr = 0.76F;
             float glintScale = 0.125F;
             float glintTransX = Minecraft.getSystemTime() % 3000L / 3000.0F * 8.0F;

@@ -28,21 +28,21 @@ final class AppHelper
             for (String arg : vmArguments) {
                 if (!arg.contains("-agentlib")) { // if it's the agent argument : we ignore it otherwise the
                     vmArgsOneLine.append(arg);    // address of the old application and the new one will be in conflict
-                    vmArgsOneLine.append(" ");
+                    vmArgsOneLine.append(' ');
                 }
             }
 
-            final StringBuffer cmd = new StringBuffer("\"" + java + "\" " + vmArgsOneLine); // init the command to execute, add the vm args
+            final StringBuffer cmd = new StringBuffer('"' + java + "\" " + vmArgsOneLine); // init the command to execute, add the vm args
 
             String[] mainCommand = System.getProperty("sun.java.command").split(" "); // program main and program arguments
             if( mainCommand[0].endsWith(".jar") ) { // program main is a jar, add -jar mainJar
-                cmd.append("-jar " + new File(mainCommand[0]).getPath());
+                cmd.append("-jar ").append(new File(mainCommand[0]).getPath());
             } else { // else it's a .class, add the classpath and mainClass
-                cmd.append("-cp \"" + System.getProperty("java.class.path") + "\" " + mainCommand[0]);
+                cmd.append("-cp \"").append(System.getProperty("java.class.path")).append("\" ").append(mainCommand[0]);
             }
 
             for (int i = 1; i < mainCommand.length; i++) { // finally add program arguments
-                cmd.append(" ");
+                cmd.append(' ');
                 cmd.append(mainCommand[i]);
             }
 

@@ -12,6 +12,6 @@ public class ItemBlockNamedMeta extends ItemBlockWithMetadata
 
 	@Override
 	public String getUnlocalizedName(ItemStack par1ItemStack) {
-		return super.getUnlocalizedName(par1ItemStack) + "_" + par1ItemStack.getItemDamage();
+		return super.getUnlocalizedName(par1ItemStack) + '_' + par1ItemStack.getItemDamage();
 	}
 }

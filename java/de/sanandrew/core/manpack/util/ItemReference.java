@@ -87,7 +87,7 @@ public class ItemReference
 
     @Override
     public String toString() {
-        return getClass().getName() + "[" + this.itemInst_.toString() + "|" + (this.damage_ == OreDictionary.WILDCARD_VALUE ? "WILDCARD" : this.damage_)
-               + (this.nbtData_ != null ? this.nbtData_.toString() : "NO_NBT") + "]";
+        return getClass().getName() + '[' + this.itemInst_.toString() + '|' + (this.damage_ == OreDictionary.WILDCARD_VALUE ? "WILDCARD" : this.damage_)
+               + (this.nbtData_ != null ? this.nbtData_.toString() : "NO_NBT") + ']';
     }
 }

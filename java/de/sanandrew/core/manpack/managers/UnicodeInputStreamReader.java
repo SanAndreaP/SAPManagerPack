@@ -1,11 +1,7 @@
 package de.sanandrew.core.manpack.managers;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PushbackInputStream;
-import java.io.Reader;
-	
+import java.io.*;
+
 /** Original class made by LexManos and cpw. An InputStreamReader which supports UTF encoded files which have a BOM **/
 public class UnicodeInputStreamReader extends Reader
 {
