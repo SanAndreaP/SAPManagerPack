@@ -25,9 +25,9 @@ public class ModCntManPack
     public static final String MOD_LOG = "SAPManPack";
     public static final String UPD_LOG = "SAPUpdateMgr";
 
-    public static final String MOD_VERSION = "2.0.1";
+    public static final String MOD_VERSION = "2.1.0";
 
-    public static final int FORGE_BULD_MIN = 1227;
+    public static final int FORGE_BULD_MIN = 1212;
 
     // Annotation does not work in a productive MC environment (see below)
     //@SidedProxy(clientSide = "de.sanandrew.core.manpack.mod.client.ClientProxy", serverSide = "de.sanandrew.core.manpack.mod.CommonProxy")

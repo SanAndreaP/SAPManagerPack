@@ -6,8 +6,12 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.*;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.RecipeSorter;
+import net.minecraftforge.oredict.RecipeSorter.Category;
 
 import java.io.File;
 import java.io.IOException;
@@ -211,6 +215,12 @@ public final class SAPUtils
     @Deprecated
     public static int getMaxDmgFactorAM(ItemArmor.ArmorMaterial aMaterial) {
         return SAPReflectionHelper.getCachedFieldValue(ItemArmor.ArmorMaterial.class, aMaterial, "maxDamageFactor", "field_78048_f");
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void registerSortedRecipe(IRecipe recipe, String name, Category category, String dependencies) {
+        RecipeSorter.register(name, recipe.getClass(), category, dependencies);
+        CraftingManager.getInstance().getRecipeList().add(recipe);
     }
 
     public static class RGBAValues {
