@@ -4,14 +4,9 @@ import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-public abstract class ItemHorseArmor
+public abstract class AItemHorseArmor
     extends Item
 {
-
-    public ItemHorseArmor() {
-        super();
-    }
-
     public abstract int getArmorValue(EntityHorse horse, ItemStack stack);
 
     public abstract String getArmorTexture(EntityHorse horse, ItemStack stack);

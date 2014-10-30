@@ -102,9 +102,7 @@ public final class SAPUtils
      */
     @SuppressWarnings("unused")
     public static ItemStack getSilkBlock(Block block, int meta) {
-        Class<?>[] methodPT = new Class[] { int.class };
-        Object[] methodPV = new Object[] { meta };
-        return SAPReflectionHelper.invokeCachedMethod(Block.class, block, "createStackedBlock", "func_71880_c_", methodPT, methodPV);
+        return SAPReflectionHelper.invokeCachedMethod(Block.class, block, "createStackedBlock", "func_71880_c_", new Class[] { int.class }, new Object[] { meta });
     }
 
     public static void dropBlockAsItem(Block block, World world, int x, int y, int z, ItemStack stack) {

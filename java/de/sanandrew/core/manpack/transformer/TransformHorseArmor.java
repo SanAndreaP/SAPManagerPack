@@ -137,16 +137,16 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
         newInstr.add(new LabelNode());
         newInstr.add(new VarInsnNode(ALOAD, 1));
         newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_getItem, "()Lnet/minecraft/item/Item;", false));
-        newInstr.add(new TypeInsnNode(INSTANCEOF, "de/sanandrew/core/manpack/item/ItemHorseArmor"));
+        newInstr.add(new TypeInsnNode(INSTANCEOF, "de/sanandrew/core/manpack/item/AItemHorseArmor"));
         LabelNode l2 = new LabelNode();
         newInstr.add(new JumpInsnNode(IFEQ, l2));
         newInstr.add(new LabelNode());
         newInstr.add(new VarInsnNode(ALOAD, 1));
         newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_getItem, "()Lnet/minecraft/item/Item;", false));
-        newInstr.add(new TypeInsnNode(CHECKCAST, "de/sanandrew/core/manpack/item/ItemHorseArmor"));
+        newInstr.add(new TypeInsnNode(CHECKCAST, "de/sanandrew/core/manpack/item/AItemHorseArmor"));
         newInstr.add(new VarInsnNode(ALOAD, 0));
         newInstr.add(new VarInsnNode(ALOAD, 1));
-        newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "de/sanandrew/core/manpack/item/ItemHorseArmor", "getArmorValue", "(Lnet/minecraft/entity/passive/EntityHorse;Lnet/minecraft/item/ItemStack;)I", false));
+        newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "de/sanandrew/core/manpack/item/AItemHorseArmor", "getArmorValue", "(Lnet/minecraft/entity/passive/EntityHorse;Lnet/minecraft/item/ItemStack;)I", false));
         newInstr.add(new InsnNode(IRETURN));
         newInstr.add(l2);
 
@@ -219,7 +219,7 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
 	    newInstr.add(l18);
 	    newInstr.add(new VarInsnNode(ALOAD, 4));
 	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_getItem, "()Lnet/minecraft/item/Item;", false));
-	    newInstr.add(new TypeInsnNode(INSTANCEOF, "de/sanandrew/core/manpack/item/ItemHorseArmor"));
+	    newInstr.add(new TypeInsnNode(INSTANCEOF, "de/sanandrew/core/manpack/item/AItemHorseArmor"));
 	    LabelNode l19 = new LabelNode();
 	    newInstr.add(new JumpInsnNode(IFEQ, l19));
 	    LabelNode l20 = new LabelNode();
@@ -229,10 +229,10 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
 	    newInstr.add(new InsnNode(ICONST_2));
 	    newInstr.add(new VarInsnNode(ALOAD, 4));
 	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_getItem, "()Lnet/minecraft/item/Item;", false));
-	    newInstr.add(new TypeInsnNode(CHECKCAST, "de/sanandrew/core/manpack/item/ItemHorseArmor"));
+	    newInstr.add(new TypeInsnNode(CHECKCAST, "de/sanandrew/core/manpack/item/AItemHorseArmor"));
 	    newInstr.add(new VarInsnNode(ALOAD, 0));
 	    newInstr.add(new VarInsnNode(ALOAD, 4));
-	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "de/sanandrew/core/manpack/item/ItemHorseArmor", "getArmorTexture", "(Lnet/minecraft/entity/passive/EntityHorse;Lnet/minecraft/item/ItemStack;)Ljava/lang/String;", false));
+	    newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "de/sanandrew/core/manpack/item/AItemHorseArmor", "getArmorTexture", "(Lnet/minecraft/entity/passive/EntityHorse;Lnet/minecraft/item/ItemStack;)Ljava/lang/String;", false));
 	    newInstr.add(new InsnNode(AASTORE));
 	    LabelNode l21 = new LabelNode();
 	    newInstr.add(l21);
@@ -313,7 +313,7 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
 
 	    InsnList newInstr = new InsnList();
         newInstr.add(new VarInsnNode(ALOAD, 0));
-        newInstr.add(new TypeInsnNode(INSTANCEOF, "de/sanandrew/core/manpack/item/ItemHorseArmor"));
+        newInstr.add(new TypeInsnNode(INSTANCEOF, "de/sanandrew/core/manpack/item/AItemHorseArmor"));
         LabelNode ln = new LabelNode();
         newInstr.add(new JumpInsnNode(IFEQ, ln));
         newInstr.add(new LabelNode());
@@ -342,7 +342,7 @@ public class TransformHorseArmor implements IClassTransformer, Opcodes
 	    InsnList newInstr = new InsnList();
 	    newInstr.add(new VarInsnNode(ALOAD, 2));
         newInstr.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_getItem, "()Lnet/minecraft/item/Item;", false));
-        newInstr.add(new TypeInsnNode(INSTANCEOF, "de/sanandrew/core/manpack/item/ItemHorseArmor"));
+        newInstr.add(new TypeInsnNode(INSTANCEOF, "de/sanandrew/core/manpack/item/AItemHorseArmor"));
         LabelNode l8 = new LabelNode();
         newInstr.add(new JumpInsnNode(IFEQ, l8));
         newInstr.add(new InsnNode(ICONST_4));

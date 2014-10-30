@@ -355,7 +355,7 @@ public final class ItemRenderHelper
 
 			float prevLGTX = OpenGlHelper.lastBrightnessX;
 			float prevLGTY = OpenGlHelper.lastBrightnessY;
-			char bright = 0x000F0;
+			int bright = 0xF0;
 			int brightX = bright % 65536;
 			int brightY = bright / 65536;
 
@@ -384,7 +384,8 @@ public final class ItemRenderHelper
 
             float f = 0.00390625F;
             float f1 = 0.00390625F;
-            float f2 = Minecraft.getSystemTime() % (3000 + j1 * 1873) / (3000.0F + j1 * 1873) * 256.0F;
+            float f5 = 3000.0F + j1 * 1873.0F;
+            float f2 = Minecraft.getSystemTime() % f5 / f5 * 256.0F;
             float f3 = 0.0F;
             Tessellator tessellator = Tessellator.instance;
             float f4 = 4.0F;
