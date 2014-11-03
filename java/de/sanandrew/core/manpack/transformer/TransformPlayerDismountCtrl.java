@@ -78,7 +78,7 @@ public class TransformPlayerDismountCtrl
 
         method.instructions.insert(insertPoint, injectList);
 
-        bytes = ASMHelper.createBytes(clazz, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+        bytes = ASMHelper.createBytes(clazz, /*ClassWriter.COMPUTE_FRAMES | */ClassWriter.COMPUTE_MAXS);
 
         return bytes;
     }

@@ -25,7 +25,7 @@ public class ModCntManPack
     public static final String MOD_LOG = "SAPManPack";
     public static final String UPD_LOG = "SAPUpdateMgr";
 
-    public static final String MOD_VERSION = "2.1.0";
+    public static final String MOD_VERSION = "2.2.0";
 
     public static final int FORGE_BULD_MIN = 1212;
 

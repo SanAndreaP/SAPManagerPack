@@ -19,7 +19,15 @@
  */
 package de.sanandrew.core.manpack.util.javatuples;
 
-import java.io.Serializable;
+import cpw.mods.fml.common.FMLLog;
+import de.sanandrew.core.manpack.mod.ModCntManPack;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
+import io.netty.handler.codec.serialization.ObjectDecoderInputStream;
+import io.netty.handler.codec.serialization.ObjectEncoderOutputStream;
+import org.apache.logging.log4j.Level;
+
+import java.io.*;
 import java.util.*;
 
 
@@ -227,6 +235,21 @@ public abstract class Tuple implements Iterable<Object>, Serializable, Comparabl
 
     }
 
+    public static Tuple readFromByteBufStream(ByteBufInputStream stream) {
+        try( ObjectDecoderInputStream odis = new ObjectDecoderInputStream(stream) ) {
+            return (Tuple) odis.readObject();
+        } catch( IOException | ClassNotFoundException ex ) {
+            FMLLog.log(ModCntManPack.MOD_LOG, Level.ERROR, ex, "Cannot deserialize Tuple!");
+        }
+        return null;
+    }
 
+    public static void writeToByteBufStream(Tuple tuple, ByteBufOutputStream stream) {
+        try( ObjectEncoderOutputStream oeos = new ObjectEncoderOutputStream(stream) ) {
+            oeos.writeObject(tuple);
+        } catch( IOException ex ) {
+            FMLLog.log(ModCntManPack.MOD_LOG, Level.ERROR, ex, "Cannot serialize Tuple!");
+        }
+    }
 
 }
