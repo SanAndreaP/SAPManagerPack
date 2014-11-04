@@ -12,7 +12,9 @@ import cpw.mods.fml.relauncher.FMLInjectionData;
 import cpw.mods.fml.relauncher.Side;
 import de.sanandrew.core.manpack.managers.SAPUpdateManager;
 import de.sanandrew.core.manpack.mod.packet.ChannelHandler;
+import de.sanandrew.core.manpack.util.MutableString;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.logging.log4j.Level;
 
 import java.util.Collections;
@@ -98,7 +100,7 @@ public class ModCntManPack
     public void postInit(FMLPostInitializationEvent evt) {
         channelHandler.postInitialise();
 
-        for( Triplet<SAPUpdateManager, Boolean, String> udm : SAPUpdateManager.UPD_MANAGERS ) {
+        for( Triplet<SAPUpdateManager, MutableBoolean, MutableString> udm : SAPUpdateManager.UPD_MANAGERS ) {
             udm.getValue0().checkForUpdate();
         }
     }

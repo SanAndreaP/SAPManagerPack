@@ -1,4 +1,4 @@
-package de.sanandrew.core.manpack.util;
+package de.sanandrew.core.manpack.util.client;
 
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;

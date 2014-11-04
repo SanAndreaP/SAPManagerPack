@@ -7,7 +7,7 @@
 package de.sanandrew.core.manpack.mod.client.gui;
 
 import com.google.common.primitives.Floats;
-import de.sanandrew.core.manpack.util.SAPUtils;
+import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.core.manpack.util.client.GuiUtils;
 import net.minecraft.client.gui.Gui;
 import org.apache.commons.lang3.ArrayUtils;

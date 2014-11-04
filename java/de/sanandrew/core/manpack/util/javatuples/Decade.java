@@ -21,6 +21,7 @@ package de.sanandrew.core.manpack.util.javatuples;
 
 import de.sanandrew.core.manpack.util.javatuples.valueintf.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -36,19 +37,9 @@ import java.util.Iterator;
  */
 public final class Decade<A,B,C,D,E,F,G,H,I,J>
         extends Tuple
-        implements IValue0<A>,
-                   IValue1<B>,
-                   IValue2<C>,
-                   IValue3<D>,
-                   IValue4<E>,
-                   IValue5<F>,
-                   IValue6<G>,
-                   IValue7<H>,
-                   IValue8<I>,
-                   IValue9<J> {
-
+        implements IValue0<A>, IValue1<B>, IValue2<C>, IValue3<D>, IValue4<E>, IValue5<F>, IValue6<G>, IValue7<H>, IValue8<I>, IValue9<J>
+{
     private static final long serialVersionUID = -1607420937567707033L;
-
     private static final int SIZE = 10;
 
     private final A val0;
@@ -62,63 +53,58 @@ public final class Decade<A,B,C,D,E,F,G,H,I,J>
     private final I val8;
     private final J val9;
 
-
-    public static <A,B,C,D,E,F,G,H,I,J> Decade<A,B,C,D,E,F,G,H,I,J> with(final A value0, final B value1, final C value2, final D value3, final E value4, final F value5, final G value6, final H value7, final I value8, final J value9) {
-        return new Decade<>(value0,value1,value2,value3,value4,value5,value6,value7,value8,value9);
+    public static <A, B, C, D, E, F, G, H, I, J> Decade<A, B, C, D, E, F, G, H, I, J> with(final A value0, final B value1, final C value2, final D value3,
+                                                                                           final E value4, final F value5, final G value6, final H value7,
+                                                                                           final I value8, final J value9) {
+        return new Decade<>(value0, value1, value2, value3, value4, value5, value6, value7, value8, value9);
     }
-
 
     /**
      * <p>
      * Create tuple from array. Array has to have exactly ten elements.
      * </p>
      *
-     * @param <X> the array component type
+     * @param <X>   the array component type
      * @param array the array to be converted to a tuple
      * @return the tuple
      */
-    public static <X> Decade<X,X,X,X,X,X,X,X,X,X> fromArray(final X[] array) {
-        if (array == null) {
+    public static <X> Decade<X, X, X, X, X, X, X, X, X, X> fromArray(final X[] array) {
+        if( array == null ) {
             throw new IllegalArgumentException("Array cannot be null");
         }
-        if (array.length != 10) {
+
+        if( array.length != 10 ) {
             throw new IllegalArgumentException("Array must have exactly 10 elements in order to create a Decade. Size is " + array.length);
         }
-        return new Decade<>(
-                array[0],array[1],array[2],array[3],array[4],
-                array[5],array[6],array[7],array[8],array[9]);
-    }
 
+        return new Decade<>(array[0], array[1], array[2], array[3], array[4], array[5], array[6], array[7], array[8], array[9]);
+    }
 
     /**
      * <p>
      * Create tuple from collection. Collection has to have exactly ten elements.
      * </p>
      *
-     * @param <X> the collection component type
+     * @param <X>        the collection component type
      * @param collection the collection to be converted to a tuple
      * @return the tuple
      */
-    public static <X> Decade<X,X,X,X,X,X,X,X,X,X> fromCollection(final Collection<X> collection) {
+    public static <X> Decade<X, X, X, X, X, X, X, X, X, X> fromCollection(final Collection<X> collection) {
         return fromIterable(collection);
     }
-
-
 
     /**
      * <p>
      * Create tuple from iterable. Iterable has to have exactly ten elements.
      * </p>
      *
-     * @param <X> the iterable component type
+     * @param <X>      the iterable component type
      * @param iterable the iterable to be converted to a tuple
      * @return the tuple
      */
-    public static <X> Decade<X,X,X,X,X,X,X,X,X,X> fromIterable(final Iterable<X> iterable) {
+    public static <X> Decade<X, X, X, X, X, X, X, X, X, X> fromIterable(final Iterable<X> iterable) {
         return fromIterable(iterable, 0, true);
     }
-
-
 
     /**
      * <p>
@@ -126,135 +112,50 @@ public final class Decade<A,B,C,D,E,F,G,H,I,J>
      * can have more (or less) elements than the tuple to be created.
      * </p>
      *
-     * @param <X> the iterable component type
+     * @param <X>      the iterable component type
      * @param iterable the iterable to be converted to a tuple
      * @return the tuple
      */
-    public static <X> Decade<X,X,X,X,X,X,X,X,X,X> fromIterable(final Iterable<X> iterable, int index) {
+    public static <X> Decade<X, X, X, X, X, X, X, X, X, X> fromIterable(final Iterable<X> iterable, int index) {
         return fromIterable(iterable, index, false);
     }
 
-
-
-    private static <X> Decade<X,X,X,X,X,X,X,X,X,X> fromIterable(final Iterable<X> iterable, int index, final boolean exactSize) {
-
-        if (iterable == null) {
+    private static <X> Decade<X, X, X, X, X, X, X, X, X, X> fromIterable(final Iterable<X> iterable, int index, final boolean checkSize) {
+        if( iterable == null ) {
             throw new IllegalArgumentException("Iterable cannot be null");
         }
 
-        boolean tooFewElements = false;
-
-        X element0 = null;
-        X element1 = null;
-        X element2 = null;
-        X element3 = null;
-        X element4 = null;
-        X element5 = null;
-        X element6 = null;
-        X element7 = null;
-        X element8 = null;
-        X element9 = null;
-
+        X element;
+        ArrayList<X> elements = new ArrayList<>(10);
         final Iterator<X> iter = iterable.iterator();
+        int lastIndex = index + SIZE - 1;
 
-        int i = 0;
-        while (i < index) {
-            if (iter.hasNext()) {
-                iter.next();
+        for( int i = 0; i <= lastIndex; i++ ) {
+            if( iter.hasNext() ) {
+                element = iter.next();
+                if( i >= index ) {
+                    if( checkSize && i == lastIndex && iter.hasNext() ) {
+                        throw new IllegalArgumentException("Iterable must have exactly 10 elements in order to create a Decade.");
+                    }
+
+                    elements.add(element);
+                }
             } else {
-                tooFewElements = true;
+                if( i < index ) {
+                    throw new IllegalArgumentException(String.format("Iterable has not enough elements to grab a value from index %d", index));
+                } else {
+                    throw new IllegalArgumentException(String.format("Not enough elements for creating a Decade (10 needed, %d given)", i));
+                }
             }
-            i++;
         }
 
-        if (iter.hasNext()) {
-            element0 = iter.next();
-        } else {
-            tooFewElements = true;
-        }
-
-        if (iter.hasNext()) {
-            element1 = iter.next();
-        } else {
-            tooFewElements = true;
-        }
-
-        if (iter.hasNext()) {
-            element2 = iter.next();
-        } else {
-            tooFewElements = true;
-        }
-
-        if (iter.hasNext()) {
-            element3 = iter.next();
-        } else {
-            tooFewElements = true;
-        }
-
-        if (iter.hasNext()) {
-            element4 = iter.next();
-        } else {
-            tooFewElements = true;
-        }
-
-        if (iter.hasNext()) {
-            element5 = iter.next();
-        } else {
-            tooFewElements = true;
-        }
-
-        if (iter.hasNext()) {
-            element6 = iter.next();
-        } else {
-            tooFewElements = true;
-        }
-
-        if (iter.hasNext()) {
-            element7 = iter.next();
-        } else {
-            tooFewElements = true;
-        }
-
-        if (iter.hasNext()) {
-            element8 = iter.next();
-        } else {
-            tooFewElements = true;
-        }
-
-        if (iter.hasNext()) {
-            element9 = iter.next();
-        } else {
-            tooFewElements = true;
-        }
-
-        if (tooFewElements && exactSize) {
-            throw new IllegalArgumentException("Not enough elements for creating a Decade (10 needed)");
-        }
-
-        if (iter.hasNext() && exactSize) {
-            throw new IllegalArgumentException("Iterable must have exactly 10 available elements in order to create a Decade.");
-        }
-
-        return new Decade<>(
-                element0, element1, element2, element3, element4,
-                element5, element6, element7, element8, element9);
-
+        return new Decade<>(elements.get(0), elements.get(1), elements.get(2), elements.get(3), elements.get(4), elements.get(5), elements.get(6), elements.get(7),
+                            elements.get(8), elements.get(9)
+        );
     }
 
-
-
-
-    public Decade(
-            final A value0,
-            final B value1,
-            final C value2,
-            final D value3,
-            final E value4,
-            final F value5,
-            final G value6,
-            final H value7,
-            final I value8,
-            final J value9) {
+    public Decade(final A value0, final B value1, final C value2, final D value3, final E value4, final F value5, final G value6, final H value7, final I value8,
+                  final J value9) {
         super(value0, value1, value2, value3, value4, value5, value6, value7, value8, value9);
         this.val0 = value0;
         this.val1 = value1;
@@ -268,170 +169,58 @@ public final class Decade<A,B,C,D,E,F,G,H,I,J>
         this.val9 = value9;
     }
 
-
+    @Override
     public A getValue0() {
         return this.val0;
     }
 
-
+    @Override
     public B getValue1() {
         return this.val1;
     }
 
-
+    @Override
     public C getValue2() {
         return this.val2;
     }
 
-
+    @Override
     public D getValue3() {
         return this.val3;
     }
 
-
+    @Override
     public E getValue4() {
         return this.val4;
     }
 
-
+    @Override
     public F getValue5() {
         return this.val5;
     }
 
-
+    @Override
     public G getValue6() {
         return this.val6;
     }
 
-
+    @Override
     public H getValue7() {
         return this.val7;
     }
 
-
+    @Override
     public I getValue8() {
         return this.val8;
     }
 
-
+    @Override
     public J getValue9() {
         return this.val9;
     }
-
 
     @Override
     public int getSize() {
         return SIZE;
     }
-
-
-
-    public <X> Decade<X,B,C,D,E,F,G,H,I,J> setAt0(final X value) {
-        return new Decade<>(
-                value, this.val1, this.val2, this.val3, this.val4, this.val5, this.val6, this.val7, this.val8, this.val9);
-    }
-
-    public <X> Decade<A,X,C,D,E,F,G,H,I,J> setAt1(final X value) {
-        return new Decade<>(
-                this.val0, value, this.val2, this.val3, this.val4, this.val5, this.val6, this.val7, this.val8, this.val9);
-    }
-
-    public <X> Decade<A,B,X,D,E,F,G,H,I,J> setAt2(final X value) {
-        return new Decade<>(
-                this.val0, this.val1, value, this.val3, this.val4, this.val5, this.val6, this.val7, this.val8, this.val9);
-    }
-
-    public <X> Decade<A,B,C,X,E,F,G,H,I,J> setAt3(final X value) {
-        return new Decade<>(
-                this.val0, this.val1, this.val2, value, this.val4, this.val5, this.val6, this.val7, this.val8, this.val9);
-    }
-
-    public <X> Decade<A,B,C,D,X,F,G,H,I,J> setAt4(final X value) {
-        return new Decade<>(
-                this.val0, this.val1, this.val2, this.val3, value, this.val5, this.val6, this.val7, this.val8, this.val9);
-    }
-
-    public <X> Decade<A,B,C,D,E,X,G,H,I,J> setAt5(final X value) {
-        return new Decade<>(
-                this.val0, this.val1, this.val2, this.val3, this.val4, value, this.val6, this.val7, this.val8, this.val9);
-    }
-
-    public <X> Decade<A,B,C,D,E,F,X,H,I,J> setAt6(final X value) {
-        return new Decade<>(
-                this.val0, this.val1, this.val2, this.val3, this.val4, this.val5, value, this.val7, this.val8, this.val9);
-    }
-
-    public <X> Decade<A,B,C,D,E,F,G,X,I,J> setAt7(final X value) {
-        return new Decade<>(
-                this.val0, this.val1, this.val2, this.val3, this.val4, this.val5, this.val6, value, this.val8, this.val9);
-    }
-
-    public <X> Decade<A,B,C,D,E,F,G,H,X,J> setAt8(final X value) {
-        return new Decade<>(
-                this.val0, this.val1, this.val2, this.val3, this.val4, this.val5, this.val6, this.val7, value, this.val9);
-    }
-
-    public <X> Decade<A,B,C,D,E,F,G,H,I,X> setAt9(final X value) {
-        return new Decade<>(
-                this.val0, this.val1, this.val2, this.val3, this.val4, this.val5, this.val6, this.val7, this.val8, value);
-    }
-
-
-
-
-
-
-
-
-    public Ennead<B,C,D,E,F,G,H,I,J> removeFrom0() {
-        return new Ennead<>(
-                this.val1, this.val2, this.val3, this.val4, this.val5, this.val6, this.val7, this.val8, this.val9);
-    }
-
-    public Ennead<A,C,D,E,F,G,H,I,J> removeFrom1() {
-        return new Ennead<>(
-                this.val0, this.val2, this.val3, this.val4, this.val5, this.val6, this.val7, this.val8, this.val9);
-    }
-
-    public Ennead<A,B,D,E,F,G,H,I,J> removeFrom2() {
-        return new Ennead<>(
-                this.val0, this.val1, this.val3, this.val4, this.val5, this.val6, this.val7, this.val8, this.val9);
-    }
-
-    public Ennead<A,B,C,E,F,G,H,I,J> removeFrom3() {
-        return new Ennead<>(
-                this.val0, this.val1, this.val2, this.val4, this.val5, this.val6, this.val7, this.val8, this.val9);
-    }
-
-    public Ennead<A,B,C,D,F,G,H,I,J> removeFrom4() {
-        return new Ennead<>(
-                this.val0, this.val1, this.val2, this.val3, this.val5, this.val6, this.val7, this.val8, this.val9);
-    }
-
-    public Ennead<A,B,C,D,E,G,H,I,J> removeFrom5() {
-        return new Ennead<>(
-                this.val0, this.val1, this.val2, this.val3, this.val4, this.val6, this.val7, this.val8, this.val9);
-    }
-
-    public Ennead<A,B,C,D,E,F,H,I,J> removeFrom6() {
-        return new Ennead<>(
-                this.val0, this.val1, this.val2, this.val3, this.val4, this.val5, this.val7, this.val8, this.val9);
-    }
-
-    public Ennead<A,B,C,D,E,F,G,I,J> removeFrom7() {
-        return new Ennead<>(
-                this.val0, this.val1, this.val2, this.val3, this.val4, this.val5, this.val6, this.val8, this.val9);
-    }
-
-    public Ennead<A,B,C,D,E,F,G,H,J> removeFrom8() {
-        return new Ennead<>(
-                this.val0, this.val1, this.val2, this.val3, this.val4, this.val5, this.val6, this.val7, this.val9);
-    }
-
-    public Ennead<A,B,C,D,E,F,G,H,I> removeFrom9() {
-        return new Ennead<>(
-                this.val0, this.val1, this.val2, this.val3, this.val4, this.val5, this.val6, this.val7, this.val8);
-    }
-
-
 }

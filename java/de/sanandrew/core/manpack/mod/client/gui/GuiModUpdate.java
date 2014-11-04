@@ -1,7 +1,7 @@
 package de.sanandrew.core.manpack.mod.client.gui;
 
 import de.sanandrew.core.manpack.managers.SAPUpdateManager;
-import de.sanandrew.core.manpack.util.SAPUtils;
+import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.Tessellator;
 

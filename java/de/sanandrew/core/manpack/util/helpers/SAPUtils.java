@@ -1,6 +1,7 @@
-package de.sanandrew.core.manpack.util;
+package de.sanandrew.core.manpack.util.helpers;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import de.sanandrew.core.manpack.util.SAPReflectionHelper;
 import de.sanandrew.core.manpack.util.javatuples.Quartet;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
@@ -9,6 +10,7 @@ import net.minecraft.item.*;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
@@ -102,7 +104,7 @@ public final class SAPUtils
      */
     @SuppressWarnings("unused")
     public static ItemStack getSilkBlock(Block block, int meta) {
-        return SAPReflectionHelper.invokeCachedMethod(Block.class, block, "createStackedBlock", "func_71880_c_", new Class[] { int.class }, new Object[] { meta });
+        return SAPReflectionHelper.invokeCachedMethod(Block.class, block, "createStackedBlock", "func_71880_c_", new Class[]{int.class}, new Object[]{meta});
     }
 
     public static void dropBlockAsItem(Block block, World world, int x, int y, int z, ItemStack stack) {
@@ -219,6 +221,18 @@ public final class SAPUtils
     public static void registerSortedRecipe(IRecipe recipe, String name, Category category, String dependencies) {
         RecipeSorter.register(name, recipe.getClass(), category, dependencies);
         CraftingManager.getInstance().getRecipeList().add(recipe);
+    }
+
+    public static String translate(String key) {
+        return StatCollector.translateToLocal(key);
+    }
+
+    public static String translatePostFormat(String key, Object... data) {
+        return String.format(translate(key), data);
+    }
+
+    public static String translatePreFormat(String key, Object... data) {
+        return translate(String.format(key, data));
     }
 
     public static class RGBAValues {

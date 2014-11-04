@@ -1,11 +1,11 @@
 package de.sanandrew.core.manpack.util;
 
+import com.google.common.collect.Maps;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
-
-import com.google.common.collect.Maps;
 
 public final class SAPReflectionHelper
 {
@@ -99,7 +99,7 @@ public final class SAPReflectionHelper
     }
 
     public static class UnableToSetFieldException
-        extends RuntimeException
+            extends RuntimeException
     {
         private static final long serialVersionUID = 1L;
 
@@ -109,7 +109,7 @@ public final class SAPReflectionHelper
     }
 
     public static class UnableToGetFieldException
-        extends RuntimeException
+            extends RuntimeException
     {
         private static final long serialVersionUID = 1L;
 
@@ -119,7 +119,7 @@ public final class SAPReflectionHelper
     }
 
     public static class UnableToInvokeMethodException
-        extends RuntimeException
+            extends RuntimeException
     {
         private static final long serialVersionUID = 1L;
 
@@ -129,7 +129,7 @@ public final class SAPReflectionHelper
     }
 
     public static class UnableToFindMethodException
-        extends RuntimeException
+            extends RuntimeException
     {
         private static final long serialVersionUID = 1L;
 
@@ -139,7 +139,7 @@ public final class SAPReflectionHelper
     }
 
     public static class UnableToAccessFieldException
-        extends RuntimeException
+            extends RuntimeException
     {
         private static final long serialVersionUID = 1L;
 

@@ -5,6 +5,7 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import de.sanandrew.core.manpack.managers.SAPUpdateManager;
 import de.sanandrew.core.manpack.mod.client.gui.GuiModUpdate;
+import de.sanandrew.core.manpack.util.MutableString;
 import de.sanandrew.core.manpack.util.SAPReflectionHelper;
 import de.sanandrew.core.manpack.util.javatuples.Pair;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
@@ -19,6 +20,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Timer;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
@@ -56,10 +58,10 @@ public class UpdateOverlayManager extends Gui
     public void renderMinecraft(TickEvent.RenderTickEvent event) {
         if(event.phase == Phase.END) {
             if( !this.hasEverythingChecked ) {
-                for( Triplet<SAPUpdateManager, Boolean, String> udm : SAPUpdateManager.UPD_MANAGERS ) {
-                    if( udm.getValue1() ) {
+                for( Triplet<SAPUpdateManager, MutableBoolean, MutableString> udm : SAPUpdateManager.UPD_MANAGERS ) {
+                    if( udm.getValue1().booleanValue() ) {
                         if( udm.getValue2() != null ) {
-                            this.addUpdate(udm.getValue0(), udm.getValue2());
+                            this.addUpdate(udm.getValue0(), udm.getValue2().stringValue());
                             GuiModUpdate.MANAGERS.add(udm.getValue0());
                         }
                         SAPUpdateManager.setInRenderQueue(udm.getValue0().getId());

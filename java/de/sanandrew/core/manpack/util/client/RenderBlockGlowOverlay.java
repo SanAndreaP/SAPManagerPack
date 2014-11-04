@@ -2,8 +2,6 @@ package de.sanandrew.core.manpack.util.client;
 
 import org.lwjgl.opengl.GL11;
 
-import de.sanandrew.core.manpack.util.IGlowBlockOverlay;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;

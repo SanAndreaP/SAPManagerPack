@@ -3,8 +3,10 @@ package de.sanandrew.core.manpack.managers;
 import com.google.common.collect.Maps;
 import cpw.mods.fml.common.FMLLog;
 import de.sanandrew.core.manpack.mod.ModCntManPack;
+import de.sanandrew.core.manpack.util.MutableString;
 import de.sanandrew.core.manpack.util.javatuples.Quartet;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.logging.log4j.Level;
 
 import java.io.BufferedReader;
@@ -31,16 +33,16 @@ public class SAPUpdateManager
 
 	private Quartet<String, Integer, Integer, Integer> newVersion; // MC version, major, minor, revision
 
-	public static final List<Triplet<SAPUpdateManager, Boolean, String>> UPD_MANAGERS = new ArrayList<>();
+	public static final List<Triplet<SAPUpdateManager, MutableBoolean, MutableString>> UPD_MANAGERS = new ArrayList<>();
 	public static final Map<Integer, Boolean> IS_IN_RENDER_QUEUE = Maps.newHashMap();
 
 	public static synchronized void setChecked(int mgrId) {
-	    UPD_MANAGERS.set(mgrId, UPD_MANAGERS.get(mgrId).setAt1(true));
+        UPD_MANAGERS.get(mgrId).getValue1().setTrue();
 	}
 
     public static synchronized void setHasUpdate(int mgrId, String version) {
         setChecked(mgrId);
-        UPD_MANAGERS.set(mgrId, UPD_MANAGERS.get(mgrId).setAt2(version));
+        UPD_MANAGERS.get(mgrId).getValue2().set(version);
     }
 
     public static void setInRenderQueue(int mgrId) {
@@ -63,7 +65,7 @@ public class SAPUpdateManager
 		this.updURL = newUrl;
 
 		this.mgrId = UPD_MANAGERS.size();
-		UPD_MANAGERS.add(Triplet.with(this, false, (String)null));
+		UPD_MANAGERS.add(Triplet.with(this, new MutableBoolean(false), new MutableString("")));
 		IS_IN_RENDER_QUEUE.put(this.mgrId, false);
 	}
 
