@@ -27,6 +27,8 @@ public class SAPClientUtils
         ModelRenderer box = new ModelRenderer(model, texX, texY);
         box.addBox(boxX, boxY, boxZ, sizeX, sizeY, sizeZ);
         box.setRotationPoint(rotPointX, rotPointY, rotPointZ);
+        box.textureWidth = model.textureWidth;
+        box.textureHeight = model.textureHeight;
         box.rotateAngleX = rotX;
         box.rotateAngleY = rotY;
         box.rotateAngleZ = rotZ;
