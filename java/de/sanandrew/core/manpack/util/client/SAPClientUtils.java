@@ -24,8 +24,13 @@ public class SAPClientUtils
 
     public static ModelRenderer createNewBox(ModelBase model, int texX, int texY, boolean mirror, float boxX, float boxY, float boxZ, int sizeX, int sizeY, int sizeZ,
                                              float rotPointX, float rotPointY, float rotPointZ, float rotX, float rotY, float rotZ) {
+        return createNewBox(model, texX, texY, mirror, boxX, boxY, boxZ, sizeX, sizeY, sizeZ, 0.0F, rotPointX, rotPointY, rotPointZ, rotX, rotY, rotZ);
+    }
+
+    public static ModelRenderer createNewBox(ModelBase model, int texX, int texY, boolean mirror, float boxX, float boxY, float boxZ, int sizeX, int sizeY, int sizeZ,
+                                             float scaleFactor, float rotPointX, float rotPointY, float rotPointZ, float rotX, float rotY, float rotZ) {
         ModelRenderer box = new ModelRenderer(model, texX, texY);
-        box.addBox(boxX, boxY, boxZ, sizeX, sizeY, sizeZ);
+        box.addBox(boxX, boxY, boxZ, sizeX, sizeY, sizeZ, scaleFactor);
         box.setRotationPoint(rotPointX, rotPointY, rotPointZ);
         box.textureWidth = model.textureWidth;
         box.textureHeight = model.textureHeight;
