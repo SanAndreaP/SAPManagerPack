@@ -1,0 +1,101 @@
+[center][b][size=18pt]SanAndreasPs Manager Pack[/size][/b][/center]
+
+This is a coremod required by all my mods. If you're a modder, you can use this as a library.
+[b]For Players:[/b]
+For players it's just a coremod which has to be installed if it's required. Download for the pack is below (do not use the deobf nor the src package!).
+[b]For Modders:[/b]
+To use this as a library (you want to use hooks from it or need this to develop for one of my mods), download the deobf and src .jar files. The deobf one goes into your build/libs folder, whereas the src folder can be placed anywhere (preferably inside build/sources).
+After doing this, add the deobf as a library in your project settings and attack the src one as source.
+
+
+[catbar]Download[/catbar]
+Current downloads need at least Forge version [tt]1.7.10-10.13.0.1212[/tt]
+[color=navy][b]Current download (Players):[/b][/color]
+- v. 1.7.10-2.1.0: [url=http://adf.ly/1357160/sapmanpack-1710-210]Download[/url]  ([size=8pt][url=https://github.com/SanAndreasP/SAPManagerPack/blob/master/releases/1.7.10/SAPManPack-1.7.10-2.1.0.jar?raw=true]*[/url][/size])
+[color=navy][b]Current download (Modders):[/b][/color]
+- v. 1.7.10-2.1.0 (deobf): [url=http://adf.ly/1357160/sapmanpack-1710-210-deobf]Download[/url]  ([size=8pt][url=https://github.com/SanAndreasP/SAPManagerPack/blob/master/releases/1.7.10/SAPManPack-1.7.10-2.1.0-deobf.jar?raw=true]*[/url][/size])
+- v. 1.7.10-2.1.0 (src): [url=http://adf.ly/1357160/sapmanpack-1710-210-src]Download[/url]  ([size=8pt][url=https://github.com/SanAndreasP/SAPManagerPack/blob/master/releases/1.7.10/SAPManPack-1.7.10-2.1.0-src.jar?raw=true]*[/url][/size])
+[color=navy][b]Old downloads (Players):[/b][/color]
+- v. 1.7.10-2.0.0: [url=http://adf.ly/1357160/sapmanpack-1710-200]Download[/url]  ([size=8pt][url=https://github.com/SanAndreasP/SAPManagerPack/blob/master/releases/1.7.10/SAPManPack-1.7.10-2.0.0.jar?raw=true]*[/url][/size])
+- v. 2.0.0 (alpha): [url=http://adf.ly/1357160/manager-pack-alpha]Download[/url]  ([size=8pt][url=https://github.com/SanAndreasP/SAP_Downloads/blob/master/Manager%20Pack/SAP_ManPackCore_v200a.jar]*[/url][/size])
+- v. 1.4.2: [url=http://adf.ly/1357160/manpack-v142]Download[/url]  ([size=8pt][url=http://www.mediafire.com/download.php?o84ihcb0u3ehix0]*[/url][/size])
+- v. 1.4.1: [url=http://adf.ly/1357160/manpack-v141]Download[/url]  ([size=8pt][url=http://www.mediafire.com/download.php?tzt74uje6b9h1ey]*[/url][/size])
+- v. 1.4: [url=http://adf.ly/1357160/sap-managerpack-v14]Download[/url]  ([size=8pt][url=http://www.mediafire.com/download.php?1p5yg5mgtk4f2l4]*[/url][/size])
+- v. 1.3: [url=http://adf.ly/GMdyl]Download[/url]  ([size=8pt][url=http://www.sanandrew.de/admin/uploads/SanAndreasP/Minecraft-mods/SAPMan_Downloads/0_SAPManPack_v13.jar]*[/url][/size])
+- v. 1.2: [url=http://adf.ly/FHRYV]Download[/url]  ([size=8pt][url=http://www.sanandrew.de/admin/uploads/SanAndreasP/Minecraft-mods/SAPMan_Downloads/0_SAPManPack_v12.jar]*[/url][/size])
+- v. 1.1_01: [url=http://adf.ly/EoQnH]Download[/url]  ([size=8pt][url=http://www.sanandrew.de/admin/uploads/SanAndreasP/Minecraft-mods/SAPMan_Downloads/0_SAPManPack_v11_01.jar]*[/url][/size])
+- v. 1.1: [url=http://adf.ly/1357160/sap-managers-v11]Download[/url]  ([size=8pt][url=http://www.sanandrew.de/admin/uploads/SanAndreasP/Minecraft-mods/SAPMan_Downloads/0_SAPManPack_v11.jar]*[/url][/size])
+- v. 1.0_01: [url=http://adf.ly/ES05h]Download[/url]  ([size=8pt][url=http://www.sanandrew.de/admin/uploads/SanAndreasP/Minecraft-mods/SAPMan_Downloads/0_SAPManPack_v10_01.jar]*[/url][/size])
+- v. 1.0: [url=http://adf.ly/DrtaZ]Download[/url]  ([size=8pt][url=http://www.sanandrew.de/admin/uploads/SanAndreasP/Minecraft-mods/SAPMan_Downloads/0_SAPManPack_v10.jar]*[/url][/size])
+[color=navy][b]Old downloads (Modders):[/b][/color]
+- v. 1.7.10-2.0.0 (deobf): [url=http://adf.ly/1357160/sapmanpack-1710-200-deobf]Download[/url]  ([size=8pt][url=https://github.com/SanAndreasP/SAPManagerPack/blob/master/releases/1.7.10/SAPManPack-1.7.10-2.0.0-deobf.jar?raw=true]*[/url][/size])
+- v. 1.7.10-2.0.0 (src): [url=http://adf.ly/1357160/sapmanpack-1710-200-src]Download[/url]  ([size=8pt][url=https://github.com/SanAndreasP/SAPManagerPack/blob/master/releases/1.7.10/SAPManPack-1.7.10-2.0.0-src.jar?raw=true]*[/url][/size])
+
+
+[catbar]Installation (Players)[/catbar]
+[list][li]Install Minecraft Forge[/li]
+[li]Drop the .jar into the /mods folder[/li][/list]
+
+
+[catbar]Changelog[/catbar]
+[list][li][b]v 2.1.0:[/b]
+- added helper method to check if an index can be used for an array
+- moved client stuff out of SAPUtils and into SAPClientUtils
+- added pre-formatted translation method
+- added forge version check
+- added helper method for registering new recipes[/li]
+[li][b]v 2.0.0:[/b]
+- the list of changes is too massive to list them in any changelog :([/li]
+[li][b]v 2.0.0a:[/b]
+- n/a -[/li]
+[li][b]v 1.4.2:[/b]
+- fixed bug where the config files and default language files don't have the correct path on the client
+- extending the CommonUsedStuff class for future mod features[/li]
+[li][b]v 1.4.1:[/b]
+- fixed seroius glitch where the world stops loading for a couple of seconds if the update check file isn't reachable
+- Using FMLs Logging system
+- some more log info added[/li]
+[li][b]v 1.4:[/b]
+- updated to Forge 7.7.0.582 and later
+- updated for Minecraft 1.5
+- several changes in the Language Manager[/li]
+[li][b]v 1.3:[/b]
+- updated to Forge 6.5.0.473 and later
+- updated for Minecraft 1.4.6
+- Update manager brings its own Tick Handler to check for updates.
+  * Mods which uses the Update manager don't need one anymore
+  * Mods will be registered automatically when calling the Update Manager constructor[/li]
+[li][b]v 1.2:[/b]
+- added reassigning occupied Item/Block IDs upon config creation
+- shorter update notifications
+- different colored messages for different updates:
+  * major versions will be shown red
+  * minor versions (feature updates) will be shown yellow
+  * revision versions (bugfixes) will be shown cyan
+- tweaked Language Manager[/li]
+[li][b]v 1.1_01:[/b]
+- updated to Minecraft 1.4.4[/li]
+[li][b]v 1.1:[/b]
+- Language Manager writes a default language file in the mod's language path.
+- fixed NPE in Language Manager
+- added method to get translated Name from specified language[/li]
+[li][b]v 1.0_01:[/b]
+- updated to Minecraft 1.4.2
+- bug fixed where a newer version of a mod would get an update message from the Update Manager[/li]
+[li][b]v 1.0:[/b]
+- first official and seperate release
+- rewritten config manager[/li]
+[/list]
+
+
+[catbar]Modders Information[/catbar]
+[i]- coming soon -[/i]
+
+[catbar]Source code[/catbar]
+Source on Github:
+https://github.com/SanAndreasP/SAPManagerPack
+
+
+[catbar]License[/catbar]
+[url=http://"http://creativecommons.org/licenses/by-nc-sa/4.0/"][img width=88 height=31]https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png[/img][/url]
+This work is licensed under a [url=http://"http://creativecommons.org/licenses/by-nc-sa/4.0/"]Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License[/url].

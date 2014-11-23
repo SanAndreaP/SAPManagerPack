@@ -12,6 +12,8 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 
+import java.lang.reflect.InvocationTargetException;
+
 public class SAPClientUtils
 {
     public static void setSelectedBtn(GuiScreen inst, GuiButton btn) {
@@ -40,5 +42,26 @@ public class SAPClientUtils
         box.mirror = mirror;
 
         return box;
+    }
+
+    public static <T extends ModelRenderer> T createNewBox(Class<T> boxClass, ModelBase model, int texX, int texY, boolean mirror, float boxX, float boxY,
+                                                           float boxZ, int sizeX, int sizeY, int sizeZ, float scaleFactor, float rotPointX, float rotPointY,
+                                                           float rotPointZ, float rotX, float rotY, float rotZ) {
+        try {
+            T box = boxClass.getConstructor(ModelBase.class, int.class, int.class).newInstance(model, texX, texY);
+            box.addBox(boxX, boxY, boxZ, sizeX, sizeY, sizeZ, scaleFactor);
+            box.setRotationPoint(rotPointX, rotPointY, rotPointZ);
+            box.textureWidth = model.textureWidth;
+            box.textureHeight = model.textureHeight;
+            box.rotateAngleX = rotX;
+            box.rotateAngleY = rotY;
+            box.rotateAngleZ = rotZ;
+            box.mirror = mirror;
+
+            return box;
+        } catch( NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e ) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
