@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.Tessellator;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -63,5 +64,93 @@ public class SAPClientUtils
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static void drawTexturedSquareYPos(double cornerBeginX, double cornerBeginZ, double cornerEndX, double cornerEndZ, double y, double uBegin, double vBegin,
+                                              double uEnd, double vEnd) {
+        Tessellator tess = Tessellator.instance;
+
+        tess.startDrawingQuads();
+        tess.setNormal(0.0F, 1.0F, 0.0F);
+
+        tess.addVertexWithUV(cornerBeginX, y, cornerBeginZ, uBegin, vBegin);
+        tess.addVertexWithUV(cornerBeginX, y, cornerEndZ,   uBegin, vEnd);
+        tess.addVertexWithUV(cornerEndX,   y, cornerEndZ,   uEnd,   vEnd);
+        tess.addVertexWithUV(cornerEndX,   y, cornerBeginZ, uEnd,   vBegin);
+
+        tess.draw();
+    }
+
+    public static void drawTexturedSquareYNeg(double cornerBeginX, double cornerBeginZ, double cornerEndX, double cornerEndZ, double y, double uBegin, double vBegin,
+                                              double uEnd, double vEnd) {
+        Tessellator tess = Tessellator.instance;
+
+        tess.startDrawingQuads();
+        tess.setNormal(0.0F, -1.0F, 0.0F);
+
+        tess.addVertexWithUV(cornerBeginX, y, cornerBeginZ, uBegin, vBegin);
+        tess.addVertexWithUV(cornerEndX,   y, cornerBeginZ, uEnd,   vBegin);
+        tess.addVertexWithUV(cornerEndX,   y, cornerEndZ,   uEnd,   vEnd);
+        tess.addVertexWithUV(cornerBeginX, y, cornerEndZ,   uBegin, vEnd);
+
+        tess.draw();
+    }
+
+    public static void drawTexturedSquareXPos(double cornerBeginY, double cornerBeginZ, double cornerEndY, double cornerEndZ, double x, double uBegin, double vBegin,
+                                              double uEnd, double vEnd) {
+        Tessellator tess = Tessellator.instance;
+
+        tess.startDrawingQuads();
+        tess.setNormal(1.0F, 0.0F, 0.0F);
+
+        tess.addVertexWithUV(x, cornerBeginY, cornerBeginZ, uEnd,   vEnd);
+        tess.addVertexWithUV(x, cornerEndY,   cornerBeginZ, uEnd,   vBegin);
+        tess.addVertexWithUV(x, cornerEndY,   cornerEndZ,   uBegin, vBegin);
+        tess.addVertexWithUV(x, cornerBeginY, cornerEndZ,   uBegin, vEnd);
+
+        tess.draw();
+    }
+
+    public static void drawTexturedSquareXNeg(double cornerBeginY, double cornerBeginZ, double cornerEndY, double cornerEndZ, double x, double uBegin, double vBegin,
+                                              double uEnd, double vEnd) {
+        Tessellator tess = Tessellator.instance;
+
+        tess.startDrawingQuads();
+        tess.setNormal(-1.0F, 0.0F, 0.0F);
+
+        tess.addVertexWithUV(x, cornerBeginY, cornerBeginZ, uBegin, vEnd);
+        tess.addVertexWithUV(x, cornerBeginY, cornerEndZ,   uEnd,   vEnd);
+        tess.addVertexWithUV(x, cornerEndY,   cornerEndZ,   uEnd,   vBegin);
+        tess.addVertexWithUV(x, cornerEndY,   cornerBeginZ, uBegin, vBegin);
+        tess.draw();
+    }
+
+    public static void drawTexturedSquareZPos(double cornerBeginX, double cornerBeginY, double cornerEndX, double cornerEndY, double z, double uBegin, double vBegin,
+                                              double uEnd, double vEnd) {
+        Tessellator tess = Tessellator.instance;
+
+        tess.startDrawingQuads();
+        tess.setNormal(0.0F, 0.0F, 1.0F);
+
+        tess.addVertexWithUV(cornerBeginX, cornerBeginY, z, uBegin, vEnd);
+        tess.addVertexWithUV(cornerEndX,   cornerBeginY, z, uEnd,   vEnd);
+        tess.addVertexWithUV(cornerEndX,   cornerEndY,   z, uEnd,   vBegin);
+        tess.addVertexWithUV(cornerBeginX, cornerEndY,   z, uBegin, vBegin);
+
+        tess.draw();
+    }
+
+    public static void drawTexturedSquareZNeg(double cornerBeginX, double cornerBeginY, double cornerEndX, double cornerEndY, double z, double uBegin, double vBegin,
+                                              double uEnd, double vEnd) {
+        Tessellator tess = Tessellator.instance;
+
+        tess.startDrawingQuads();
+        tess.setNormal(0.0F, 0.0F, -1.0F);
+
+        tess.addVertexWithUV(cornerBeginX, cornerBeginY, z, uEnd,   vEnd);
+        tess.addVertexWithUV(cornerBeginX, cornerEndY,   z, uEnd,   vBegin);
+        tess.addVertexWithUV(cornerEndX,   cornerEndY,   z, uBegin, vBegin);
+        tess.addVertexWithUV(cornerEndX,   cornerBeginY, z, uBegin, vEnd);
+        tess.draw();
     }
 }
