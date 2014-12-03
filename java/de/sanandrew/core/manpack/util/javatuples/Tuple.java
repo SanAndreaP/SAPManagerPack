@@ -233,4 +233,20 @@ public abstract class Tuple
             FMLLog.log(ModCntManPack.MOD_LOG, Level.ERROR, ex, "Cannot serialize Tuple!");
         }
     }
+
+    public static Tuple from(Object... values) {
+        switch( values.length ) {
+            case 1: return Unit.fromArray(values);
+            case 2: return Pair.fromArray(values);
+            case 3: return Triplet.fromArray(values);
+            case 4: return Quartet.fromArray(values);
+            case 5: return Quintet.fromArray(values);
+            case 6: return Sextet.fromArray(values);
+            case 7: return Septet.fromArray(values);
+            case 8: return Octet.fromArray(values);
+            case 9: return Ennead.fromArray(values);
+            case 10: return Decade.fromArray(values);
+            default: throw new RuntimeException(String.format("Cannot create Tuple with size %d!", values.length));
+        }
+    }
 }
