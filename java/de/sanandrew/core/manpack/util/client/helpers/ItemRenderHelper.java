@@ -1,4 +1,4 @@
-package de.sanandrew.core.manpack.util.client;
+package de.sanandrew.core.manpack.util.client.helpers;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

@@ -4,7 +4,7 @@
  * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
  *                http://creativecommons.org/licenses/by-nc-sa/4.0/
  *******************************************************************************************************************/
-package de.sanandrew.core.manpack.util.client;
+package de.sanandrew.core.manpack.util.client.helpers;
 
 import de.sanandrew.core.manpack.util.SAPReflectionHelper;
 import net.minecraft.client.gui.GuiButton;
@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.Tessellator;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class SAPClientUtils
+public final class SAPClientUtils
 {
     public static void setSelectedBtn(GuiScreen inst, GuiButton btn) {
         SAPReflectionHelper.setCachedFieldValue(GuiScreen.class, inst, "selectedButton", "field_73883_a", btn);
