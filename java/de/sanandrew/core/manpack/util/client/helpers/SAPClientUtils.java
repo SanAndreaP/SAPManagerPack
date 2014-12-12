@@ -11,7 +11,9 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
+import org.lwjgl.opengl.GL11;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -33,14 +35,14 @@ public final class SAPClientUtils
     public static ModelRenderer createNewBox(ModelBase model, int texX, int texY, boolean mirror, float boxX, float boxY, float boxZ, int sizeX, int sizeY, int sizeZ,
                                              float scaleFactor, float rotPointX, float rotPointY, float rotPointZ, float rotX, float rotY, float rotZ) {
         ModelRenderer box = new ModelRenderer(model, texX, texY);
-        box.addBox(boxX, boxY, boxZ, sizeX, sizeY, sizeZ, scaleFactor);
-        box.setRotationPoint(rotPointX, rotPointY, rotPointZ);
         box.textureWidth = model.textureWidth;
         box.textureHeight = model.textureHeight;
         box.rotateAngleX = rotX;
         box.rotateAngleY = rotY;
         box.rotateAngleZ = rotZ;
         box.mirror = mirror;
+        box.setRotationPoint(rotPointX, rotPointY, rotPointZ);
+        box.addBox(boxX, boxY, boxZ, sizeX, sizeY, sizeZ, scaleFactor);
 
         return box;
     }
@@ -152,5 +154,45 @@ public final class SAPClientUtils
         tess.addVertexWithUV(cornerEndX,   cornerEndY,   z, uBegin, vBegin);
         tess.addVertexWithUV(cornerEndX,   cornerBeginY, z, uBegin, vEnd);
         tess.draw();
+    }
+
+    public static void drawSquareXNeg(double cornerBeginY, double cornerBeginZ, double cornerEndY, double cornerEndZ, double x) {
+        Tessellator tess = Tessellator.instance;
+
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+//        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+        tess.startDrawingQuads();
+        tess.setNormal(-1.0F, 0.0F, 0.0F);
+        tess.addVertex(x, cornerBeginY, cornerBeginZ);
+        tess.addVertex(x, cornerBeginY, cornerEndZ);
+        tess.addVertex(x, cornerEndY,   cornerEndZ);
+        tess.addVertex(x, cornerEndY,   cornerBeginZ);
+        tess.draw();
+
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_BLEND);
+    }
+
+    public static void drawSquareZPos(double cornerBeginX, double cornerBeginY, double cornerEndX, double cornerEndY, double z) {
+        Tessellator tess = Tessellator.instance;
+
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+//        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+        tess.startDrawingQuads();
+        tess.setNormal(0.0F, 0.0F, 1.0F);
+        tess.addVertex(cornerBeginX, cornerBeginY, z);
+        tess.addVertex(cornerEndX,   cornerBeginY, z);
+        tess.addVertex(cornerEndX,   cornerEndY,   z);
+        tess.addVertex(cornerBeginX, cornerEndY,   z);
+        tess.draw();
+
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_BLEND);
     }
 }
