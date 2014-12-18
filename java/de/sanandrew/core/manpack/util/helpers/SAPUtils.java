@@ -251,10 +251,22 @@ public final class SAPUtils
         return StatCollector.translateToLocal(key);
     }
 
+    /**
+     * translates a key and then formats the translated string with the data afterwards.
+     * @param key The key to be translated
+     * @param data The data to be injected into the translated string
+     * @return The translated string
+     */
     public static String translatePostFormat(String key, Object... data) {
         return String.format(translate(key), data);
     }
 
+    /**
+     * formats a key with the data and translates the formated string afterwards.
+     * @param key The key to be translated
+     * @param data The data to be injected into the key
+     * @return The translated string
+     */
     public static String translatePreFormat(String key, Object... data) {
         return translate(String.format(key, data));
     }
