@@ -28,15 +28,37 @@ final class ItemHelper
         return is;
     }
 
-    static boolean areStacksEqualWithWCV(ItemStack is1, ItemStack is2) {
+    static ItemStack decrInvStackSize(ItemStack is, int amount) {
+        ItemStack returnedStack = is.copy();
+
+        returnedStack.stackSize = amount;
+        is.stackSize -= amount;
+
+        return returnedStack;
+    }
+
+    static boolean areStacksEqual(ItemStack is1, ItemStack is2, boolean checkNbt) {
         if( is1 == null || is2 == null ) {
             return is1 == is2;
-        } else if( is1.getItem() == null || is2.getItem() == null ) {
+        }
+
+        if( is1.getItem() == null || is2.getItem() == null ) {
             return is1.getItem() == is2.getItem();
-        } else if( is1.isItemEqual(is2) ) {
-            return true;
-        } else if( is1.getItemDamage() == OreDictionary.WILDCARD_VALUE || is2.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
-            return is1.getItem() == is2.getItem();
+        }
+
+        if( is1.getItem() == is2.getItem() ) {
+            if( checkNbt ) {
+                if( is1.hasTagCompound() ) {
+                    if( !is1.getTagCompound().equals(is2.getTagCompound()) ) {
+                        return false;
+                    }
+                } else if( is2.hasTagCompound() && !is2.getTagCompound().equals(is1.getTagCompound()) ) {
+                    return false;
+                }
+            }
+
+            return is1.getItemDamage() == OreDictionary.WILDCARD_VALUE || is2.getItemDamage() == OreDictionary.WILDCARD_VALUE
+                   || is1.getItemDamage() == is2.getItemDamage();
         }
 
         return false;
@@ -61,9 +83,9 @@ final class ItemHelper
         return isMap.toArray(new ItemStack[isMap.size()]);
     }
 
-    static boolean isItemInStackArray(ItemStack base, ItemStack... stackArray) {
+    static boolean isItemInStackArray(ItemStack base, boolean checkNbt, ItemStack... stackArray) {
         for( ItemStack stack : stackArray ) {
-            if( base != null && stack != null && areStacksEqualWithWCV(base, stack) ) {
+            if( base != null && stack != null && areStacksEqual(base, stack, checkNbt) ) {
                 return true;
             }
         }

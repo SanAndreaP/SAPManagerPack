@@ -57,6 +57,10 @@ public final class SAPUtils
         return ItemHelper.decrStackSize(stack, amount);
     }
 
+    public static ItemStack decrInvStackSize(ItemStack stack, int amount) {
+        return ItemHelper.decrInvStackSize(stack, amount);
+    }
+
     /**
      * Compares two ItemStacks if they are equal. If one of the ItemStacks has
      * the metadata wildcard as damage value, only the item instances will be
@@ -66,8 +70,13 @@ public final class SAPUtils
      * @param stack2 the second ItemStack
      * @return true, if stacks are equal, false otherwise.
      */
+    @Deprecated
     public static boolean areStacksEqualWithWCV(ItemStack stack1, ItemStack stack2) {
-        return ItemHelper.areStacksEqualWithWCV(stack1, stack2);
+        return ItemHelper.areStacksEqual(stack1, stack2, false);
+    }
+
+    public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2, boolean checkNbt) {
+        return ItemHelper.areStacksEqual(stack1, stack2, checkNbt);
     }
 
     /**
@@ -93,7 +102,7 @@ public final class SAPUtils
     public static int getInBetweenVal(int val1, int val2) {
         int maxVal = Math.max(val1, val2);
         int minVal = Math.min(val1, val2);
-        return Math.round((maxVal + minVal) / 2F);
+        return Math.round((maxVal + minVal) / 2.0F);
     }
 
     /**
@@ -107,7 +116,12 @@ public final class SAPUtils
         return SAPReflectionHelper.invokeCachedMethod(Block.class, block, "createStackedBlock", "func_71880_c_", new Class[]{int.class}, new Object[]{meta});
     }
 
+    @Deprecated
     public static void dropBlockAsItem(Block block, World world, int x, int y, int z, ItemStack stack) {
+        dropBlockAsItem(world, x, y, z, stack);
+    }
+
+    public static void dropBlockAsItem(World world, int x, int y, int z, ItemStack stack) {
         EntityItem item = new EntityItem(world, x + 0.5D, y + 0.5D, z + 0.5D, stack);
         world.spawnEntityInWorld(item);
     }
@@ -116,12 +130,22 @@ public final class SAPUtils
         block.dropXpOnBlockBreak(world, x, y, z, block.getExpDrop(world, meta, fortune));
     }
 
+    @Deprecated
     public static boolean isItemInStackArray(ItemStack base, ItemStack... stackArray) {
-        return ItemHelper.isItemInStackArray(base, stackArray);
+        return ItemHelper.isItemInStackArray(base, false, stackArray);
     }
 
+    @Deprecated
     public static boolean isItemInStackArray(ItemStack base, List<ItemStack> stackArray) {
-        return ItemHelper.isItemInStackArray(base, stackArray.toArray(new ItemStack[stackArray.size()]));
+        return ItemHelper.isItemInStackArray(base, false, stackArray.toArray(new ItemStack[stackArray.size()]));
+    }
+
+    public static boolean isItemInStackArray(ItemStack base, boolean checkSize, ItemStack... stackArray) {
+        return ItemHelper.isItemInStackArray(base, checkSize, stackArray);
+    }
+
+    public static boolean isItemInStackArray(ItemStack base, boolean checkSize, List<ItemStack> stackArray) {
+        return ItemHelper.isItemInStackArray(base, checkSize, stackArray.toArray(new ItemStack[stackArray.size()]));
     }
 
     @SuppressWarnings("unchecked")
@@ -162,7 +186,7 @@ public final class SAPUtils
         }
     }
 
-    public static <A> void registerBlockWithItem(Block block, Class<? extends ItemBlock> itemClass) {
+    public static void registerBlockWithItem(Block block, Class<? extends ItemBlock> itemClass) {
         String blockName = block.getUnlocalizedName();
         blockName = blockName.substring(blockName.lastIndexOf(':') + 1);
         GameRegistry.registerBlock(block, itemClass, blockName.toLowerCase());
@@ -227,10 +251,22 @@ public final class SAPUtils
         return StatCollector.translateToLocal(key);
     }
 
+    /**
+     * translates a key and then formats the translated string with the data afterwards.
+     * @param key The key to be translated
+     * @param data The data to be injected into the translated string
+     * @return The translated string
+     */
     public static String translatePostFormat(String key, Object... data) {
         return String.format(translate(key), data);
     }
 
+    /**
+     * formats a key with the data and translates the formated string afterwards.
+     * @param key The key to be translated
+     * @param data The data to be injected into the key
+     * @return The translated string
+     */
     public static String translatePreFormat(String key, Object... data) {
         return translate(String.format(key, data));
     }
