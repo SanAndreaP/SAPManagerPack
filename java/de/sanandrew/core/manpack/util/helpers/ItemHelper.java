@@ -109,7 +109,7 @@ final class ItemHelper
             if( instance2 instanceof Block || instance2 instanceof Item ) {
                 return SAPUtils.areItemInstEqual(instance2, instance1);
             } else if( instance2 instanceof ItemStack ) {
-                return SAPUtils.areStacksEqualWithWCV((ItemStack) instance1, (ItemStack) instance2);
+                return SAPUtils.areStacksEqual((ItemStack) instance1, (ItemStack) instance2, false);
             }
         }
         return false;

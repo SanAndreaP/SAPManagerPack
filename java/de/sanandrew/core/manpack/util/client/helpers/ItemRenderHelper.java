@@ -271,9 +271,11 @@ public final class ItemRenderHelper
             return;
         }
 
-		GL11.glPushMatrix();
+        renderIcon(getItemIcon(stack, layer), stack.getItemSpriteNumber(), stack.hasEffect(layer), isGlowing);
+    }
 
-        IIcon icon = getItemIcon(stack, layer);
+    public static void renderIcon(IIcon icon, int spriteIndex, boolean hasEffect, boolean isGlowing) {
+		GL11.glPushMatrix();
 
         if( icon == null ) {
             GL11.glPopMatrix();
@@ -290,7 +292,7 @@ public final class ItemRenderHelper
         Tessellator tessellator = Tessellator.instance;
 
         Minecraft.getMinecraft().renderEngine.bindTexture(
-        		Minecraft.getMinecraft().renderEngine.getResourceLocation(stack.getItemSpriteNumber())
+        		Minecraft.getMinecraft().renderEngine.getResourceLocation(spriteIndex)
         );
 
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -302,7 +304,7 @@ public final class ItemRenderHelper
 
         renderItemIn2D(tessellator, maxU, minV, minU, maxV, icon.getIconWidth(), icon.getIconHeight(), 0.0625F, isGlowing);
 
-        if( stack.hasEffect(layer) ) {
+        if( hasEffect ) {
             float baseClr = 0.76F;
             float glintScale = 0.125F;
             float glintTransX = Minecraft.getSystemTime() % 3000L / 3000.0F * 8.0F;
@@ -405,6 +407,6 @@ public final class ItemRenderHelper
 
     public static IIcon getItemIcon(ItemStack stack, int layer)
     {
-        return stack.getItem().requiresMultipleRenderPasses() ? stack.getItem().getIconFromDamageForRenderPass(stack.getItemDamage(), layer) : stack.getIconIndex();
+        return stack.getItem().requiresMultipleRenderPasses() ? stack.getItem().getIcon(stack, layer) : stack.getIconIndex();
     }
 }
