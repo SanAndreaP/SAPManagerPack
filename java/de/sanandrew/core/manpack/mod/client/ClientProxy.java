@@ -8,6 +8,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.managers.SAPUpdateManager;
 import de.sanandrew.core.manpack.mod.CommonProxy;
 import de.sanandrew.core.manpack.mod.client.event.EventWorldRenderLast;
+import de.sanandrew.core.manpack.mod.client.event.RenderPlayerEventHandler;
 import de.sanandrew.core.manpack.mod.client.particle.SAPEffectRenderer;
 import de.sanandrew.core.manpack.util.client.RenderBlockGlowOverlay;
 import net.minecraft.client.Minecraft;
@@ -40,6 +41,8 @@ public class ClientProxy extends CommonProxy
         EventWorldRenderLast wrlEvent = new EventWorldRenderLast();
         MinecraftForge.EVENT_BUS.register(wrlEvent);
         FMLCommonHandler.instance().bus().register(wrlEvent);
+
+        MinecraftForge.EVENT_BUS.register(new RenderPlayerEventHandler());
 	}
 
 	@Override
