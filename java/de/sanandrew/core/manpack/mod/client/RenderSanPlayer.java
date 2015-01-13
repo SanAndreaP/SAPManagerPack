@@ -29,17 +29,18 @@ public class RenderSanPlayer
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(AbstractClientPlayer p_110775_1_) {
-        return texture;
+    protected ResourceLocation getEntityTexture(AbstractClientPlayer clientPlayer) {
+        return this.texture;
     }
 
     @Override
-    public void renderFirstPersonArm(EntityPlayer p_82441_1_) {
-        float f = 1.0F;
-        GL11.glColor3f(f, f, f);
+    public void renderFirstPersonArm(EntityPlayer player) {
+        GL11.glColor3f(1.0F, 1.0F, 1.0F);
         this.modelBipedMain.onGround = 0.0F;
-        this.modelBipedMain.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, p_82441_1_);
-        this.bindEntityTexture(p_82441_1_);
+        this.modelBipedMain.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, player);
+        if( this.renderManager.renderEngine != null ) {
+            this.bindTexture(this.texture);
+        }
         ((ModelSanPlayer)this.modelBipedMain).armRight.render(0.0625F);
         GL11.glPushMatrix();
         GL11.glScalef(1.05F, 1.05F, 1.05F);

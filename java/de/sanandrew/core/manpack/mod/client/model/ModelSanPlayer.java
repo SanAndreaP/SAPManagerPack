@@ -115,6 +115,9 @@ public class ModelSanPlayer extends ModelBiped
         GL11.glTranslatef(-this.armLeft2.rotationPointX * f5, -this.armLeft2.rotationPointY * f5, -this.armLeft2.rotationPointZ * f5);
         this.armLeft2.render(f5);
         GL11.glPopMatrix();
+
+        GL11.glPushMatrix();
+        GL11.glScalef(1.1F, 1.1F, 1.1F);
         GL11.glPushMatrix();
         GL11.glTranslatef(this.hair.offsetX, this.hair.offsetY, this.hair.offsetZ);
         GL11.glTranslatef(this.hair.rotationPointX * f5, this.hair.rotationPointY * f5, this.hair.rotationPointZ * f5);
@@ -124,6 +127,8 @@ public class ModelSanPlayer extends ModelBiped
         this.hair.render(f5);
         GL11.glPopMatrix();
         this.head.render(f5);
+
+        GL11.glPopMatrix();
         this.armRight.render(f5);
         GL11.glPushMatrix();
         GL11.glTranslatef(this.armRight2.offsetX, this.armRight2.offsetY, this.armRight2.offsetZ);
