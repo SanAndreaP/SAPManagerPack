@@ -36,6 +36,7 @@ public class TransformEnderman
 
             return basicClass;
         }
+
         return basicClass;
     }
 

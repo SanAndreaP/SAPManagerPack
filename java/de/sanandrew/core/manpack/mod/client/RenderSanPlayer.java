@@ -39,7 +39,12 @@ public class RenderSanPlayer
         GL11.glColor3f(f, f, f);
         this.modelBipedMain.onGround = 0.0F;
         this.modelBipedMain.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, p_82441_1_);
+        this.bindEntityTexture(p_82441_1_);
         ((ModelSanPlayer)this.modelBipedMain).armRight.render(0.0625F);
+        GL11.glPushMatrix();
+        GL11.glScalef(1.05F, 1.05F, 1.05F);
+        GL11.glTranslatef(0.015F, 0.00F, 0.0F);
         ((ModelSanPlayer)this.modelBipedMain).armRight2.render(0.0625F);
+        GL11.glPopMatrix();
     }
 }

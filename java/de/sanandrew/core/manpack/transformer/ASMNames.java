@@ -56,6 +56,8 @@ public class ASMNames
     public static String M_onLivingUpdate;
     public static String M_teleportTo;
     public static String M_spawnParticle;
+    public static String M_getEntityRenderObj;
+    public static String M_getEntityClsRenderObj;
 
     public static void initialize() {
         if( isInitialized ) {
@@ -86,34 +88,36 @@ public class ASMNames
         F_width =             ASMHelper.getRemappedMF("width",               "field_70130_N");
         F_height =            ASMHelper.getRemappedMF("height",              "field_70131_O");
 
-        M_isBadEffect =          ASMHelper.getRemappedMF("isBadEffect",                 "func_76398_f");
-        M_createVectorHelper =   ASMHelper.getRemappedMF("createVectorHelper",          "func_72443_a");
-        M_onUpdate =             ASMHelper.getRemappedMF("onUpdate",                    "func_70071_h_");
-        M_rayTraceBlocks =       ASMHelper.getRemappedMF("rayTraceBlocks",              "func_72933_a");
-        M_rayTraceBlocksB =      ASMHelper.getRemappedMF("rayTraceBlocks",              "func_72901_a");
-        M_updateObject =         ASMHelper.getRemappedMF("updateObject",                "func_75692_b");
-        M_getStackInSlot =       ASMHelper.getRemappedMF("getStackInSlot",              "func_70301_a");
-        M_addObject =            ASMHelper.getRemappedMF("addObject",                   "func_75682_a");
-        M_getItem =              ASMHelper.getRemappedMF("getItem",                     "func_77973_b");
-        M_getWatchableObjectIS = ASMHelper.getRemappedMF("getWatchableObjectItemStack", "func_82710_f");
-        M_isItemEqual =          ASMHelper.getRemappedMF("isItemEqual",                 "func_77969_a");
-        M_playSound =            ASMHelper.getRemappedMF("playSound",                   "func_85030_a");
-        M_getUnlocalizedName =   ASMHelper.getRemappedMF("getUnlocalizedName",          "func_77977_a");
-        M_interact =             ASMHelper.getRemappedMF("interact",                    "func_70085_c");
-        M_func146085a =          ASMHelper.getRemappedMF("func_146085_a",               "func_146085_a");
-        M_entityInit =           ASMHelper.getRemappedMF("entityInit",                  "func_70088_a");
-        M_func110232cE =         ASMHelper.getRemappedMF("func_110232_cE",              "func_110232_cE");
-        M_setHorseTexturePaths = ASMHelper.getRemappedMF("setHorseTexturePaths",        "func_110247_cG");
-        M_isHorseSaddled =       ASMHelper.getRemappedMF("isHorseSaddled",              "func_110257_ck");
-        M_onInventoryChanged =   ASMHelper.getRemappedMF("onInventoryChanged",          "func_76316_a");
-        M_func110241cb =         ASMHelper.getRemappedMF("func_110241_cb",              "func_110241_cb");
-        M_getTotalArmorValue =   ASMHelper.getRemappedMF("getTotalArmorValue",          "func_70658_aO");
-        M_isSneaking =           ASMHelper.getRemappedMF("isSneaking",                  "func_70093_af");
-        M_updateRidden =         ASMHelper.getRemappedMF("updateRidden",                "func_70098_U");
-        M_shouldAttackPlayer =   ASMHelper.getRemappedMF("shouldAttackPlayer",          "func_70821_d");
-        M_onLivingUpdate =       ASMHelper.getRemappedMF("onLivingUpdate",              "func_70636_d");
-        M_teleportTo =           ASMHelper.getRemappedMF("teleportTo",                  "func_70825_j");
-        M_spawnParticle =        ASMHelper.getRemappedMF("spawnParticle",               "func_72869_a");
+        M_isBadEffect =           ASMHelper.getRemappedMF("isBadEffect",                 "func_76398_f");
+        M_createVectorHelper =    ASMHelper.getRemappedMF("createVectorHelper",          "func_72443_a");
+        M_onUpdate =              ASMHelper.getRemappedMF("onUpdate",                    "func_70071_h_");
+        M_rayTraceBlocks =        ASMHelper.getRemappedMF("rayTraceBlocks",              "func_72933_a");
+        M_rayTraceBlocksB =       ASMHelper.getRemappedMF("rayTraceBlocks",              "func_72901_a");
+        M_updateObject =          ASMHelper.getRemappedMF("updateObject",                "func_75692_b");
+        M_getStackInSlot =        ASMHelper.getRemappedMF("getStackInSlot",              "func_70301_a");
+        M_addObject =             ASMHelper.getRemappedMF("addObject",                   "func_75682_a");
+        M_getItem =               ASMHelper.getRemappedMF("getItem",                     "func_77973_b");
+        M_getWatchableObjectIS =  ASMHelper.getRemappedMF("getWatchableObjectItemStack", "func_82710_f");
+        M_isItemEqual =           ASMHelper.getRemappedMF("isItemEqual",                 "func_77969_a");
+        M_playSound =             ASMHelper.getRemappedMF("playSound",                   "func_85030_a");
+        M_getUnlocalizedName =    ASMHelper.getRemappedMF("getUnlocalizedName",          "func_77977_a");
+        M_interact =              ASMHelper.getRemappedMF("interact",                    "func_70085_c");
+        M_func146085a =           ASMHelper.getRemappedMF("func_146085_a",               "func_146085_a");
+        M_entityInit =            ASMHelper.getRemappedMF("entityInit",                  "func_70088_a");
+        M_func110232cE =          ASMHelper.getRemappedMF("func_110232_cE",              "func_110232_cE");
+        M_setHorseTexturePaths =  ASMHelper.getRemappedMF("setHorseTexturePaths",        "func_110247_cG");
+        M_isHorseSaddled =        ASMHelper.getRemappedMF("isHorseSaddled",              "func_110257_ck");
+        M_onInventoryChanged =    ASMHelper.getRemappedMF("onInventoryChanged",          "func_76316_a");
+        M_func110241cb =          ASMHelper.getRemappedMF("func_110241_cb",              "func_110241_cb");
+        M_getTotalArmorValue =    ASMHelper.getRemappedMF("getTotalArmorValue",          "func_70658_aO");
+        M_isSneaking =            ASMHelper.getRemappedMF("isSneaking",                  "func_70093_af");
+        M_updateRidden =          ASMHelper.getRemappedMF("updateRidden",                "func_70098_U");
+        M_shouldAttackPlayer =    ASMHelper.getRemappedMF("shouldAttackPlayer",          "func_70821_d");
+        M_onLivingUpdate =        ASMHelper.getRemappedMF("onLivingUpdate",              "func_70636_d");
+        M_teleportTo =            ASMHelper.getRemappedMF("teleportTo",                  "func_70825_j");
+        M_spawnParticle =         ASMHelper.getRemappedMF("spawnParticle",               "func_72869_a");
+        M_getEntityRenderObj =    ASMHelper.getRemappedMF("getEntityRenderObject",       "func_78713_a");
+        M_getEntityClsRenderObj = ASMHelper.getRemappedMF("getEntityClassRenderObject",  "func_78715_a");
 
         isInitialized = true;
     }
