@@ -7,7 +7,7 @@
 package de.sanandrew.core.manpack.mod.client.event;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import de.sanandrew.core.manpack.mod.client.RenderSanPlayer;
+import de.sanandrew.core.manpack.mod.client.render.RenderSanPlayer;
 import de.sanandrew.core.manpack.util.client.event.GetRenderObjEvent;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
