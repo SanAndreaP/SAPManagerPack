@@ -3,11 +3,7 @@ package de.sanandrew.core.manpack.mod.client.model;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * SanPlayer - SanAndreasP
@@ -35,13 +31,6 @@ public class ModelSanPlayer extends ModelBiped
     public ModelRenderer shape29;
     public ModelRenderer shape30;
     public ModelRenderer shape32;
-
-    public Map<String, ResourceLocation> armorResources = new HashMap<>();
-
-    public String armoredHat = null;
-    public String armoredChest = null;
-    public String armoredPants = null;
-    public String armoredFeet = null;
 
     private boolean isArmor;
 
@@ -137,9 +126,7 @@ public class ModelSanPlayer extends ModelBiped
 
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-//        if( !this.isArmor ) {
-            this.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-//        }
+        this.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
 
         if( !this.isArmor ) {
             GL11.glPushMatrix();
@@ -195,49 +182,38 @@ public class ModelSanPlayer extends ModelBiped
 
         this.setRotateAngle(this.head, this.bipedHead.rotateAngleX, this.bipedHead.rotateAngleY, this.bipedHead.rotateAngleZ);
         this.setRotateAngle(this.hatBase, this.bipedHead.rotateAngleX, this.bipedHead.rotateAngleY, this.bipedHead.rotateAngleZ);
-        this.setRotateAngle(this.body, this.bipedBody.rotateAngleX, this.bipedBody.rotateAngleY, this.bipedBody.rotateAngleZ);
-        this.setRotateAngle(this.skirt1, this.bipedBody.rotateAngleX, this.bipedBody.rotateAngleY, this.bipedBody.rotateAngleZ);
-        this.setRotateAngle(this.skirt2, this.bipedBody.rotateAngleX, this.bipedBody.rotateAngleY, this.bipedBody.rotateAngleZ);
-//        this.setRotateAngle(this.body, this.bipedBody.rotateAngleX * 0.5F, this.bipedBody.rotateAngleY, this.bipedBody.rotateAngleZ);
-//        this.setRotateAngle(this.skirt1, this.bipedBody.rotateAngleX * 0.5F, this.bipedBody.rotateAngleY, this.bipedBody.rotateAngleZ);
-//        this.setRotateAngle(this.skirt2, this.bipedBody.rotateAngleX * 0.5F, this.bipedBody.rotateAngleY, this.bipedBody.rotateAngleZ);
         this.setRotateAngle(this.hair, this.bipedHead.rotateAngleX, this.bipedHead.rotateAngleY, this.bipedHead.rotateAngleZ);
-//        if( this.isRiding ) {
+
+        this.head.rotationPointY = this.hatBase.rotationPointY = this.hair.rotationPointY = this.bipedHead.rotationPointY;
+
+        this.setRotateAngle(this.body, this.bipedBody.rotateAngleX * 0.5F, this.bipedBody.rotateAngleY, this.bipedBody.rotateAngleZ);
+        this.setRotateAngle(this.skirt1, this.bipedBody.rotateAngleX * 0.5F, this.bipedBody.rotateAngleY, this.bipedBody.rotateAngleZ);
+        this.setRotateAngle(this.skirt2, this.bipedBody.rotateAngleX * 0.5F, this.bipedBody.rotateAngleY, this.bipedBody.rotateAngleZ);
+        if( this.isRiding ) {
             this.setRotateAngle(this.legLeft, this.bipedLeftLeg.rotateAngleX, this.bipedLeftLeg.rotateAngleY, this.bipedLeftLeg.rotateAngleZ);
             this.setRotateAngle(this.legRight, this.bipedRightLeg.rotateAngleX, this.bipedRightLeg.rotateAngleY, this.bipedRightLeg.rotateAngleZ);
-//        } else {
-//            this.setRotateAngle(this.legLeft, this.bipedLeftLeg.rotateAngleX * 0.5F, this.bipedLeftLeg.rotateAngleY, this.bipedLeftLeg.rotateAngleZ);
-//            this.setRotateAngle(this.legRight, this.bipedRightLeg.rotateAngleX * 0.5F, this.bipedRightLeg.rotateAngleY, this.bipedRightLeg.rotateAngleZ);
-//        }
+        } else {
+            this.setRotateAngle(this.legLeft, this.bipedLeftLeg.rotateAngleX * 0.5F, this.bipedLeftLeg.rotateAngleY, this.bipedLeftLeg.rotateAngleZ);
+            this.setRotateAngle(this.legRight, this.bipedRightLeg.rotateAngleX * 0.5F, this.bipedRightLeg.rotateAngleY, this.bipedRightLeg.rotateAngleZ);
+        }
         this.setRotateAngle(this.armLeft, this.bipedLeftArm.rotateAngleX, this.bipedLeftArm.rotateAngleY, this.bipedLeftArm.rotateAngleZ);
         this.setRotateAngle(this.armLeft2, this.bipedLeftArm.rotateAngleX, this.bipedLeftArm.rotateAngleY, this.bipedLeftArm.rotateAngleZ);
         this.setRotateAngle(this.armRight, this.bipedRightArm.rotateAngleX, this.bipedRightArm.rotateAngleY, this.bipedRightArm.rotateAngleZ);
         this.setRotateAngle(this.armRight2, this.bipedRightArm.rotateAngleX, this.bipedRightArm.rotateAngleY, this.bipedRightArm.rotateAngleZ);
 
-//        if( this.isSneak ) {
-//            if( this.isArmor ) {
-//                this.legLeft.rotationPointZ = 0F;
-//                this.legRight.rotationPointZ = 0F;
-//                this.legLeft.rotateAngleX -= 0.3F;
-//                this.legRight.rotateAngleX -= 0.3F;
-//                this.armLeft.rotateAngleX += 0.4F;
-//                this.armLeft2.rotateAngleX += 0.4F;
-//                this.armRight.rotateAngleX += 0.4F;
-//                this.armRight2.rotateAngleX += 0.4F;
-//            } else {
-//                this.legLeft.rotationPointZ = 3F;
-//                this.legRight.rotationPointZ = 3F;
-//                this.legLeft.rotateAngleX -= 0.15F;
-//                this.legRight.rotateAngleX -= 0.15F;
-//                this.armLeft.rotateAngleX += 0.2F;
-//                this.armLeft2.rotateAngleX += 0.2F;
-//                this.armRight.rotateAngleX += 0.2F;
-//                this.armRight2.rotateAngleX += 0.2F;
-//            }
-//        } else {
-//            this.legLeft.rotationPointZ = 0F;
-//            this.legRight.rotationPointZ = 0F;
-//        }
+        if( this.isSneak ) {
+            this.legLeft.rotationPointZ = 3F;
+            this.legRight.rotationPointZ = 3F;
+            this.legLeft.rotateAngleX -= 0.15F;
+            this.legRight.rotateAngleX -= 0.15F;
+            this.armLeft.rotateAngleX += 0.2F;
+            this.armLeft2.rotateAngleX += 0.2F;
+            this.armRight.rotateAngleX += 0.2F;
+            this.armRight2.rotateAngleX += 0.2F;
+        } else {
+            this.legLeft.rotationPointZ = 0F;
+            this.legRight.rotationPointZ = 0F;
+        }
     }
 
     /**

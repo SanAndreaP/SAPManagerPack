@@ -274,7 +274,7 @@ public final class SAPUtils
     public static class RGBAValues {
         private final Quartet<Integer, Integer, Integer, Integer> value;
 
-        private RGBAValues(int r, int g, int b, int a) {
+        public RGBAValues(int r, int g, int b, int a) {
             this.value = Quartet.with(r, g, b, a);
         }
 
