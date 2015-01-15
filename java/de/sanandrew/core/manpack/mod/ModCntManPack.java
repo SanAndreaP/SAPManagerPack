@@ -2,6 +2,8 @@ package de.sanandrew.core.manpack.mod;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import cpw.mods.fml.client.FMLFileResourcePack;
+import cpw.mods.fml.client.FMLFolderResourcePack;
 import cpw.mods.fml.common.DummyModContainer;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.LoadController;
@@ -10,13 +12,17 @@ import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import de.sanandrew.core.manpack.init.ManPackLoadingPlugin;
 import de.sanandrew.core.manpack.managers.SAPUpdateManager;
+import de.sanandrew.core.manpack.mod.client.ClientProxy;
 import de.sanandrew.core.manpack.mod.packet.ChannelHandler;
 import de.sanandrew.core.manpack.util.MutableString;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.logging.log4j.Level;
 
+import java.io.File;
 import java.util.Collections;
 
 public class ModCntManPack
@@ -31,8 +37,6 @@ public class ModCntManPack
 
     public static final int FORGE_BULD_MIN = 1230;
 
-    // Annotation does not work in a productive MC environment (see below)
-    //@SidedProxy(clientSide = "de.sanandrew.core.manpack.mod.client.ClientProxy", serverSide = "de.sanandrew.core.manpack.mod.CommonProxy")
     public static CommonProxy proxy;
 
     public static ChannelHandler channelHandler;
@@ -65,29 +69,21 @@ public class ModCntManPack
 
         NetworkRegistry.INSTANCE.register(this, this.getClass(), null, event.getASMHarvestedData());
 
-        // for some reason the proxy annotation does not work in a coremod within a productive MC environment,
-        // so I just initialize it on my own here until I find a "proper" solution.
-        if( proxy == null ) {
-            FMLLog.log(MOD_LOG, Level.INFO, "Inject missing Proxy class for sapmanpack");
-            String proxyClsName = "de.sanandrew.core.manpack.mod.CommonProxy";
-            if( event.getSide() == Side.CLIENT ) {
-                proxyClsName = "de.sanandrew.core.manpack.mod.client.ClientProxy";
-            }
-
-            try {
-                Class<?> cls = Class.forName(proxyClsName);
-                proxy = (CommonProxy) cls.newInstance();
-            } catch( ClassNotFoundException | SecurityException | InstantiationException | IllegalAccessException e ) {
-                e.printStackTrace();
-            }
-        }
-
         channelHandler = new ChannelHandler(ModCntManPack.MOD_ID, ModCntManPack.MOD_CHANNEL);
     }
 
+    @SideOnly(Side.CLIENT)
     @Subscribe
-    public void preInit(FMLPreInitializationEvent evt) {
-        ModCntManPack.proxy.registerPackets();
+    public void injectClientProxy(FMLPreInitializationEvent evt) {
+        proxy = new ClientProxy();
+        proxy.registerPackets();
+    }
+
+    @SideOnly(Side.SERVER)
+    @Subscribe
+    public void injectServerProxy(FMLPreInitializationEvent evt) {
+        proxy = new CommonProxy();
+        proxy.registerPackets();
     }
 
     @Subscribe
@@ -108,5 +104,15 @@ public class ModCntManPack
     @Subscribe
     public void serverStarting(FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandSAPManPack());
+    }
+
+    @Override
+    public File getSource() {
+        return ManPackLoadingPlugin.source;
+    }
+
+    @Override
+    public Class<?> getCustomResourcePackClass() {
+        return getSource().isDirectory() ? FMLFolderResourcePack.class : FMLFileResourcePack.class;
     }
 }

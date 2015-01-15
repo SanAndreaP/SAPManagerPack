@@ -14,6 +14,8 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 import de.sanandrew.core.manpack.mod.ModCntManPack;
 import de.sanandrew.core.manpack.transformer.*;
 
+import java.io.File;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 @SortingIndex(1001)
@@ -23,6 +25,8 @@ import java.util.Map;
 public class ManPackLoadingPlugin
         implements IFMLLoadingPlugin
 {
+    public static File source;
+
     @Override
     public String getAccessTransformerClass() {
         return null;
@@ -51,9 +55,21 @@ public class ManPackLoadingPlugin
         return null;
     }
 
+    /**
+     * Code from diesieben07 in here.
+     * Thanks ~SanAndreasP
+     */
     @Override
     public void injectData(Map<String, Object> data) {
         ASMHelper.isMCP = !(Boolean) data.get("runtimeDeobfuscationEnabled");
+        source = (File) data.get("coremodLocation");
+        if (source == null) { // this is usually in a dev env
+            try {
+                source = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
+            } catch (URISyntaxException e) {
+                throw new RuntimeException("Failed to acquire source location for SevenCommons!", e);
+            }
+        }
         ASMNames.initialize();
     }
 }
