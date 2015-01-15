@@ -1,6 +1,6 @@
 /*******************************************************************************************************************
  * Authors:   SanAndreasP
- * Copyright: SanAndreasP, SilverChiren and CliffracerX
+ * Copyright: SanAndreasP
  * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
  *                http://creativecommons.org/licenses/by-nc-sa/4.0/
  *******************************************************************************************************************/
@@ -17,9 +17,9 @@ public class EventWorldRenderLast
 {
     @SubscribeEvent
     public void onRenderWorldLast(RenderWorldLastEvent event) {
-        Minecraft.getMinecraft().entityRenderer.enableLightmap((double) event.partialTicks);
+        Minecraft.getMinecraft().entityRenderer.enableLightmap(event.partialTicks);
         SAPEffectRenderer.INSTANCE.renderParticles(Minecraft.getMinecraft().renderViewEntity, event.partialTicks);
-        Minecraft.getMinecraft().entityRenderer.disableLightmap((double) event.partialTicks);
+        Minecraft.getMinecraft().entityRenderer.disableLightmap(event.partialTicks);
     }
 
     @SubscribeEvent

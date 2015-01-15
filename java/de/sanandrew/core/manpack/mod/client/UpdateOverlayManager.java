@@ -1,3 +1,9 @@
+/*******************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ *                http://creativecommons.org/licenses/by-nc-sa/4.0/
+ *******************************************************************************************************************/
 package de.sanandrew.core.manpack.mod.client;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -27,7 +33,8 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpdateOverlayManager extends Gui
+public class UpdateOverlayManager
+        extends Gui
 {
     private boolean hasEverythingChecked = false;
 
@@ -39,7 +46,7 @@ public class UpdateOverlayManager extends Gui
     private int counter = 0;
 
     private float scale = 0.0F;
-    private float txtFade = 1F;
+    private float txtFade = 1.0F;
 
     private final List<Pair<SAPUpdateManager, String>> updateMods = new ArrayList<>();
     private int currMod = 0;
@@ -102,10 +109,10 @@ public class UpdateOverlayManager extends Gui
         int height = 45;
 
         GL11.glPushMatrix();
-        GL11.glScalef(this.scale, this.scale, 1F);
-        GL11.glColor4f(1F, 1F, 1F, 1F);
+        GL11.glScalef(this.scale, this.scale, 1.0F);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glPushMatrix();
-        GL11.glScalef(1F / 256F * 16, 1F / 256F * 16, 1F);
+        GL11.glScalef(1.0F / 256.0F * 16, 1.0F / 256.0F * 16, 1.0F);
         this.drawTexturedModalRect(0               , 0                , 0, 0                , width * 16, 4 * 16);
         this.drawTexturedModalRect(0               , 4 * 16           , 0, 4 * 16           , 4 * 16    , (height - 8) * 16);
         this.drawTexturedModalRect(0               , (height - 4) * 16, 0, (height - 4) * 16, width * 16, 4 * 16);
@@ -119,7 +126,7 @@ public class UpdateOverlayManager extends Gui
                 this.timer.updateTimer();
             }
 
-            int alpha = ((int)(Math.abs(this.txtFade) * 255F) & 255) << 24;
+            int alpha = ((int)(Math.abs(this.txtFade) * 255.0F) & 255) << 24;
             GL11.glEnable(GL11.GL_BLEND);
             OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

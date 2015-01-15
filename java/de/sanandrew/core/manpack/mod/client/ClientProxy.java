@@ -1,10 +1,14 @@
+/*******************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ *                http://creativecommons.org/licenses/by-nc-sa/4.0/
+ *******************************************************************************************************************/
 package de.sanandrew.core.manpack.mod.client;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.managers.SAPUpdateManager;
 import de.sanandrew.core.manpack.mod.CommonProxy;
 import de.sanandrew.core.manpack.mod.client.event.EventWorldRenderLast;
@@ -16,8 +20,8 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 
-@SideOnly(Side.CLIENT)
-public class ClientProxy extends CommonProxy
+public class ClientProxy
+        extends CommonProxy
 {
     private static final UpdateOverlayManager UPDATE_OVERLY_MGR = new UpdateOverlayManager();
     public static final KeyBinding KEY_UPDATE_GUI = new KeyBinding("key.sapmp.updateKey", Keyboard.KEY_U, "key.categories.misc");
@@ -26,8 +30,6 @@ public class ClientProxy extends CommonProxy
     public void registerRenderStuff() {
         RenderBlockGlowOverlay.renderID = RenderingRegistry.getNextAvailableRenderId();
         RenderingRegistry.registerBlockHandler(RenderBlockGlowOverlay.renderID, new RenderBlockGlowOverlay());
-
-        this.applyCapesToCertainPlayers();
 
         MinecraftForge.EVENT_BUS.register(UPDATE_OVERLY_MGR);
         FMLCommonHandler.instance().bus().register(UPDATE_OVERLY_MGR);
@@ -38,9 +40,10 @@ public class ClientProxy extends CommonProxy
         MinecraftForge.EVENT_BUS.register(kHandler);
 
         SAPEffectRenderer.initialize(Minecraft.getMinecraft().getTextureManager());
-        EventWorldRenderLast wrlEvent = new EventWorldRenderLast();
-        MinecraftForge.EVENT_BUS.register(wrlEvent);
-        FMLCommonHandler.instance().bus().register(wrlEvent);
+
+        EventWorldRenderLast worldRenderLastEventHandler = new EventWorldRenderLast();
+        MinecraftForge.EVENT_BUS.register(worldRenderLastEventHandler);
+        FMLCommonHandler.instance().bus().register(worldRenderLastEventHandler);
 
         MinecraftForge.EVENT_BUS.register(new RenderPlayerEventHandler());
 	}
@@ -53,17 +56,5 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerPackets() {
 		super.registerPackets();
-	}
-
-	private void applyCapesToCertainPlayers() {
-        //TODO: removed hook. There will be something better for our modders ;)
-//	    String capeURL = "http://i.imgur.com/4SpmGSv.png";
-//        String[] owners = {"sanandreasMC", "SilverChiren"};
-//
-//        ThreadDownloadImageData image = new ThreadDownloadImageData(capeURL, null, null);
-//
-//        for( String username : owners ) {
-//            Minecraft.getMinecraft().renderEngine.loadTexture(new ResourceLocation("cloaks/" + username), image);
-//        }
 	}
 }

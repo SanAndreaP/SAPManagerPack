@@ -52,14 +52,14 @@ public final class SAPClientUtils
                                                            float rotPointZ, float rotX, float rotY, float rotZ) {
         try {
             T box = boxClass.getConstructor(ModelBase.class, int.class, int.class).newInstance(model, texX, texY);
-            box.addBox(boxX, boxY, boxZ, sizeX, sizeY, sizeZ, scaleFactor);
-            box.setRotationPoint(rotPointX, rotPointY, rotPointZ);
             box.textureWidth = model.textureWidth;
             box.textureHeight = model.textureHeight;
             box.rotateAngleX = rotX;
             box.rotateAngleY = rotY;
             box.rotateAngleZ = rotZ;
             box.mirror = mirror;
+            box.setRotationPoint(rotPointX, rotPointY, rotPointZ);
+            box.addBox(boxX, boxY, boxZ, sizeX, sizeY, sizeZ, scaleFactor);
 
             return box;
         } catch( NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e ) {

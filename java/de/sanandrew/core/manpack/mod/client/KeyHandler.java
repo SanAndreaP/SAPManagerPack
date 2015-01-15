@@ -1,3 +1,9 @@
+/*******************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ *                http://creativecommons.org/licenses/by-nc-sa/4.0/
+ *******************************************************************************************************************/
 package de.sanandrew.core.manpack.mod.client;
 
 import de.sanandrew.core.manpack.mod.client.gui.GuiModUpdate;
@@ -20,9 +26,7 @@ public class KeyHandler
 
                 if( Keyboard.getEventKeyState() ) {
                     KeyBinding.onTick(Keyboard.getEventKey());
-                }
 
-                if( Keyboard.getEventKeyState() ) {
                     if( ClientProxy.KEY_UPDATE_GUI.isPressed() ) {
                         Minecraft.getMinecraft().displayGuiScreen(new GuiModUpdate(Minecraft.getMinecraft().currentScreen));
                     }

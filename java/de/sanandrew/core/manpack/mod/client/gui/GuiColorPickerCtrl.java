@@ -13,11 +13,11 @@ import net.minecraft.client.gui.Gui;
 import org.apache.commons.lang3.ArrayUtils;
 
 public class GuiColorPickerCtrl
-    extends Gui
+        extends Gui
 {
-    private int hue = 360; // from 360 to 0
-    private int sat = 100; // from 0 to 100
-    private int bright = 100; // from 0 to 100
+    private int hue = 360;      // from 360 to 0
+    private int sat = 100;      // from 0 to 100
+    private int bright = 100;   // from 0 to 100
 
     private int resColorHued = 0xFFFF0000;
     private int resColor = 0xFFFFFFFF;
@@ -71,6 +71,7 @@ public class GuiColorPickerCtrl
         return this.bright;
     }
 
+    @SuppressWarnings("FloatingPointEquality")
     public void setHsbFromRgb(int rgb) {
         float[] splitColors = ArrayUtils.remove(SAPUtils.getRgbaFromColorInt(rgb).getColorFloatArray(), 3);  // don't need the alpha value (3)
 

@@ -1,3 +1,9 @@
+/*******************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ *                http://creativecommons.org/licenses/by-nc-sa/4.0/
+ *******************************************************************************************************************/
 package de.sanandrew.core.manpack.mod.client.gui;
 
 import de.sanandrew.core.manpack.managers.SAPUpdateManager;
@@ -5,13 +11,13 @@ import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.Tessellator;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.RejectedExecutionException;
 
 public class GuiModUpdate
-    extends GuiScreen
-    implements GuiYesNoCallback
+        extends GuiScreen
+        implements GuiYesNoCallback
 {
     private GuiButton restartMC;
     private GuiButton back2Menu;
@@ -59,8 +65,9 @@ public class GuiModUpdate
         if( isConfirmed && guiId == 0 ) {
             try {
                 SAPUtils.restartApp();
-            } catch( IOException e ) {
+            } catch( RejectedExecutionException e ) {
                 e.printStackTrace();
+                this.mc.displayGuiScreen(this.mainMenu);
             }
         }
 
@@ -80,13 +87,11 @@ public class GuiModUpdate
 
         @Override
         protected void elementClicked(int var1, boolean var2, int var3, int var4) {
-            // TODO Auto-generated method stub
 
         }
 
         @Override
         protected boolean isSelected(int var1) {
-            // TODO Auto-generated method stub
             return false;
         }
 
@@ -97,9 +102,7 @@ public class GuiModUpdate
 
         @Override
         protected void drawSlot(int var1, int var2, int var3, int var4, Tessellator var5, int var6, int var7) {
-            // TODO Auto-generated method stub
 
         }
-
     }
 }

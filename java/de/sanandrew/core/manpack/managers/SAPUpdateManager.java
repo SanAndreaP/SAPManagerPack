@@ -1,15 +1,22 @@
+/*******************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ *                http://creativecommons.org/licenses/by-nc-sa/4.0/
+ *******************************************************************************************************************/
 package de.sanandrew.core.manpack.managers;
 
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
 import cpw.mods.fml.common.FMLLog;
 import de.sanandrew.core.manpack.mod.ModCntManPack;
 import de.sanandrew.core.manpack.util.MutableString;
-import de.sanandrew.core.manpack.util.javatuples.Quartet;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.logging.log4j.Level;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -20,6 +27,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ *
+ */
 public class SAPUpdateManager
 {
 	private boolean checkedForUpdate = false;
@@ -27,11 +37,9 @@ public class SAPUpdateManager
 	private String modName;
 	private URL updURL;
 	private String modInfoURL;
-    private URL directDL;
-    private String modPackedJar;
+    private File modPackedJar;
+    private UpdateFile updInfo;
 	private final int mgrId;
-
-	private Quartet<String, Integer, Integer, Integer> newVersion; // MC version, major, minor, revision
 
 	public static final List<Triplet<SAPUpdateManager, MutableBoolean, MutableString>> UPD_MANAGERS = new ArrayList<>();
 	public static final Map<Integer, Boolean> IS_IN_RENDER_QUEUE = Maps.newHashMap();
@@ -49,38 +57,53 @@ public class SAPUpdateManager
         IS_IN_RENDER_QUEUE.put(mgrId, true);
     }
 
-	public SAPUpdateManager(String modName, int majorNr, int minorNr, int revisionNr, String updateURL, String modURL, String modJar) {
-		this.modName = modName;
-		this.version = Triplet.with(majorNr, minorNr, revisionNr);
-		this.modInfoURL = modURL;
-		this.modPackedJar = modJar;
+    private SAPUpdateManager(String modName, int majorNr, int minorNr, int revisionNr, String updateURL, String modURL, File modJar) {
+        this.modName = modName;
+        this.version = Triplet.with(majorNr, minorNr, revisionNr);
+        this.modInfoURL = modURL;
+        this.modPackedJar = modJar;
 
         URL newUrl = null;
-		try {
-		    newUrl = new URL(updateURL);
+        try {
+            newUrl = new URL(updateURL);
         } catch( MalformedURLException | NullPointerException e ) {
             FMLLog.log(ModCntManPack.UPD_LOG, Level.WARN, "The URL to the mod version file is invalid!");
             e.printStackTrace();
         }
-		this.updURL = newUrl;
+        this.updURL = newUrl;
 
-		this.mgrId = UPD_MANAGERS.size();
-		UPD_MANAGERS.add(Triplet.with(this, new MutableBoolean(false), new MutableString("")));
-		IS_IN_RENDER_QUEUE.put(this.mgrId, false);
+        this.mgrId = UPD_MANAGERS.size();
+    }
+
+    @Deprecated
+	public SAPUpdateManager(String modName, int majorNr, int minorNr, int revisionNr, String updateURL, String modURL, String modJar) {
+        this(modName, majorNr, minorNr, revisionNr, updateURL, modURL, (File) null);
 	}
 
+    @Deprecated
 	public SAPUpdateManager(String modName, int majorNr, int minorNr, int revisionNr, String updateURL, String modURL) {
-        this(modName, majorNr, minorNr, revisionNr, updateURL, modURL, null);
+        this(modName, majorNr, minorNr, revisionNr, updateURL, modURL, (File) null);
 	}
 
+    @Deprecated
     public SAPUpdateManager(String modName, String version, String updateURL, String modURL, String modJar) {
-        this(modName, 0, 0, 0, updateURL, modURL, modJar);
+        this(modName, 0, 0, 0, updateURL, modURL, (File) null);
         this.version = this.getVersionFromStr(version);
     }
 
+    @Deprecated
 	public SAPUpdateManager(String modName, String version, String updateURL, String modURL) {
 	    this(modName, version, updateURL, modURL, null);
 	}
+
+    public static SAPUpdateManager createUpdateManager(String modName, int majorNr, int minorNr, int revisionNr, String updateURL, String modURL, File modJar) {
+        SAPUpdateManager updMgr = new SAPUpdateManager(modName, majorNr, minorNr, revisionNr, updateURL, modURL, modJar);
+
+        UPD_MANAGERS.add(Triplet.with(updMgr, new MutableBoolean(false), new MutableString("")));
+        IS_IN_RENDER_QUEUE.put(updMgr.mgrId, false);
+
+        return updMgr;
+    }
 
 	private Triplet<Integer, Integer, Integer> getVersionFromStr(String version) {
 	    Pattern pattern;
@@ -118,37 +141,37 @@ public class SAPUpdateManager
                         throw new MalformedURLException("[NULL]");
                     }
 
-                    String fileVersion;
+                    Gson gson = new Gson();
                     try( BufferedReader in = new BufferedReader(new InputStreamReader(SAPUpdateManager.this.getUpdateURL().openStream())) ) {
-                        fileVersion = in.readLine();
                         if( in.ready() ) {
-                            try {
-                                SAPUpdateManager.this.directDL = new URL(in.readLine());
-                            } catch( MalformedURLException ignored ) {  }
+                            SAPUpdateManager.this.updInfo = gson.fromJson(in, UpdateFile.class);
                         }
                     }
 
-                    if( fileVersion == null || fileVersion.length() < 1 ) {
+                    if( SAPUpdateManager.this.updInfo == null || SAPUpdateManager.this.updInfo.version.length() < 1 ) {
                         SAPUpdateManager.setChecked(SAPUpdateManager.this.getId());
                         return;
                     }
 
-                    Triplet<Integer, Integer, Integer> webVersion = SAPUpdateManager.this.getVersionFromStr(fileVersion);
-                    fileVersion = String.format("%d.%d.%d", webVersion.toArray());
+                    Triplet<Integer, Integer, Integer> webVersion = SAPUpdateManager.this.getVersionFromStr(SAPUpdateManager.this.updInfo.version);
+                    SAPUpdateManager.this.updInfo.version = String.format("%d.%d.%d", webVersion.toArray());
 
                     if( webVersion.getValue0() > SAPUpdateManager.this.getVersion().getValue0() ) {
-                        FMLLog.log(ModCntManPack.UPD_LOG, Level.INFO, "New major update for %s is out: %s", SAPUpdateManager.this.getModName(), fileVersion);
-                        SAPUpdateManager.setHasUpdate(SAPUpdateManager.this.mgrId, fileVersion);
+                        FMLLog.log(ModCntManPack.UPD_LOG, Level.INFO, "New major update for %s is out: %s", SAPUpdateManager.this.getModName(),
+                                   SAPUpdateManager.this.updInfo.version);
+                        SAPUpdateManager.setHasUpdate(SAPUpdateManager.this.mgrId, SAPUpdateManager.this.updInfo.version);
                         return;
                     } else if( webVersion.getValue0().intValue() == SAPUpdateManager.this.getVersion().getValue0().intValue() ) {
                         if( webVersion.getValue1() > SAPUpdateManager.this.getVersion().getValue1() ) {
-                            FMLLog.log(ModCntManPack.UPD_LOG, Level.INFO, "New minor update for %s is out: %s", SAPUpdateManager.this.getModName(), fileVersion);
-                            SAPUpdateManager.setHasUpdate(SAPUpdateManager.this.mgrId, fileVersion);
+                            FMLLog.log(ModCntManPack.UPD_LOG, Level.INFO, "New minor update for %s is out: %s", SAPUpdateManager.this.getModName(),
+                                       SAPUpdateManager.this.updInfo.version);
+                            SAPUpdateManager.setHasUpdate(SAPUpdateManager.this.mgrId, SAPUpdateManager.this.updInfo.version);
                             return;
                         } else if( webVersion.getValue1().intValue() == SAPUpdateManager.this.getVersion().getValue1().intValue() ) {
                             if( webVersion.getValue2() > SAPUpdateManager.this.getVersion().getValue2() ) {
-                                FMLLog.log(ModCntManPack.UPD_LOG, Level.INFO, "New bugfix update for %s is out: %s", SAPUpdateManager.this.getModName(), fileVersion);
-                                SAPUpdateManager.setHasUpdate(SAPUpdateManager.this.mgrId, fileVersion);
+                                FMLLog.log(ModCntManPack.UPD_LOG, Level.INFO, "New bugfix update for %s is out: %s", SAPUpdateManager.this.getModName(),
+                                           SAPUpdateManager.this.updInfo.version);
+                                SAPUpdateManager.setHasUpdate(SAPUpdateManager.this.mgrId, SAPUpdateManager.this.updInfo.version);
                                 return;
                             }
                         }
@@ -164,7 +187,7 @@ public class SAPUpdateManager
             }
         };
 
-        (new Thread(threadProcessor, "SAP Update Thread")).start();
+        (new Thread(threadProcessor, "SAPUpdateThread")).start();
 	}
 
 	public void checkForUpdate() {
@@ -176,18 +199,6 @@ public class SAPUpdateManager
 
     public Triplet<Integer, Integer, Integer> getVersion() {
         return this.version;
-    }
-
-    public String getFormattedVersion() {
-        return String.format("%1$d.%2$d.%3$d", this.version.toArray());
-    }
-
-    public Quartet<String, Integer, Integer, Integer> getUpdVersion() {
-        return this.newVersion;
-    }
-
-    public String getFormattedUpdVersion() {
-        return String.format("%1$s-%2$d.%3$d.%4$d", this.newVersion.toArray());
     }
 
     public String getModName() {
@@ -202,15 +213,24 @@ public class SAPUpdateManager
         return this.modInfoURL;
     }
 
-    public URL getDirectDlLink() {
-        return this.directDL;
-    }
-
-    public String getModJar() {
+    public File getModJar() {
         return this.modPackedJar;
     }
 
     public int getId() {
         return this.mgrId;
+    }
+
+    public UpdateFile getUpdateInfo() {
+        return this.updInfo;
+    }
+
+    public static class UpdateFile {
+        public String version;
+        public String downloadUrl;
+        public String description;
+        public String[] changelog;
+
+        public UpdateFile() { }
     }
 }

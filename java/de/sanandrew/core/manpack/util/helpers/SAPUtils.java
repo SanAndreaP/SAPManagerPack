@@ -16,7 +16,6 @@ import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
@@ -212,7 +211,7 @@ public final class SAPUtils
         return AppHelper.getMcDir(path);
     }
 
-    public static void restartApp() throws IOException {
+    public static void restartApp() {
         AppHelper.restartApp();
     }
 

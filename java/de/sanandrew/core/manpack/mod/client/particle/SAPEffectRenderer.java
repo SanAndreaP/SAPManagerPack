@@ -1,12 +1,13 @@
 /*******************************************************************************************************************
  * Authors:   SanAndreasP
- * Copyright: SanAndreasP, SilverChiren and CliffracerX
+ * Copyright: SanAndreasP
  * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
  *                http://creativecommons.org/licenses/by-nc-sa/4.0/
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.mod.client.particle;
 
 import de.sanandrew.core.manpack.util.javatuples.Pair;
+import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -68,9 +69,9 @@ public class SAPEffectRenderer
         float rotYZ = ActiveRenderInfo.rotationYZ;
         float rotXY = ActiveRenderInfo.rotationXY;
         float rotXZ = ActiveRenderInfo.rotationXZ;
-        EntityParticle.interpPosX = viewingEntity.lastTickPosX + (viewingEntity.posX - viewingEntity.lastTickPosX) * (double)partTicks;
-        EntityParticle.interpPosY = viewingEntity.lastTickPosY + (viewingEntity.posY - viewingEntity.lastTickPosY) * (double)partTicks;
-        EntityParticle.interpPosZ = viewingEntity.lastTickPosZ + (viewingEntity.posZ - viewingEntity.lastTickPosZ) * (double)partTicks;
+        EntityFX.interpPosX = viewingEntity.lastTickPosX + (viewingEntity.posX - viewingEntity.lastTickPosX) * partTicks;
+        EntityFX.interpPosY = viewingEntity.lastTickPosY + (viewingEntity.posY - viewingEntity.lastTickPosY) * partTicks;
+        EntityFX.interpPosZ = viewingEntity.lastTickPosZ + (viewingEntity.posZ - viewingEntity.lastTickPosZ) * partTicks;
 
         for( Pair<ResourceLocation, ArrayList<EntityParticle>> layer : this.fxLayers ) {
             List<EntityParticle> particles = layer.getValue1();

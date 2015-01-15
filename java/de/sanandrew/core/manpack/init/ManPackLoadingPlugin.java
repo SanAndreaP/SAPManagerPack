@@ -1,3 +1,9 @@
+/*******************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ *                http://creativecommons.org/licenses/by-nc-sa/4.0/
+ *******************************************************************************************************************/
 package de.sanandrew.core.manpack.init;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
@@ -15,7 +21,7 @@ import java.util.Map;
 @DependsOn("forge")
 @TransformerExclusions({ "de.sanandrew.core.manpack.transformer", "de.sanandrew.core.manpack.init" })
 public class ManPackLoadingPlugin
-    implements IFMLLoadingPlugin
+        implements IFMLLoadingPlugin
 {
     @Override
     public String getAccessTransformerClass() {
@@ -42,13 +48,12 @@ public class ManPackLoadingPlugin
 
     @Override
     public String getSetupClass() {
-        return null;//ManPackSetupClass.class.getName();
+        return null;
     }
 
     @Override
     public void injectData(Map<String, Object> data) {
         ASMHelper.isMCP = !(Boolean) data.get("runtimeDeobfuscationEnabled");
-//        ModCntManPack.modLocation = (File) data.get("coremodLocation");
         ASMNames.initialize();
     }
 }

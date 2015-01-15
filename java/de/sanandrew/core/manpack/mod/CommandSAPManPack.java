@@ -5,7 +5,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 
-import java.io.IOException;
+import java.util.concurrent.RejectedExecutionException;
 
 public class CommandSAPManPack
     extends CommandBase
@@ -28,7 +28,7 @@ public class CommandSAPManPack
         if( "restart".equals(cmdParams[0]) ) {
             try {
                 SAPUtils.restartApp();
-            } catch( IOException e ) {
+            } catch( RejectedExecutionException e ) {
                 e.printStackTrace();
             }
         }

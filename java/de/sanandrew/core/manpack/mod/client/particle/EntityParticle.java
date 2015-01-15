@@ -1,6 +1,6 @@
 /*******************************************************************************************************************
  * Authors:   SanAndreasP
- * Copyright: SanAndreasP, SilverChiren and CliffracerX
+ * Copyright: SanAndreasP
  * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
  *                http://creativecommons.org/licenses/by-nc-sa/4.0/
  *******************************************************************************************************************/
@@ -10,7 +10,7 @@ import net.minecraft.client.particle.EntityFX;
 import net.minecraft.world.World;
 
 public class EntityParticle
-    extends EntityFX
+        extends EntityFX
 {
     protected int brightness = -1;
 

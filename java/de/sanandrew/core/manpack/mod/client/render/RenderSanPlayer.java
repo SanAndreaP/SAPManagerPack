@@ -1,6 +1,6 @@
 /*******************************************************************************************************************
  * Authors:   SanAndreasP
- * Copyright: SanAndreasP, SilverChiren and CliffracerX
+ * Copyright: SanAndreasP
  * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
  *                http://creativecommons.org/licenses/by-nc-sa/4.0/
  *******************************************************************************************************************/
@@ -56,80 +56,30 @@ public class RenderSanPlayer
         this.myModel.armRight2.showModel = !(player.inventory.armorItemInSlot(2) != null && player.inventory.armorItemInSlot(2).getItem() instanceof ItemArmor);
         this.myModel.armLeft2.showModel = this.myModel.armRight2.showModel;
 
-        ItemStack itemstack = player.inventory.armorItemInSlot(3 - renderPass);
+        ItemStack stack = player.inventory.armorItemInSlot(3 - renderPass);
 
-        if (itemstack != null) {
-            Item item = itemstack.getItem();
+        if( stack != null ) {
+            Item item = stack.getItem();
 
-            if (item instanceof ItemArmor)
-            {
-                ItemArmor itemarmor = (ItemArmor)item;
-                String unlocName = itemstack.getUnlocalizedName();
+            if( item instanceof ItemArmor ) {
+                ItemArmor armorItem = (ItemArmor) item;
+                String unlocName = stack.getUnlocalizedName();
 
-                if( this.unknownTextureColorMap.containsKey(unlocName) ) {
-                    switch( renderPass  ) {
-                        case 0:
-                            this.bindTexture(new ResourceLocation("sapmanpack", "textures/entity/player/SanPlayer_Hat_unknown.png"));
-                            break;
-                        case 1:
-                            this.bindTexture(new ResourceLocation("sapmanpack", "textures/entity/player/SanPlayer_Chest_unknown.png"));
-                            break;
-                        case 2:
-                            this.bindTexture(new ResourceLocation("sapmanpack", "textures/entity/player/SanPlayer_Leggings_unknown.png"));
-                            break;
-                        case 3:
-                            this.bindTexture(new ResourceLocation("sapmanpack", "textures/entity/player/SanPlayer_Boots_unknown.png"));
-                            break;
-                    }
-                } else {
-                    ResourceLocation resLoc = null;
-                    switch( renderPass ) {
-                        case 0:
-                            resLoc = new ResourceLocation("sapmanpack", "textures/entity/player/SanPlayer_Hat_" + unlocName + ".png");
-                            try {
-                                Minecraft.getMinecraft().getResourceManager().getResource(resLoc);
-                            } catch( IOException ex ) {
-                                FMLLog.log(ModCntManPack.MOD_LOG, Level.WARN, "Can't load hat texture for item %s!", unlocName);
-                                this.unknownTextureColorMap.put(unlocName, AverageColorHelper.getAverageColor(RenderBiped.getArmorResource(player, itemstack, renderPass, null)));
-                                resLoc = new ResourceLocation("sapmanpack", "textures/entity/player/SanPlayer_Hat_unknown.png");
-                            }
-                            break;
-                        case 1:
-                            resLoc = new ResourceLocation("sapmanpack", "textures/entity/player/SanPlayer_Chest_" + unlocName + ".png");
-                            try {
-                                Minecraft.getMinecraft().getResourceManager().getResource(resLoc);
-                            } catch( IOException ex ) {
-                                FMLLog.log(ModCntManPack.MOD_LOG, Level.WARN, "Can't load hat texture for item %s!", unlocName);
-                                this.unknownTextureColorMap.put(unlocName, AverageColorHelper.getAverageColor(RenderBiped.getArmorResource(player, itemstack, renderPass, null)));
-                                resLoc = new ResourceLocation("sapmanpack", "textures/entity/player/SanPlayer_Chest_unknown.png");
-                            }
-                            break;
-                        case 2:
-                            resLoc = new ResourceLocation("sapmanpack", "textures/entity/player/SanPlayer_Leggings_" + unlocName + ".png");
-                            try {
-                                Minecraft.getMinecraft().getResourceManager().getResource(resLoc);
-                            } catch( IOException ex ) {
-                                FMLLog.log(ModCntManPack.MOD_LOG, Level.WARN, "Can't load hat texture for item %s!", unlocName);
-                                this.unknownTextureColorMap.put(unlocName, AverageColorHelper.getAverageColor(RenderBiped.getArmorResource(player, itemstack, renderPass, null)));
-                                resLoc = new ResourceLocation("sapmanpack", "textures/entity/player/SanPlayer_Leggings_unknown.png");
-                            }
-                            break;
-                        case 3:
-                            resLoc = new ResourceLocation("sapmanpack", "textures/entity/player/SanPlayer_Boots_" + unlocName + ".png");
-                            try {
-                                Minecraft.getMinecraft().getResourceManager().getResource(resLoc);
-                            } catch( IOException ex ) {
-                                FMLLog.log(ModCntManPack.MOD_LOG, Level.WARN, "Can't load hat texture for item %s!", unlocName);
-                                this.unknownTextureColorMap.put(unlocName, AverageColorHelper.getAverageColor(RenderBiped.getArmorResource(player, itemstack, renderPass, null)));
-                                resLoc = new ResourceLocation("sapmanpack", "textures/entity/player/SanPlayer_Boots_unknown.png");
-                            }
-                            break;
-                    }
-
-                    this.bindTexture(resLoc);
+                switch( renderPass ) {
+                    case 0:
+                        this.bindTexture(tryLoadArmorPiece("Hat", unlocName, player, stack, renderPass));
+                        break;
+                    case 1:
+                        this.bindTexture(tryLoadArmorPiece("Chest", unlocName, player, stack, renderPass));
+                        break;
+                    case 2:
+                        this.bindTexture(tryLoadArmorPiece("Leggings", unlocName, player, stack, renderPass));
+                        break;
+                    case 3:
+                        this.bindTexture(tryLoadArmorPiece("Boots", unlocName, player, stack, renderPass));
+                        break;
                 }
 
-//                this.bindTexture(RenderBiped.getArmorResource(player, itemstack, renderPass, null));
                 myModelArmor.hatBase.showModel = renderPass == 0;
                 myModelArmor.body.showModel = renderPass == 1 || renderPass == 2;
                 myModelArmor.armLeft.showModel = renderPass == 1;
@@ -140,7 +90,6 @@ public class RenderSanPlayer
                 myModelArmor.skirt2.showModel = renderPass == 2;
                 myModelArmor.legLeft.showModel = renderPass == 2 || renderPass == 3;
                 myModelArmor.legRight.showModel = renderPass == 2 || renderPass == 3;
-//                myModelArmor = net.minecraftforge.client.ForgeHooksClient.getArmorModel(player, itemstack, renderPass, myModelArmor);
                 this.setRenderPassModel(myModelArmor);
                 myModelArmor.onGround = this.myModel.onGround;
                 myModelArmor.isRiding = this.myModel.isRiding;
@@ -150,37 +99,20 @@ public class RenderSanPlayer
                 myModelArmor.heldItemLeft = this.myModel.heldItemLeft;
                 myModelArmor.heldItemRight = this.myModel.heldItemRight;
 
-                //Move outside if to allow for more then just CLOTH
-                int j = itemarmor.getColor(itemstack);
-                if (j != -1)
-                {
-                    float f1 = (j >> 16 & 255) / 255.0F;
-                    float f2 = (j >> 8 & 255) / 255.0F;
-                    float f3 = (j & 255) / 255.0F;
-                    GL11.glColor3f(f1, f2, f3);
-
-                    if (itemstack.isItemEnchanted())
-                    {
-                        return 15;
-                    }
-
-                    return 1;
+                int armorColor = armorItem.getColor(stack);
+                if( armorColor != -1 ) {
+                    float red = (armorColor >> 16 & 255) / 255.0F;
+                    float green = (armorColor >> 8 & 255) / 255.0F;
+                    float blue = (armorColor & 255) / 255.0F;
+                    GL11.glColor3f(red, green, blue);
                 } else if( this.unknownTextureColorMap.containsKey(unlocName) ) {
                     RGBAValues rgba = this.unknownTextureColorMap.get(unlocName);
                     GL11.glColor3f(rgba.getRed() / 255.0F, rgba.getGreen() / 255.0F, rgba.getBlue() / 255.0F);
-
-                    if (itemstack.isItemEnchanted())
-                    {
-                        return 15;
-                    }
-
-                    return 1;
+                } else {
+                    GL11.glColor3f(1.0F, 1.0F, 1.0F);
                 }
 
-                GL11.glColor3f(1.0F, 1.0F, 1.0F);
-
-                if (itemstack.isItemEnchanted())
-                {
+                if( stack.isItemEnchanted() ) {
                     return 15;
                 }
 
@@ -197,22 +129,24 @@ public class RenderSanPlayer
 
         GL11.glPushMatrix();
         this.myModel.body.postRender(0.0625F);
-        if( player.inventory.getStackInSlot(0) != null && player.inventory.getStackInSlot(0) != player.getCurrentEquippedItem() ) {
+        ItemStack slot = player.inventory.getStackInSlot(0);
+        if( slot != null && slot != player.getCurrentEquippedItem() ) {
             GL11.glPushMatrix();
             GL11.glRotatef(-80.0F, 0.0F, 0.0F, 1.0F);
             GL11.glScalef(0.6F, 0.6F, 0.6F);
             GL11.glTranslatef(-1.0F, -0.4F, 0.3F);
-            ItemRenderHelper.renderItemIn3D(player.inventory.getStackInSlot(0));
+            ItemRenderHelper.renderItemIn3D(slot);
             GL11.glPopMatrix();
             GL11.glTranslatef(0.0F, 0.0F, 0.05F);
         }
 
-        if( player.inventory.getStackInSlot(1) != null && player.inventory.getStackInSlot(1) != player.getCurrentEquippedItem() ) {
+        slot = player.inventory.getStackInSlot(1);
+        if( slot != null && slot != player.getCurrentEquippedItem() ) {
             GL11.glPushMatrix();
             GL11.glRotatef(-10.0F, 0.0F, 0.0F, 1.0F);
             GL11.glScalef(0.6F, 0.6F, 0.6F);
             GL11.glTranslatef(-0.6F, -0.0F, 0.3F);
-            ItemRenderHelper.renderItemIn3D(player.inventory.getStackInSlot(1));
+            ItemRenderHelper.renderItemIn3D(slot);
             GL11.glPopMatrix();
         }
         GL11.glPopMatrix();
@@ -254,12 +188,12 @@ public class RenderSanPlayer
                 GL11.glPushMatrix();
                 GL11.glScalef(1.05F, 1.05F, 1.05F);
                 GL11.glTranslatef(0.015F, 0.00F, 0.0F);
-                int j = ((ItemArmor)player.getCurrentArmor(2).getItem()).getColor(player.getCurrentArmor(2));
-                if( j != -1 ) {
-                    float f1 = (j >> 16 & 255) / 255.0F;
-                    float f2 = (j >> 8 & 255) / 255.0F;
-                    float f3 = (j & 255) / 255.0F;
-                    GL11.glColor3f(f1, f2, f3);
+                int armorColor = ((ItemArmor)player.getCurrentArmor(2).getItem()).getColor(player.getCurrentArmor(2));
+                if( armorColor != -1 ) {
+                    float red = (armorColor >> 16 & 255) / 255.0F;
+                    float green = (armorColor >> 8 & 255) / 255.0F;
+                    float blue = (armorColor & 255) / 255.0F;
+                    GL11.glColor3f(red, green, blue);
                 } else if( this.unknownTextureColorMap.containsKey(armoredChest) ) {
                     RGBAValues rgba = this.unknownTextureColorMap.get(armoredChest);
                     GL11.glColor3f(rgba.getRed() / 255.0F, rgba.getGreen() / 255.0F, rgba.getBlue() / 255.0F);
@@ -280,5 +214,23 @@ public class RenderSanPlayer
                 GL11.glPopMatrix();
             }
         }
+    }
+
+    private ResourceLocation tryLoadArmorPiece(String part, String unlocName, EntityPlayer player, ItemStack stack, int pass) {
+        ResourceLocation resLoc;
+        if( this.unknownTextureColorMap.containsKey(unlocName) ) {
+            resLoc = new ResourceLocation("sapmanpack", "textures/entity/player/SanPlayer_" + part + "_unknown.png");
+        } else {
+            resLoc = new ResourceLocation("sapmanpack", "textures/entity/player/SanPlayer_" + part + '_' + unlocName + ".png");
+            try {
+                Minecraft.getMinecraft().getResourceManager().getResource(resLoc);
+            } catch( IOException ex ) {
+                FMLLog.log(ModCntManPack.MOD_LOG, Level.WARN, "Can't load hat texture for item %s!", unlocName);
+                this.unknownTextureColorMap.put(unlocName, AverageColorHelper.getAverageColor(RenderBiped.getArmorResource(player, stack, pass, null)));
+                resLoc = new ResourceLocation("sapmanpack", "textures/entity/player/SanPlayer_" + part + "_unknown.png");
+            }
+        }
+
+        return resLoc;
     }
 }
