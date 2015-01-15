@@ -20,7 +20,6 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
@@ -203,7 +202,7 @@ public class RenderSanPlayer
             GL11.glRotatef(-80.0F, 0.0F, 0.0F, 1.0F);
             GL11.glScalef(0.6F, 0.6F, 0.6F);
             GL11.glTranslatef(-1.0F, -0.4F, 0.3F);
-            ItemRenderHelper.renderIconIn3D(player.inventory.getStackInSlot(0).getIconIndex(), player.inventory.getStackInSlot(0).getItem() instanceof ItemBlock, false, 0xFFFFFF);
+            ItemRenderHelper.renderItemIn3D(player.inventory.getStackInSlot(0));
             GL11.glPopMatrix();
             GL11.glTranslatef(0.0F, 0.0F, 0.05F);
         }
@@ -213,7 +212,7 @@ public class RenderSanPlayer
             GL11.glRotatef(-10.0F, 0.0F, 0.0F, 1.0F);
             GL11.glScalef(0.6F, 0.6F, 0.6F);
             GL11.glTranslatef(-0.6F, -0.0F, 0.3F);
-            ItemRenderHelper.renderIconIn3D(player.inventory.getStackInSlot(1).getIconIndex(), player.inventory.getStackInSlot(1).getItem() instanceof ItemBlock, false, 0xFFFFFF);
+            ItemRenderHelper.renderItemIn3D(player.inventory.getStackInSlot(1));
             GL11.glPopMatrix();
         }
         GL11.glPopMatrix();
