@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.LinkedList;
 
+@Deprecated
 public class ChannelHandler
     extends FMLIndexedMessageToMessageCodec<IPacket>
 {

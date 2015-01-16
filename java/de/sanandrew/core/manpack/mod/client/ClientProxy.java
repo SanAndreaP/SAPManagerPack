@@ -14,6 +14,9 @@ import de.sanandrew.core.manpack.mod.CommonProxy;
 import de.sanandrew.core.manpack.mod.client.event.EventWorldRenderLast;
 import de.sanandrew.core.manpack.mod.client.event.RenderPlayerEventHandler;
 import de.sanandrew.core.manpack.mod.client.particle.SAPEffectRenderer;
+import de.sanandrew.core.manpack.network.ClientPacketHandler;
+import de.sanandrew.core.manpack.network.NetworkManager;
+import de.sanandrew.core.manpack.network.PacketProcessor;
 import de.sanandrew.core.manpack.util.client.RenderBlockGlowOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -24,7 +27,7 @@ public class ClientProxy
         extends CommonProxy
 {
     private static final UpdateOverlayManager UPDATE_OVERLY_MGR = new UpdateOverlayManager();
-    public static final KeyBinding KEY_UPDATE_GUI = new KeyBinding("key.sapmp.updateKey", Keyboard.KEY_U, "key.categories.misc");
+    public static final KeyBinding KEY_UPDATE_GUI = new KeyBinding("key.sapmanpack.updateKey", Keyboard.KEY_U, "key.categories.sapmanpack");
 
 	@Override
     public void registerRenderStuff() {
@@ -57,4 +60,10 @@ public class ClientProxy
 	public void registerPackets() {
 		super.registerPackets();
 	}
+
+    @Override
+    public void registerPacketHandler(String modId, String modChannel, PacketProcessor packetProcessor) {
+        super.registerPacketHandler(modId, modChannel, packetProcessor);
+        NetworkManager.getPacketChannel(modId).register(new ClientPacketHandler(modId, modChannel));
+    }
 }

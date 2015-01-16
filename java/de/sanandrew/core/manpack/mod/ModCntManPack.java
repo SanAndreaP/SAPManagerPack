@@ -16,7 +16,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.init.ManPackLoadingPlugin;
 import de.sanandrew.core.manpack.managers.SAPUpdateManager;
 import de.sanandrew.core.manpack.mod.client.ClientProxy;
-import de.sanandrew.core.manpack.mod.packet.ChannelHandler;
+import de.sanandrew.core.manpack.network.NetworkManager;
 import de.sanandrew.core.manpack.util.MutableString;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import org.apache.commons.lang3.mutable.MutableBoolean;
@@ -38,8 +38,6 @@ public class ModCntManPack
     public static final int FORGE_BULD_MIN = 1230;
 
     public static CommonProxy proxy;
-
-    public static ChannelHandler channelHandler;
 
     public ModCntManPack() {
         super(new ModMetadata());
@@ -68,33 +66,28 @@ public class ModCntManPack
         }
 
         NetworkRegistry.INSTANCE.register(this, this.getClass(), null, event.getASMHarvestedData());
-
-        channelHandler = new ChannelHandler(ModCntManPack.MOD_ID, ModCntManPack.MOD_CHANNEL);
     }
 
     @SideOnly(Side.CLIENT)
     @Subscribe
     public void injectClientProxy(FMLPreInitializationEvent evt) {
         proxy = new ClientProxy();
-        proxy.registerPackets();
     }
 
     @SideOnly(Side.SERVER)
     @Subscribe
     public void injectServerProxy(FMLPreInitializationEvent evt) {
         proxy = new CommonProxy();
-        proxy.registerPackets();
     }
 
     @Subscribe
     public void init(FMLInitializationEvent evt) {
-        channelHandler.initialise();
         ModCntManPack.proxy.registerRenderStuff();
     }
 
     @Subscribe
     public void postInit(FMLPostInitializationEvent evt) {
-        channelHandler.postInitialise();
+        NetworkManager.initPacketHandler();
 
         for( Triplet<SAPUpdateManager, MutableBoolean, MutableString> udm : SAPUpdateManager.UPD_MANAGERS ) {
             udm.getValue0().checkForUpdate();

@@ -10,6 +10,7 @@ import net.minecraft.network.NetHandlerPlayServer;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
 
+@Deprecated
 public class ExamplePacket
     implements IPacket
 {
