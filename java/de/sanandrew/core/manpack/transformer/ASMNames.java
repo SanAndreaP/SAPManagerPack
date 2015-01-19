@@ -58,6 +58,7 @@ public class ASMNames
     public static String M_spawnParticle;
     public static String M_getEntityRenderObj;
     public static String M_getEntityClsRenderObj;
+    public static String M_renderHand;
 
     public static void initialize() {
         if( isInitialized ) {
@@ -118,6 +119,7 @@ public class ASMNames
         M_spawnParticle =         ASMHelper.getRemappedMF("spawnParticle",               "func_72869_a");
         M_getEntityRenderObj =    ASMHelper.getRemappedMF("getEntityRenderObject",       "func_78713_a");
         M_getEntityClsRenderObj = ASMHelper.getRemappedMF("getEntityClassRenderObject",  "func_78715_a");
+        M_renderHand =            ASMHelper.getRemappedMF("renderHand",                  "func_78476_b");
 
         isInitialized = true;
     }
