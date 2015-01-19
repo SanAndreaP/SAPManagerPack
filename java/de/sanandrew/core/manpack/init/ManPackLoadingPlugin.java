@@ -66,7 +66,7 @@ public class ManPackLoadingPlugin
             try {
                 source = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
             } catch (URISyntaxException e) {
-                throw new RuntimeException("Failed to acquire source location for SevenCommons!", e);
+                throw new RuntimeException("Failed to acquire source location for SAPManPack!", e);
             }
         }
         ASMNames.initialize();

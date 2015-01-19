@@ -1,3 +1,9 @@
+/*******************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ *                http://creativecommons.org/licenses/by-nc-sa/4.0/
+ *******************************************************************************************************************/
 package de.sanandrew.core.manpack.transformer;
 
 import org.objectweb.asm.ClassWriter;
@@ -21,16 +27,16 @@ import org.objectweb.asm.tree.VarInsnNode;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 public class TransformEnderman
-    implements IClassTransformer
+        implements IClassTransformer
 {
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
         if( "net.minecraft.entity.monster.EntityEnderman".equals(transformedName) ) {
             ClassNode cn = ASMHelper.createClassNode(basicClass);
 
-            this.transformShouldAttackPlayer(ASMHelper.findMethod(ASMNames.M_shouldAttackPlayer, "(Lnet/minecraft/entity/player/EntityPlayer;)Z", cn));
-            this.transformOnLivingUpdate(ASMHelper.findMethod(ASMNames.M_onLivingUpdate, "()V", cn));
-            this.transformTeleportTo(ASMHelper.findMethod(ASMNames.M_teleportTo, "(DDD)Z", cn));
+            transformShouldAttackPlayer(ASMHelper.findMethod(cn, ASMNames.M_shouldAttackPlayer, "(Lnet/minecraft/entity/player/EntityPlayer;)Z"));
+            transformOnLivingUpdate(ASMHelper.findMethod(cn, ASMNames.M_onLivingUpdate, "()V"));
+            transformTeleportTo(ASMHelper.findMethod(cn, ASMNames.M_teleportTo, "(DDD)Z"));
 
             basicClass = ASMHelper.createBytes(cn, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
 
@@ -40,7 +46,7 @@ public class TransformEnderman
         return basicClass;
     }
 
-    private void transformShouldAttackPlayer(MethodNode method) {
+    private static void transformShouldAttackPlayer(MethodNode method) {
         InsnList needle = new InsnList();
         needle.add(new VarInsnNode(Opcodes.ALOAD, 1));
         needle.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/player/EntityPlayer", ASMNames.F_inventory, "Lnet/minecraft/entity/player/InventoryPlayer;"));
@@ -68,7 +74,7 @@ public class TransformEnderman
         method.instructions.insertBefore(insertPt, newInstr);
     }
 
-    private void transformTeleportTo(MethodNode method) {
+    private static void transformTeleportTo(MethodNode method) {
         InsnList needle = new InsnList();
         needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
         needle.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/monster/EntityEnderman", ASMNames.F_worldObj, "Lnet/minecraft/world/World;"));
@@ -132,7 +138,7 @@ public class TransformEnderman
         method.instructions.insert(node, newInstr);
     }
 
-    private void transformOnLivingUpdate(MethodNode method) {
+    private static void transformOnLivingUpdate(MethodNode method) {
         InsnList needle = new InsnList();
         needle.add(new FrameNode(Opcodes.F_SAME, 0, null, 0, null));
         needle.add(new InsnNode(Opcodes.ICONST_0));

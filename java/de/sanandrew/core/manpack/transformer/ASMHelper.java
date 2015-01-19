@@ -13,18 +13,30 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ASMHelper
+public final class ASMHelper
 {
+    /** A boolean which is true when we are in a development environment **/
     public static boolean isMCP = false;
 
-    public static byte[] createBytes(ClassNode cnode, int i) {
-        ClassWriter cw = new ClassWriter(i);
+    /**
+     * Creates a byte-array representation of the supplied ClassNode.
+     * @param cnode the ClassNode to be converted into a byte array
+     * @param cwFlags the flags to be supplied to the ClassWriter. You almost always want both COMPUTE_FRAMES and COMPUTE_MAXS
+     * @return a byte array representation of the ClassNode to be written back to the ClassLoader
+     */
+    public static byte[] createBytes(ClassNode cnode, int cwFlags) {
+        ClassWriter cw = new ClassWriter(cwFlags);
         cnode.accept(cw);
         byte[] bArr = cw.toByteArray();
         FMLLog.log("SAPManPack", Level.INFO, "Class %s successfully transformed!", cnode.name);
         return bArr;
     }
 
+    /**
+     * Creates a ClassNode from a byte array to be used for ASM modifications.
+     * @param bytes A byte array representing the class to be modified by ASM
+     * @return a new ClassNode instance
+     */
     public static ClassNode createClassNode(byte[] bytes) {
         ClassNode cnode = new ClassNode();
         ClassReader reader = new ClassReader(bytes);
@@ -32,6 +44,13 @@ public class ASMHelper
         return cnode;
     }
 
+    /**
+     * Searches for the instruction set (needle) inside an another instruction set (haystack) and returns the first instruction node from the found needle.
+     * @param haystack The instruction set to be searched in
+     * @param needle The instruction set to search for
+     * @return The first instruction node from the haystack on the found position
+     * @throws de.sanandrew.core.manpack.transformer.ASMHelper.InvalidNeedleException when the needle was not found or was found multiple times
+     */
     public static AbstractInsnNode findFirstNodeFromNeedle(InsnList haystack, InsnList needle) {
         List<AbstractInsnNode> ret = InstructionComparator.insnListFindStart(haystack, needle);
 
@@ -42,16 +61,13 @@ public class ASMHelper
         return ret.get(0);
     }
 
-    public static boolean hasClassMethodName(ClassNode cn, String methodName) {
-        for( MethodNode method : cn.methods ) {
-            if( method.name.equals(methodName) ) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
+    /**
+     * Searches for the instruction set (needle) inside an another instruction set (haystack) and returns the last instruction node from the found needle.
+     * @param haystack The instruction set to be searched in
+     * @param needle The instruction set to search for
+     * @return The last instruction node from the haystack on the found position
+     * @throws de.sanandrew.core.manpack.transformer.ASMHelper.InvalidNeedleException when the needle was not found or was found multiple times
+     */
     public static AbstractInsnNode findLastNodeFromNeedle(InsnList haystack, InsnList needle) {
         List<AbstractInsnNode> ret = InstructionComparator.insnListFindEnd(haystack, needle);
 
@@ -62,7 +78,39 @@ public class ASMHelper
         return ret.get(0);
     }
 
+    /**
+     * Scans the ClassNode for a method name
+     * @param cn the ClassNode to be searched in
+     * @param methodName The method name to search for
+     * @return true, if the name was found, or else false
+     */
+    public static boolean hasClassMethodName(ClassNode cn, String methodName) {
+        for( MethodNode method : cn.methods ) {
+            if( methodName.equals(method.name) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @see de.sanandrew.core.manpack.transformer.ASMHelper#findMethod(ClassNode cnode, String name, String desc)
+     */
+    @Deprecated
     public static MethodNode findMethod(String name, String desc, ClassNode cnode) {
+        return findMethod(cnode, name, desc);
+    }
+
+    /**
+     * Scans the ClassNode for a method name and descriptor
+     * @param cnode the ClassNode to be searched in
+     * @param name The method name to search for
+     * @param desc The method descriptor to search for
+     * @return true, if the name was found, or else false
+     * @throws de.sanandrew.core.manpack.transformer.ASMHelper.MethodNotFoundException when the method name and descriptor couldn't be found
+     */
+    public static MethodNode findMethod(ClassNode cnode, String name, String desc) {
         for( MethodNode mnode : cnode.methods ) {
             if( name.equals(mnode.name) && desc.equals(mnode.desc) ) {
                 return mnode;
@@ -71,21 +119,52 @@ public class ASMHelper
         throw new MethodNotFoundException(name, desc);
     }
 
-    public static String getRemappedMF(String MCP, String SRG) {
+    /**
+     * Gets the appropriate field/method name for either it is called in a development or productive environment
+     * @param mcp The name to be used in a development environment
+     * @param srg The name to be used in a productive environment
+     * @return The right name appropriate to the environment
+     */
+    public static String getRemappedMF(String mcp, String srg) {
         if( ASMHelper.isMCP ) {
-            return MCP;
+            return mcp;
         }
-        return SRG;
+        return srg;
     }
 
+    /**
+     * removes the first node in the haystack from the found needle.<br>
+     * <b>Deprecated! It is recommended to use
+     * {@link de.sanandrew.core.manpack.transformer.ASMHelper#findFirstNodeFromNeedle(org.objectweb.asm.tree.InsnList, org.objectweb.asm.tree.InsnList)}
+     * and use {@link org.objectweb.asm.tree.InsnList#remove(org.objectweb.asm.tree.AbstractInsnNode)} instead!</b>
+     * @param haystack The instruction set to be searched in
+     * @param needle The instruction set to search for
+     * @see de.sanandrew.core.manpack.transformer.ASMHelper#findFirstNodeFromNeedle(org.objectweb.asm.tree.InsnList, org.objectweb.asm.tree.InsnList)
+     */
+    @Deprecated
     public static void remFirstNodeFromNeedle(InsnList haystack, InsnList needle) {
         haystack.remove(ASMHelper.findFirstNodeFromNeedle(haystack, needle));
     }
 
+    /**
+     * removes the last node in the haystack from the found needle.<br>
+     * <b>Deprecated! It is recommended to use
+     * {@link de.sanandrew.core.manpack.transformer.ASMHelper#findLastNodeFromNeedle(org.objectweb.asm.tree.InsnList, org.objectweb.asm.tree.InsnList)}
+     * and use {@link org.objectweb.asm.tree.InsnList#remove(org.objectweb.asm.tree.AbstractInsnNode)} instead!</b>
+     * @param haystack The instruction set to be searched in
+     * @param needle The instruction set to search for
+     * @see de.sanandrew.core.manpack.transformer.ASMHelper#findLastNodeFromNeedle(org.objectweb.asm.tree.InsnList, org.objectweb.asm.tree.InsnList)
+     */
+    @Deprecated
     public static void remLastNodeFromNeedle(InsnList haystack, InsnList needle) {
         haystack.remove(ASMHelper.findLastNodeFromNeedle(haystack, needle));
     }
 
+    /**
+     * removes an entire instruction set in the haystack.
+     * @param haystack The instruction set to be searched in
+     * @param needle The instruction set to search for and to be removed
+     */
     public static void removeNeedleFromHaystack(InsnList haystack, InsnList needle) {
         int firstInd = haystack.indexOf(findFirstNodeFromNeedle(haystack, needle));
         int lastInd = haystack.indexOf(findLastNodeFromNeedle(haystack, needle));
@@ -100,6 +179,12 @@ public class ASMHelper
         }
     }
 
+    /**
+     * Writes the class bytes into a file. Helpful for debugging ASM transformations.<br>
+     * Note: this will write the bytes as compiled .class file! Use JD-GUI to look into the class.
+     * @param classBytes The class bytes to be written as a class file
+     * @param file The filename (inclusive path) the bytes will be saved in
+     */
     public static void writeClassToFile(byte[] classBytes, String file) {
         try( FileOutputStream out = new FileOutputStream(file) ) {
             out.write(classBytes);
@@ -109,23 +194,22 @@ public class ASMHelper
     }
 
     public static class InvalidNeedleException
-        extends RuntimeException
+            extends RuntimeException
     {
         private static final long serialVersionUID = -913530798954926801L;
 
         public InvalidNeedleException(int count) {
-            super(count > 1 ? "Multiple Needles found in Haystack!" : "Needle not found in Haystack!");
+            super(count > 1 ? "Multiple Needles found in Haystack!" : count < 1 ? "Needle not found in Haystack!" : "Wait, Needle was found!? o.O");
         }
     }
 
     public static class MethodNotFoundException
-        extends RuntimeException
+            extends RuntimeException
     {
         private static final long serialVersionUID = 7439846361566319105L;
 
         public MethodNotFoundException(String methodName, String methodDesc) {
-            super(String.format("Could not find any method matching the name < %s > and description < %s >",
-                                methodName, methodDesc));
+            super(String.format("Could not find any method matching the name < %s > and description < %s >", methodName, methodDesc));
         }
     }
 }

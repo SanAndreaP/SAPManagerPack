@@ -9,7 +9,6 @@ package de.sanandrew.core.manpack.mod.client;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
-import de.sanandrew.core.manpack.managers.SAPUpdateManager;
 import de.sanandrew.core.manpack.mod.CommonProxy;
 import de.sanandrew.core.manpack.mod.client.event.EventWorldRenderLast;
 import de.sanandrew.core.manpack.mod.client.event.RenderPlayerEventHandler;
@@ -49,16 +48,6 @@ public class ClientProxy
         FMLCommonHandler.instance().bus().register(worldRenderLastEventHandler);
 
         MinecraftForge.EVENT_BUS.register(new RenderPlayerEventHandler());
-	}
-
-	@Override
-	public void updOverlayAddUpdMgr(SAPUpdateManager mgr, String version) {
-	    UPDATE_OVERLY_MGR.addUpdate(mgr, version);
-	}
-
-	@Override
-	public void registerPackets() {
-		super.registerPackets();
 	}
 
     @Override

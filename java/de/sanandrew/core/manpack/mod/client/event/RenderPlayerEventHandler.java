@@ -35,7 +35,7 @@ public class RenderPlayerEventHandler
 
     @SubscribeEvent
     public void onPlayerRender(RenderPlayerEvent.Pre event) {
-        lazyLoad();
+        this.lazyLoad();
 
         if( event.entityPlayer.getCommandSenderName().equals("sanandreasMC") ) {
             playerPartTicks = event.partialRenderTick;
@@ -53,7 +53,7 @@ public class RenderPlayerEventHandler
     @SubscribeEvent
     @SuppressWarnings("unchecked")
     public void onHandRender(RenderHandEvent event) {
-        lazyLoad();
+        this.lazyLoad();
 
         GL11.glPushMatrix();
         Minecraft mc = Minecraft.getMinecraft();

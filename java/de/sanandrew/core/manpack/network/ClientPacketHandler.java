@@ -10,7 +10,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent.ClientCustomPacketEvent;
 import net.minecraft.client.network.NetHandlerPlayClient;
 
-public class ClientPacketHandler
+public final class ClientPacketHandler
 {
     private final String channel;
     private final String modId;

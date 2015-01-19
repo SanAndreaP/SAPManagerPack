@@ -1,3 +1,9 @@
+/*******************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ *                http://creativecommons.org/licenses/by-nc-sa/4.0/
+ *******************************************************************************************************************/
 package de.sanandrew.core.manpack.transformer;
 
 import org.objectweb.asm.tree.*;
@@ -9,7 +15,7 @@ import java.util.List;
 
 import static org.objectweb.asm.tree.AbstractInsnNode.*;
 
-public class InstructionComparator
+public final class InstructionComparator
 {
     public static boolean fieldInsnEqual(FieldInsnNode insn1, FieldInsnNode insn2) {
         return insn1.owner.equals(insn2.owner) && insn1.name.equals(insn2.name) && insn1.desc.equals(insn2.desc);

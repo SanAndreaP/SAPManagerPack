@@ -1,3 +1,9 @@
+/*******************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ *                http://creativecommons.org/licenses/by-nc-sa/4.0/
+ *******************************************************************************************************************/
 package de.sanandrew.core.manpack.mod;
 
 import com.google.common.eventbus.EventBus;
@@ -26,14 +32,14 @@ import java.io.File;
 import java.util.Collections;
 
 public class ModCntManPack
-    extends DummyModContainer
+        extends DummyModContainer
 {
     public static final String MOD_CHANNEL = "sapmanpack";
     public static final String MOD_ID = "sapmanpack";
     public static final String MOD_LOG = "SAPManPack";
     public static final String UPD_LOG = "SAPUpdateMgr";
 
-    public static final String MOD_VERSION = "2.3.0";
+    public static final String MOD_VERSION = "2.3.1";
 
     public static final int FORGE_BULD_MIN = 1230;
 
@@ -68,14 +74,14 @@ public class ModCntManPack
         NetworkRegistry.INSTANCE.register(this, this.getClass(), null, event.getASMHarvestedData());
     }
 
-    @SideOnly(Side.CLIENT)
     @Subscribe
+    @SideOnly(Side.CLIENT)
     public void injectClientProxy(FMLPreInitializationEvent evt) {
         proxy = new ClientProxy();
     }
 
-    @SideOnly(Side.SERVER)
     @Subscribe
+    @SideOnly(Side.SERVER)
     public void injectServerProxy(FMLPreInitializationEvent evt) {
         proxy = new CommonProxy();
     }

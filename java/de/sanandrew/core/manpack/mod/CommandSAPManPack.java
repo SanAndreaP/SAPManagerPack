@@ -1,3 +1,9 @@
+/*******************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ *                http://creativecommons.org/licenses/by-nc-sa/4.0/
+ *******************************************************************************************************************/
 package de.sanandrew.core.manpack.mod;
 
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
@@ -8,7 +14,7 @@ import net.minecraft.command.WrongUsageException;
 import java.util.concurrent.RejectedExecutionException;
 
 public class CommandSAPManPack
-    extends CommandBase
+        extends CommandBase
 {
     @Override
     public String getCommandName() {
@@ -25,6 +31,7 @@ public class CommandSAPManPack
         if( cmdParams.length < 1 || cmdParams.length > 2 ) {
             throw new WrongUsageException("commands.sapmanpack.usage");
         }
+
         if( "restart".equals(cmdParams[0]) ) {
             try {
                 SAPUtils.restartApp();
