@@ -1,3 +1,9 @@
+/*******************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ *                http://creativecommons.org/licenses/by-nc-sa/4.0/
+ *******************************************************************************************************************/
 package de.sanandrew.core.manpack.util.client.helpers;
 
 import cpw.mods.fml.relauncher.Side;
@@ -22,15 +28,23 @@ import org.lwjgl.opengl.GL12;
 @SideOnly(Side.CLIENT)
 public final class ItemRenderHelper
 {
-    private static final ResourceLocation glintPNG = new ResourceLocation("textures/misc/enchanted_item_glint.png");
+    private static final ResourceLocation GLINT_PNG = new ResourceLocation("textures/misc/enchanted_item_glint.png");
 
     protected static RenderItem itemRender = new RenderItem();
     protected static RenderBlocks renderBlocksRi = new RenderBlocks();
 
+    @Deprecated
 	public static void renderItem(ItemStack stack, int layer) {
 		renderItem(stack, layer, false);
 	}
 
+    /**
+     * Renders an ItemStack in a GUI.
+     * @param mc the Minecraft instance
+     * @param stack the ItemStack to be rendered
+     * @param x x-position in the GUI
+     * @param y y-position in the GUI
+     */
     public static void renderItemInGui(Minecraft mc, ItemStack stack, int x, int y) {
         if( stack != null ) {
             GL11.glTranslatef(0.0F, 0.0F, 32.0F);
@@ -40,6 +54,13 @@ public final class ItemRenderHelper
         }
     }
 
+    /**
+     * Renders an IIcon instance in 3D.
+     * @param icon the icon to be rendered
+     * @param isBlock if it should be rendered as a block or not
+     * @param hasAlpha if it has a transparent texture
+     * @param color the tint it should be rendered in
+     */
     public static void renderIconIn3D(IIcon icon, boolean isBlock, boolean hasAlpha, int color) {
         GL11.glPushMatrix();
 
@@ -60,9 +81,9 @@ public final class ItemRenderHelper
 
             Tessellator tessellator = Tessellator.instance;
 
-            float red = (float)(color >> 16 & 255) / 255.0F;
-            float green = (float)(color >> 8 & 255) / 255.0F;
-            float blue = (float)(color & 255) / 255.0F;
+            float red = (color >> 16 & 255) / 255.0F;
+            float green = (color >> 8 & 255) / 255.0F;
+            float blue = (color & 255) / 255.0F;
             GL11.glColor4f(red, green, blue, 1.0F);
 
             Blocks.stone.setBlockBoundsForItemRender();
@@ -107,11 +128,11 @@ public final class ItemRenderHelper
                 OpenGlHelper.glBlendFunc(770, 771, 1, 0);
             }
 
-            float red = (float)(color >> 16 & 255) / 255.0F;
-            float green = (float)(color >> 8 & 255) / 255.0F;
-            float blue = (float)(color & 255) / 255.0F;
+            float red = (color >> 16 & 255) / 255.0F;
+            float green = (color >> 8 & 255) / 255.0F;
+            float blue = (color & 255) / 255.0F;
             GL11.glColor4f(red, green, blue, 1.0F);
-            renderItemIn3D(icon, false, 0, 1);
+            renderItemIn3D(icon, false, 1);
 
             if( hasAlpha ) {
                 GL11.glDisable(GL11.GL_BLEND);
@@ -123,6 +144,10 @@ public final class ItemRenderHelper
         TextureUtil.func_147945_b();
     }
 
+    /**
+     * Renders an ItemStack in 3D.
+     * @param stack the ItemStack to be rendered
+     */
     public static void renderItemIn3D(ItemStack stack) {
         if( stack.getItem() != null ) {
             GL11.glPushMatrix();
@@ -165,11 +190,11 @@ public final class ItemRenderHelper
                         IIcon icon = stack.getItem().getIcon(stack, j);
 
                         int color = stack.getItem().getColorFromItemStack(stack, j);
-                        float red = (float)(color >> 16 & 255) / 255.0F;
-                        float green = (float)(color >> 8 & 255) / 255.0F;
-                        float blue = (float)(color & 255) / 255.0F;
+                        float red = (color >> 16 & 255) / 255.0F;
+                        float green = (color >> 8 & 255) / 255.0F;
+                        float blue = (color & 255) / 255.0F;
                         GL11.glColor4f(red, green, blue, 1.0F);
-                        renderItemIn3D(icon, stack.hasEffect(j), j, 1);
+                        renderItemIn3D(icon, stack.hasEffect(j), 1);
                     }
                 } else {
                     IIcon icon = stack.getItem().getIcon(stack, 0);
@@ -181,11 +206,11 @@ public final class ItemRenderHelper
                     }
 
                     int color = stack.getItem().getColorFromItemStack(stack, 0);
-                    float red = (float)(color >> 16 & 255) / 255.0F;
-                    float green = (float)(color >> 8 & 255) / 255.0F;
-                    float blue = (float)(color & 255) / 255.0F;
+                    float red = (color >> 16 & 255) / 255.0F;
+                    float green = (color >> 8 & 255) / 255.0F;
+                    float blue = (color & 255) / 255.0F;
                     GL11.glColor4f(red, green, blue, 1.0F);
-                    renderItemIn3D(icon, stack.hasEffect(0), 0, 1);
+                    renderItemIn3D(icon, stack.hasEffect(0), 1);
 
                     if( stack.getItem() instanceof ItemCloth ) {
                         GL11.glDisable(GL11.GL_BLEND);
@@ -199,7 +224,7 @@ public final class ItemRenderHelper
         }
     }
 
-    private static void renderItemIn3D(IIcon icon, boolean withEffect, int layer, int spriteIndex) {
+    private static void renderItemIn3D(IIcon icon, boolean withEffect, int spriteIndex) {
         GL11.glPushMatrix();
 
         if( icon == null ) {
@@ -230,7 +255,7 @@ public final class ItemRenderHelper
             GL11.glDepthFunc(GL11.GL_EQUAL);
             GL11.glDisable(GL11.GL_LIGHTING);
 
-            Minecraft.getMinecraft().renderEngine.bindTexture(glintPNG);
+            Minecraft.getMinecraft().renderEngine.bindTexture(GLINT_PNG);
 
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
@@ -255,7 +280,7 @@ public final class ItemRenderHelper
             renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.0625F, false);
 
             GL11.glPopMatrix();
-            GL11.glColor4f(1F, 1F, 1F, 1.0F);
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             GL11.glMatrixMode(GL11.GL_MODELVIEW);
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glEnable(GL11.GL_LIGHTING);
@@ -266,6 +291,7 @@ public final class ItemRenderHelper
         GL11.glPopMatrix();
     }
 
+    @Deprecated
 	public static void renderItem(ItemStack stack, int layer, boolean isGlowing) {
         if( stack == null ) {
             return;
@@ -274,6 +300,13 @@ public final class ItemRenderHelper
         renderIcon(getItemIcon(stack, layer), stack.getItemSpriteNumber(), stack.hasEffect(layer), isGlowing);
     }
 
+    /**
+     * Renders an IIcon in 2D.
+     * @param icon the icon to be rendered
+     * @param spriteIndex the index of the texture to be used (0 = blocks, 1 = items)
+     * @param hasEffect if it has an enchantment effect
+     * @param isGlowing if it should glow in the dark
+     */
     public static void renderIcon(IIcon icon, int spriteIndex, boolean hasEffect, boolean isGlowing) {
 		GL11.glPushMatrix();
 
@@ -312,7 +345,7 @@ public final class ItemRenderHelper
             GL11.glDepthFunc(GL11.GL_EQUAL);
             GL11.glDisable(GL11.GL_LIGHTING);
 
-            Minecraft.getMinecraft().renderEngine.bindTexture(glintPNG);
+            Minecraft.getMinecraft().renderEngine.bindTexture(GLINT_PNG);
 
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
@@ -337,7 +370,7 @@ public final class ItemRenderHelper
             renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.0625F, false);
 
             GL11.glPopMatrix();
-            GL11.glColor4f(1F, 1F, 1F, 1.0F);
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             GL11.glMatrixMode(GL11.GL_MODELVIEW);
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glEnable(GL11.GL_LIGHTING);
@@ -374,6 +407,7 @@ public final class ItemRenderHelper
 		}
 	}
 
+    @Deprecated
     public static void renderGlint(int par1, int minU, int minV, int maxU, int maxV, double zLevel) {
         for( int j1 = 0; j1 < 2; ++j1 ) {
             if( j1 == 0 ) {

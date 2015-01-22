@@ -6,6 +6,7 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.util.client.helpers;
 
+import de.sanandrew.core.manpack.transformer.ASMNames;
 import de.sanandrew.core.manpack.util.SAPReflectionHelper;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -15,57 +16,53 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import org.lwjgl.opengl.GL11;
 
-import java.lang.reflect.InvocationTargetException;
-
 public final class SAPClientUtils
 {
+    /**
+     * Dunno why I need this right now... I keep it until I've updated my mods.
+     */
+    @Deprecated
     public static void setSelectedBtn(GuiScreen inst, GuiButton btn) {
-        SAPReflectionHelper.setCachedFieldValue(GuiScreen.class, inst, "selectedButton", "field_73883_a", btn);
+        SAPReflectionHelper.setCachedFieldValue(GuiScreen.class, inst, "selectedButton", ASMNames.F_selectedButton, btn);
     }
 
+    /**
+     * Dunno why I need this right now... I keep it until I've updated my mods.
+     */
+    @Deprecated
     public static GuiButton getSelectedBtn(GuiScreen inst) {
-        return SAPReflectionHelper.getCachedFieldValue(GuiScreen.class, inst, "selectedButton", "field_73883_a");
+        return SAPReflectionHelper.getCachedFieldValue(GuiScreen.class, inst, "selectedButton", ASMNames.F_selectedButton);
     }
 
+    /**
+     * Deprecated! Use {@link de.sanandrew.core.manpack.util.client.helpers.ModelBoxBuilder} instead!
+     */
+    @Deprecated
     public static ModelRenderer createNewBox(ModelBase model, int texX, int texY, boolean mirror, float boxX, float boxY, float boxZ, int sizeX, int sizeY, int sizeZ,
                                              float rotPointX, float rotPointY, float rotPointZ, float rotX, float rotY, float rotZ) {
         return createNewBox(model, texX, texY, mirror, boxX, boxY, boxZ, sizeX, sizeY, sizeZ, 0.0F, rotPointX, rotPointY, rotPointZ, rotX, rotY, rotZ);
     }
 
+    /**
+     * Deprecated! Use {@link de.sanandrew.core.manpack.util.client.helpers.ModelBoxBuilder} instead!
+     */
+    @Deprecated
     public static ModelRenderer createNewBox(ModelBase model, int texX, int texY, boolean mirror, float boxX, float boxY, float boxZ, int sizeX, int sizeY, int sizeZ,
                                              float scaleFactor, float rotPointX, float rotPointY, float rotPointZ, float rotX, float rotY, float rotZ) {
-        ModelRenderer box = new ModelRenderer(model, texX, texY);
-        box.textureWidth = model.textureWidth;
-        box.textureHeight = model.textureHeight;
-        box.rotateAngleX = rotX;
-        box.rotateAngleY = rotY;
-        box.rotateAngleZ = rotZ;
-        box.mirror = mirror;
-        box.setRotationPoint(rotPointX, rotPointY, rotPointZ);
-        box.addBox(boxX, boxY, boxZ, sizeX, sizeY, sizeZ, scaleFactor);
-
-        return box;
+        return ModelBoxBuilder.newBuilder(model).setTexture(texX, texY, mirror).setLocation(rotPointX, rotPointY, rotPointZ).setRotation(rotX, rotY, rotZ)
+                              .getBox(boxX, boxY, boxZ, sizeX, sizeY, sizeZ, scaleFactor);
     }
 
+    /**
+     * Deprecated! Use {@link de.sanandrew.core.manpack.util.client.helpers.ModelBoxBuilder} instead!
+     */
+    @Deprecated
+    @SuppressWarnings("unchecked")
     public static <T extends ModelRenderer> T createNewBox(Class<T> boxClass, ModelBase model, int texX, int texY, boolean mirror, float boxX, float boxY,
                                                            float boxZ, int sizeX, int sizeY, int sizeZ, float scaleFactor, float rotPointX, float rotPointY,
                                                            float rotPointZ, float rotX, float rotY, float rotZ) {
-        try {
-            T box = boxClass.getConstructor(ModelBase.class, int.class, int.class).newInstance(model, texX, texY);
-            box.textureWidth = model.textureWidth;
-            box.textureHeight = model.textureHeight;
-            box.rotateAngleX = rotX;
-            box.rotateAngleY = rotY;
-            box.rotateAngleZ = rotZ;
-            box.mirror = mirror;
-            box.setRotationPoint(rotPointX, rotPointY, rotPointZ);
-            box.addBox(boxX, boxY, boxZ, sizeX, sizeY, sizeZ, scaleFactor);
-
-            return box;
-        } catch( NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e ) {
-            e.printStackTrace();
-            return null;
-        }
+        return (T) ModelBoxBuilder.newBuilder(model, boxClass).setTexture(texX, texY, mirror).setLocation(rotPointX, rotPointY, rotPointZ).setRotation(rotX, rotY, rotZ)
+                                  .getBox(boxX, boxY, boxZ, sizeX, sizeY, sizeZ, scaleFactor);
     }
 
     public static void drawTexturedSquareYPos(double cornerBeginX, double cornerBeginZ, double cornerEndX, double cornerEndZ, double y, double uBegin, double vBegin,

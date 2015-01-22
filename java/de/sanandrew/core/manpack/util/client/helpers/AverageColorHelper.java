@@ -1,6 +1,6 @@
 /*******************************************************************************************************************
  * Authors:   SanAndreasP
- * Copyright: SanAndreasP, SilverChiren and CliffracerX
+ * Copyright: SanAndreasP
  * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
  *                http://creativecommons.org/licenses/by-nc-sa/4.0/
  *******************************************************************************************************************/
@@ -17,40 +17,54 @@ import java.io.InputStream;
 
 public final class AverageColorHelper
 {
+    /**
+     * @see de.sanandrew.core.manpack.util.client.helpers.AverageColorHelper#getAverageColor(java.io.InputStream)
+     * @param res the ResourceLocation of the image
+     * @return
+     */
+    @Deprecated
     public static RGBAValues getAverageColor(ResourceLocation res) {
         try {
-            // read texture as BufferedImage from ResourceLocation
-            InputStream is = Minecraft.getMinecraft().getResourceManager().getResource(res).getInputStream();
-            BufferedImage bi = ImageIO.read(is);
-
-            // holds the added RGB values of the whole texture and pixel counter
-            double red = 0.0D;
-            double green = 0.0D;
-            double blue = 0.0D;
-            double count = 0;
-            for( int x = 0; x < bi.getWidth(); x++ ) {          // loop through the pixels
-                for( int y = 0; y < bi.getHeight(); y++ ) {
-                    int color = bi.getRGB(x, y);
-                    if( ((color >> 24) & 0xFF) == 0x00 ) {      // check if it isn't fully transparent, if it is, then ignore this color, since it will darken it,
-                        continue;                               // because those pixels are usually black and you don't see them anyway
-                    }
-
-                    red += ((color >> 16) & 0xFF);              // add RGB from the pixel to the RGB storage variables, increase pixel counter
-                    green += ((color >> 8) & 0xFF);
-                    blue += (color & 0xFF);
-                    count += 1D;
-                }
-            }
-
-            int avgRed = (int) (red / count);       // calculating the average of each channel
-            int avgGreen = (int) (green / count);
-            int avgBlue = (int) (blue / count);
-
-            return new RGBAValues(avgRed, avgGreen, avgBlue, 255); // return combined RGB channels, format 0xRRGGBB
+            return getAverageColor(Minecraft.getMinecraft().getResourceManager().getResource(res).getInputStream());
         } catch( IOException e ) {
-            e.printStackTrace();        // something went wrong with reading the texture
+            e.printStackTrace();
+            return new RGBAValues(0, 0, 0, 0);
+        }
+    }
+
+    /**
+     * Gets the average color from an image.
+     * @param is The image as InputStream
+     * @return the average color
+     * @throws java.io.IOException when the InputStream cannot be read as an image
+     */
+    public static RGBAValues getAverageColor(InputStream is) throws IOException {
+        // read texture as BufferedImage from InputStream
+        BufferedImage bi = ImageIO.read(is);
+
+        // holds the added RGB values of the whole texture and pixel counter
+        double red = 0.0D;
+        double green = 0.0D;
+        double blue = 0.0D;
+        double count = 0;
+        for( int x = 0; x < bi.getWidth(); x++ ) {          // loop through the pixels
+            for( int y = 0; y < bi.getHeight(); y++ ) {
+                int color = bi.getRGB(x, y);
+                if( ((color >> 24) & 0xFF) == 0x00 ) {      // check if it isn't fully transparent, if it is, then ignore this color, since it will darken it,
+                    continue;                               // because those pixels are usually black and you don't see them anyway
+                }
+
+                red += ((color >> 16) & 0xFF);              // add RGB from the pixel to the RGB storage variables, increase pixel counter
+                green += ((color >> 8) & 0xFF);
+                blue += (color & 0xFF);
+                count += 1.0D;
+            }
         }
 
-        return new RGBAValues(0, 0, 0, 0);
+        int avgRed = (int) (red / count);       // calculating the average of each channel
+        int avgGreen = (int) (green / count);
+        int avgBlue = (int) (blue / count);
+
+        return new RGBAValues(avgRed, avgGreen, avgBlue, 255); // return combined RGB channels
     }
 }

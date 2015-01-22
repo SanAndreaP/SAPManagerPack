@@ -33,6 +33,7 @@ public final class ASMNames
     public static String F_rand;
     public static String F_width;
     public static String F_height;
+    public static String F_selectedButton;
 
     public static String M_isBadEffect;
     public static String M_createVectorHelper;
@@ -94,6 +95,7 @@ public final class ASMNames
         F_rand =              ASMHelper.getRemappedMF("rand",                "field_70146_Z");
         F_width =             ASMHelper.getRemappedMF("width",               "field_70130_N");
         F_height =            ASMHelper.getRemappedMF("height",              "field_70131_O");
+        F_selectedButton =    ASMHelper.getRemappedMF("selectedButton",      "field_73883_a");
 
         M_isBadEffect =           ASMHelper.getRemappedMF("isBadEffect",                 "func_76398_f");
         M_createVectorHelper =    ASMHelper.getRemappedMF("createVectorHelper",          "func_72443_a");
