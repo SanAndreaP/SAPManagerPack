@@ -13,6 +13,8 @@ import org.apache.logging.log4j.Level;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.ProcessBuilder.Redirect;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +28,7 @@ final class AppHelper
         try {
             String java = System.getProperty("java.home") + "/bin/javaw"; // java binary
 
-            List<String> vmArguments = ManagementFactory.getRuntimeMXBean().getInputArguments(); // vm arguments
+            List<String> vmArguments = new ArrayList<>(ManagementFactory.getRuntimeMXBean().getInputArguments()); // vm arguments
             Iterator<String> it = vmArguments.iterator();
             while( it.hasNext() ) {
                 if( it.next().contains("-agentlib") ) {      // if it's the agent argument: we delete it otherwise the
@@ -50,12 +52,14 @@ final class AppHelper
 
             cmd.addAll(Arrays.asList(mainCommand).subList(1, mainCommand.length));          // finally add program arguments
 
+            OutputStream os = System.out;
             Runtime.getRuntime().addShutdownHook(new Thread()               // execute the command in a shutdown hook, to be sure that all the
                                                  {                          // resources have been disposed before restarting the application
                                                      @Override
                                                      public void run() {
                                                          try {
                                                              ProcessBuilder builder = new ProcessBuilder(cmd);
+                                                             builder.redirectOutput(Redirect.from(new File("")));
                                                              builder.inheritIO();                                  // inherit the console output from the super process
                                                              builder.start();                                      // start the new process
                                                          } catch( IOException e ) {
@@ -68,6 +72,7 @@ final class AppHelper
             System.out.println();
             FMLLog.log(ModCntManPack.MOD_LOG, Level.INFO, "---=== Restarting Minecraft! ===---");
             FMLCommonHandler.instance().exitJava(0, false);                                             // try to exit Minecraft
+//            Thread.currentThread().interrupt();
         } catch (Throwable e) {
             throw new RejectedExecutionException("Error while trying to restart the application", e);
         }

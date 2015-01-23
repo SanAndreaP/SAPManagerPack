@@ -78,12 +78,21 @@ public class ModCntManPack
     @SideOnly(Side.CLIENT)
     public void injectClientProxy(FMLPreInitializationEvent evt) {
         proxy = new ClientProxy();
+        this.commonPreInit(evt);
     }
 
     @Subscribe
     @SideOnly(Side.SERVER)
     public void injectServerProxy(FMLPreInitializationEvent evt) {
         proxy = new CommonProxy();
+        this.commonPreInit(evt);
+    }
+
+    public void commonPreInit(FMLPreInitializationEvent event) {
+        ConfigurationManager.load(event.getSuggestedConfigurationFile());
+
+        SAPUpdateManager.createUpdateManager("SAP Manager Pack", 1, 0, 0, "C:\\Users\\Andreas Peitsch\\AppData\\Local\\MCF\\forge\\src\\EnderStuffPlus\\update.json",
+                                             "http://www.curseforge.com/projects/226994/", this.getSource());
     }
 
     @Subscribe

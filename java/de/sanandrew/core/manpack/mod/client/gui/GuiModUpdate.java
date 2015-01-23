@@ -22,6 +22,7 @@ public class GuiModUpdate
     private GuiButton restartMC;
     private GuiButton back2Menu;
     private final GuiScreen mainMenu;
+    private int selectedItem;
 
     public static final List<SAPUpdateManager> MANAGERS = new ArrayList<>();
     private GuiModUpdate.GuiModSlots modList;
@@ -34,6 +35,8 @@ public class GuiModUpdate
     @SuppressWarnings("unchecked")
     public void initGui() {
         super.initGui();
+
+        this.selectedItem = -1;
 
         this.buttonList.add(this.restartMC = new GuiButton(this.buttonList.size(), (this.width - 200) / 2, this.height - 52, "Restart Minecraft"));
         this.buttonList.add(this.back2Menu = new GuiButton(this.buttonList.size(), (this.width - 200) / 2, this.height - 32, "Back to main menu"));
@@ -69,6 +72,7 @@ public class GuiModUpdate
                 e.printStackTrace();
                 this.mc.displayGuiScreen(this.mainMenu);
             }
+            this.selectedItem = -1;
         }
 
         super.confirmClicked(isConfirmed, guiId);
@@ -86,13 +90,13 @@ public class GuiModUpdate
         }
 
         @Override
-        protected void elementClicked(int var1, boolean var2, int var3, int var4) {
-
+        protected void elementClicked(int elemIndex, boolean doubleClicked, int mouseX, int mouseY) {
+            GuiModUpdate.this.selectedItem = elemIndex;
         }
 
         @Override
-        protected boolean isSelected(int var1) {
-            return false;
+        protected boolean isSelected(int selectedIndex) {
+            return GuiModUpdate.this.selectedItem == selectedIndex;
         }
 
         @Override
@@ -101,8 +105,12 @@ public class GuiModUpdate
         }
 
         @Override
-        protected void drawSlot(int var1, int var2, int var3, int var4, Tessellator var5, int var6, int var7) {
+        protected void drawSlot(int slotIndex, int xPos, int yPos, int yMin, Tessellator tessellator, int mouseX, int mouseY) {
+            SAPUpdateManager mgr = GuiModUpdate.MANAGERS.get(slotIndex);
 
+            GuiModUpdate.this.fontRendererObj.drawStringWithShadow(mgr.getModName(), xPos, yPos, 0xFFFFFFFF);
+            GuiModUpdate.this.fontRendererObj.drawStringWithShadow("Installed Version: " + mgr.getVersion(), xPos, yPos + 10, 0xFF808080);
+            GuiModUpdate.this.fontRendererObj.drawStringWithShadow("Latest Version: " + mgr.getVersionDiffSeverity().format + mgr.getUpdateInfo().version, xPos, yPos + 20, 0xFF808080);
         }
     }
 }

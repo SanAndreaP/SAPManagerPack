@@ -39,8 +39,6 @@ public class TransformEnderman
             transformTeleportTo(ASMHelper.findMethod(cn, ASMNames.M_teleportTo, "(DDD)Z"));
 
             basicClass = ASMHelper.createBytes(cn, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-
-            return basicClass;
         }
 
         return basicClass;
