@@ -7,7 +7,6 @@
 package de.sanandrew.core.manpack.network;
 
 import com.google.common.collect.Maps;
-import cpw.mods.fml.common.FMLLog;
 import de.sanandrew.core.manpack.mod.ModCntManPack;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
@@ -35,10 +34,10 @@ public final class PacketProcessor
                 this.packetMap.get(packetId).getConstructor().newInstance().process(bbis, data, handler);
             }
         } catch( IOException ioe ) {
-            FMLLog.log(ModCntManPack.MOD_LOG, Level.ERROR, "The packet with the ID %d from %s cannot be processed!", packetId, this.modId);
+            ModCntManPack.MOD_LOG.log(Level.ERROR, "The packet with the ID %d from %s cannot be processed!", packetId, this.modId);
             ioe.printStackTrace();
         } catch( IllegalAccessException | InstantiationException rex ) {
-            FMLLog.log(ModCntManPack.MOD_LOG, Level.ERROR, "The packet with the ID %d from %s cannot be instantiated!", packetId, this.modId);
+            ModCntManPack.MOD_LOG.log(Level.ERROR, "The packet with the ID %d from %s cannot be instantiated!", packetId, this.modId);
             rex.printStackTrace();
         } catch( NoSuchMethodException | InvocationTargetException e ) {
             e.printStackTrace();

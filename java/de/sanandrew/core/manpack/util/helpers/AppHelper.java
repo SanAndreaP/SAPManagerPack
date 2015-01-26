@@ -7,7 +7,6 @@
 package de.sanandrew.core.manpack.util.helpers;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.FMLLog;
 import de.sanandrew.core.manpack.mod.ModCntManPack;
 import org.apache.logging.log4j.Level;
 
@@ -70,7 +69,7 @@ final class AppHelper
             );
 
             System.out.println();
-            FMLLog.log(ModCntManPack.MOD_LOG, Level.INFO, "---=== Restarting Minecraft! ===---");
+            ModCntManPack.MOD_LOG.log(Level.INFO, "---=== Restarting Minecraft! ===---");
             FMLCommonHandler.instance().exitJava(0, false);                                             // try to exit Minecraft
 //            Thread.currentThread().interrupt();
         } catch (Throwable e) {
@@ -80,7 +79,7 @@ final class AppHelper
 
     static void shutdownApp() {
         System.out.println();
-        FMLLog.log(ModCntManPack.MOD_LOG, Level.INFO, "---=== Shutting down Minecraft! ===---");
+        ModCntManPack.MOD_LOG.log(Level.INFO, "---=== Shutting down Minecraft! ===---");
         FMLCommonHandler.instance().exitJava(0, false);                                                 // try to exit Minecraft
     }
 

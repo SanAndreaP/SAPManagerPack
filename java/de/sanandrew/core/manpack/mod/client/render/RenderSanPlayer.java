@@ -6,7 +6,6 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.mod.client.render;
 
-import cpw.mods.fml.common.FMLLog;
 import de.sanandrew.core.manpack.mod.ModCntManPack;
 import de.sanandrew.core.manpack.mod.client.model.ModelSanPlayer;
 import de.sanandrew.core.manpack.util.client.helpers.AverageColorHelper;
@@ -26,6 +25,7 @@ import org.apache.logging.log4j.Level;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -168,21 +168,7 @@ public class RenderSanPlayer
                 this.myModel.armRight.render(0.0625F);
                 String armoredChest = player.getCurrentArmor(2).getUnlocalizedName();
 
-                if( this.unknownTextureColorMap.containsKey(armoredChest) ) {
-                    Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("sapmanpack", "textures/entity/player/SanPlayer_Chest_unknown.png"));
-                } else {
-                    ResourceLocation resLoc = new ResourceLocation("sapmanpack", "textures/entity/player/SanPlayer_Chest_" + armoredChest + ".png");
-                    try {
-                        Minecraft.getMinecraft().getResourceManager().getResource(resLoc);
-                    } catch( IOException ex ) {
-                        FMLLog.log(ModCntManPack.MOD_LOG, Level.WARN, "Can't load hat texture for item %s!", armoredChest);
-                        this.unknownTextureColorMap.put(armoredChest, AverageColorHelper.getAverageColor(RenderBiped.getArmorResource(player, player.getCurrentArmor(2), 1, null)));
-                        resLoc = new ResourceLocation("sapmanpack", "textures/entity/player/SanPlayer_Chest_unknown.png");
-                    }
-
-                    Minecraft.getMinecraft().getTextureManager().bindTexture(resLoc);
-                }
-
+                Minecraft.getMinecraft().getTextureManager().bindTexture(tryLoadArmorPiece("Chest", armoredChest, player, player.getCurrentArmor(2), 1));
 
                 this.myModel.armRight.render(0.0625F);
                 GL11.glPushMatrix();
@@ -225,8 +211,16 @@ public class RenderSanPlayer
             try {
                 Minecraft.getMinecraft().getResourceManager().getResource(resLoc);
             } catch( IOException ex ) {
-                FMLLog.log(ModCntManPack.MOD_LOG, Level.WARN, "Can't load hat texture for item %s!", unlocName);
-                this.unknownTextureColorMap.put(unlocName, AverageColorHelper.getAverageColor(RenderBiped.getArmorResource(player, stack, pass, null)));
+                ModCntManPack.MOD_LOG.log(Level.WARN, "Can't load armor texture for item %s!", unlocName);
+                resLoc = RenderBiped.getArmorResource(player, stack, pass, null);
+                try( InputStream textureStream = Minecraft.getMinecraft().getResourceManager().getResource(resLoc).getInputStream() ) {
+                    this.unknownTextureColorMap.put(unlocName, AverageColorHelper.getAverageColor(textureStream));
+                } catch( IOException ex2 ) {
+                    ModCntManPack.MOD_LOG.log(Level.WARN, "Can't get avg. color for armor texture %s!", unlocName);
+                    ModCntManPack.MOD_LOG.log(Level.WARN, "", ex2);
+                    this.unknownTextureColorMap.put(unlocName, new RGBAValues(255, 255, 255, 255));
+                }
+
                 resLoc = new ResourceLocation("sapmanpack", "textures/entity/player/SanPlayer_" + part + "_unknown.png");
             }
         }

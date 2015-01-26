@@ -93,10 +93,10 @@ public final class NetworkManager
                     break;
             }
         } catch( IOException ioe ) {
-            FMLLog.log(ModCntManPack.MOD_LOG, Level.ERROR, "The packet ID %d from %s cannot be processed!", packet, modId);
+            ModCntManPack.MOD_LOG.log(Level.ERROR, "The packet ID %d from %s cannot be processed!", packet, modId);
             ioe.printStackTrace();
         } catch( IllegalAccessException | InstantiationException rex ) {
-            FMLLog.log(ModCntManPack.MOD_LOG, Level.ERROR, "The packet ID %d from %s cannot be instantiated!", packet, modId);
+            ModCntManPack.MOD_LOG.log(Level.ERROR, "The packet ID %d from %s cannot be instantiated!", packet, modId);
             rex.printStackTrace();
         } catch( NoSuchMethodException | InvocationTargetException e ) {
             e.printStackTrace();

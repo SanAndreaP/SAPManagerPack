@@ -67,7 +67,7 @@ public class UpdateOverlayManager
             if( !this.hasEverythingChecked ) {
                 for( Triplet<SAPUpdateManager, MutableBoolean, MutableString> udm : SAPUpdateManager.UPD_MANAGERS ) {
                     if( udm.getValue1().booleanValue() ) {
-                        if( udm.getValue2() != null ) {
+                        if( udm.getValue2() != null && udm.getValue2().length() > 0 ) {
                             this.addUpdate(udm.getValue0(), udm.getValue2().stringValue());
                             GuiModUpdate.MANAGERS.add(udm.getValue0());
                         }

@@ -27,17 +27,17 @@ public class TransformPlayerDismountCtrl
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
         if( transformedName.equals("net.minecraft.entity.player.EntityPlayer") ) {
-            return this.transformPlayer(bytes);
+            return transformPlayer(bytes);
         }
 
         if( transformedName.equals("net.minecraft.entity.Entity") ) {
-            return this.transformEntity(bytes);
+            return transformEntity(bytes);
         }
 
         return bytes;
     }
 
-    private byte[] transformEntity(byte[] bytes) {
+    private static byte[] transformEntity(byte[] bytes) {
         ClassNode clazz = ASMHelper.createClassNode(bytes);
 
         MethodNode method = new MethodNode(Opcodes.ACC_PUBLIC, "_SAP_canDismountWithLSHIFT", "(Lnet/minecraft/entity/player/EntityPlayer;)Z", null, null);
@@ -55,13 +55,13 @@ public class TransformPlayerDismountCtrl
 
         clazz.methods.add(method);
 
-        bytes = ASMHelper.createBytes(clazz, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+        bytes = ASMHelper.createBytes(clazz, /*ClassWriter.COMPUTE_FRAMES |*/ ClassWriter.COMPUTE_MAXS); //FIXME: Cauldron fix?????
         return bytes;
     }
 
-    private byte[] transformPlayer(byte[] bytes) {
+    private static byte[] transformPlayer(byte[] bytes) {
         ClassNode clazz = ASMHelper.createClassNode(bytes);
-        MethodNode method = ASMHelper.findMethod(ASMNames.M_updateRidden, "()V", clazz);
+        MethodNode method = ASMHelper.findMethod(clazz, ASMNames.M_updateRidden, "()V");
 
         InsnList needle = new InsnList();
         needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
@@ -84,7 +84,7 @@ public class TransformPlayerDismountCtrl
 
         method.instructions.insert(insertPoint, injectList);
 
-        bytes = ASMHelper.createBytes(clazz, /*ClassWriter.COMPUTE_FRAMES | */ClassWriter.COMPUTE_MAXS);
+        bytes = ASMHelper.createBytes(clazz, /*ClassWriter.COMPUTE_FRAMES |*/ ClassWriter.COMPUTE_MAXS); //FIXME: Cauldron fix?????
 
         return bytes;
     }

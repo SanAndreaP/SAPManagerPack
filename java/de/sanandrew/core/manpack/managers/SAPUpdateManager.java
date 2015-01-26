@@ -131,7 +131,7 @@ public class SAPUpdateManager
                         FMLLog.log(ModCntManPack.UPD_LOG, Level.WARN, e, "Check for Update failed!");
                     }
 
-                    if( SAPUpdateManager.this.updInfo == null || SAPUpdateManager.this.updInfo.version.length() < 1 ) {
+                    if( SAPUpdateManager.this.updInfo.version == null || SAPUpdateManager.this.updInfo.version.length() < 1 ) {
                         SAPUpdateManager.setChecked(SAPUpdateManager.this.getId());
                         return;
                     }
@@ -282,8 +282,8 @@ public class SAPUpdateManager
         public Version(String version) {
             if( version != null ) {
                 Matcher matcher;
-                for( int i = 0; i < VERSION_PATTERNS.length; i++ ) {
-                    matcher = VERSION_PATTERNS[i++].matcher(version);
+                for( Pattern verPattern : VERSION_PATTERNS ) {
+                    matcher = verPattern.matcher(version);
                     if( matcher.find() ) {
                         this.major = Integer.valueOf(matcher.group(1));
                         this.minor = Integer.valueOf(matcher.group(2));

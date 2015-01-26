@@ -221,7 +221,7 @@ public abstract class Tuple
         try( ObjectDecoderInputStream odis = new ObjectDecoderInputStream(stream) ) {
             return (Tuple) odis.readObject();
         } catch( IOException | ClassNotFoundException ex ) {
-            FMLLog.log(ModCntManPack.MOD_LOG, Level.ERROR, ex, "Cannot deserialize Tuple!");
+            ModCntManPack.MOD_LOG.log(Level.ERROR, "Cannot deserialize Tuple!", ex);
         }
         return null;
     }
@@ -230,7 +230,7 @@ public abstract class Tuple
         try( ObjectEncoderOutputStream oeos = new ObjectEncoderOutputStream(stream) ) {
             oeos.writeObject(tuple);
         } catch( IOException ex ) {
-            FMLLog.log(ModCntManPack.MOD_LOG, Level.ERROR, ex, "Cannot serialize Tuple!");
+            ModCntManPack.MOD_LOG.log(Level.ERROR, "Cannot serialize Tuple!", ex);
         }
     }
 

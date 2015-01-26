@@ -11,7 +11,6 @@ import com.google.common.eventbus.Subscribe;
 import cpw.mods.fml.client.FMLFileResourcePack;
 import cpw.mods.fml.client.FMLFolderResourcePack;
 import cpw.mods.fml.common.DummyModContainer;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.LoadController;
 import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.common.event.*;
@@ -27,6 +26,8 @@ import de.sanandrew.core.manpack.util.MutableString;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.util.Collections;
@@ -36,7 +37,7 @@ public class ModCntManPack
 {
     public static final String MOD_CHANNEL = "sapmanpack";
     public static final String MOD_ID = "sapmanpack";
-    public static final String MOD_LOG = "SAPManPack";
+    public static final Logger MOD_LOG = LogManager.getLogger(MOD_ID);
     public static final String UPD_LOG = "SAPUpdateMgr";
 
     public static final String MOD_VERSION = "2.3.1";
@@ -67,7 +68,7 @@ public class ModCntManPack
     @Subscribe
     public void modConstruction(FMLConstructionEvent event) {
         if( Integer.parseInt(FMLInjectionData.data()[3].toString()) < FORGE_BULD_MIN ) {
-            FMLLog.log(MOD_LOG, Level.FATAL, "The installed version of Forge is outdated! Minimum build required is %d, installed is build %s. " +
+            MOD_LOG.log(Level.FATAL, "The installed version of Forge is outdated! Minimum build required is %d, installed is build %s. " +
                            "Either update Forge or remove this mod, it will cause problems otherwise!", FORGE_BULD_MIN, FMLInjectionData.data()[3]);
         }
 
@@ -91,8 +92,7 @@ public class ModCntManPack
     public void commonPreInit(FMLPreInitializationEvent event) {
         ConfigurationManager.load(event.getSuggestedConfigurationFile());
 
-        SAPUpdateManager.createUpdateManager("SAP Manager Pack", 1, 0, 0, "C:\\Users\\Andreas Peitsch\\AppData\\Local\\MCF\\forge\\src\\EnderStuffPlus\\update.json",
-                                             "http://www.curseforge.com/projects/226994/", this.getSource());
+        SAPUpdateManager.createUpdateManager("SAP Manager Pack", 1, 0, 0, "atestfile", "http://www.curseforge.com/projects/226994/", this.getSource());
     }
 
     @Subscribe

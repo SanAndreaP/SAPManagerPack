@@ -24,7 +24,7 @@ public class ModInitHelperInst
     @SuppressWarnings("unchecked")
     public static ModInitHelperInst loadWhenModAvailable(String modId, String helperClass) {
         if( modId == null || modId.isEmpty() ) {
-            FMLLog.log(Level.FATAL, ModCntManPack.MOD_LOG, "Cannot check for null/empty mod ID!");
+            ModCntManPack.MOD_LOG.log(Level.FATAL, "Cannot check for null/empty mod ID!");
             throw new RuntimeException();
         }
 
@@ -33,18 +33,18 @@ public class ModInitHelperInst
                 Class helperClassInst = Class.forName(helperClass);
                 if( IModInitHelper.class.isAssignableFrom(helperClassInst) ) {
                     IModInitHelper inst = (IModInitHelper) helperClassInst.getConstructor().newInstance();
-                    FMLLog.log(Level.INFO, ModCntManPack.MOD_LOG, "Mod %s is available. Initialized compatibillity class %s.", modId, helperClass);
+                    ModCntManPack.MOD_LOG.log(Level.INFO,"Mod %s is available. Initialized compatibillity class %s.", modId, helperClass);
                     return new ModInitHelperInst(inst);
                 } else {
-                    FMLLog.log(Level.ERROR, ModCntManPack.MOD_LOG, "Class %s is not a subclass of IModInitHelper! This is a serious modder error!", helperClass);
+                    ModCntManPack.MOD_LOG.log(Level.ERROR, "Class %s is not a subclass of IModInitHelper! This is a serious modder error!", helperClass);
                     throw new RuntimeException();
                 }
             } catch( ClassNotFoundException | InvocationTargetException | IllegalAccessException | InstantiationException | NoSuchMethodException e ) {
-                FMLLog.log(Level.ERROR, ModCntManPack.MOD_LOG, "Unexpected exception while trying to build instance of compatibility class!");
+                ModCntManPack.MOD_LOG.log(Level.ERROR, "Unexpected exception while trying to build instance of compatibility class!");
                 throw new RuntimeException(e);
             }
         } else {
-            FMLLog.log(Level.INFO, ModCntManPack.MOD_LOG, "Mod %s is unavailable. Skipping initialization of compatibility class %s!", modId, helperClass);
+            ModCntManPack.MOD_LOG.log(Level.INFO, "Mod %s is unavailable. Skipping initialization of compatibility class %s!", modId, helperClass);
             return new ModInitHelperInst(new EmptyModInitHelper());
         }
     }

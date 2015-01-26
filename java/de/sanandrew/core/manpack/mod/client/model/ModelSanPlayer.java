@@ -48,7 +48,7 @@ public class ModelSanPlayer
         this.textureWidth = 64;
         this.textureHeight = 64;
         this.legLeft = SAPClientUtils.createNewBox(this, 0, 16, true, -1.5F, 0.0F, -1.5F, 3, 12, 3, scaling, 2.5F, 12.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-        this.legRight = SAPClientUtils.createNewBox(this, 0, 16, false, -1.5F, 0.0F, -1.5F, 3, 12, 3, 0.0F, -2.5F, 12.0F, 0.0F, 0.0F, 0.0F, 0.0F);
+        this.legRight = SAPClientUtils.createNewBox(this, 0, 16, false, -1.5F, 0.0F, -1.5F, 3, 12, 3, scaling, -2.5F, 12.0F, 0.0F, 0.0F, 0.0F, 0.0F);
         this.armLeft = SAPClientUtils.createNewBox(this, 40, 16, true, -1.0F, -2.0F, -2.0F, 3, 12, 3, scaling, 5.0F, 2.0F, 0.5F, -0.00331613F, 0.0F, -0.09983283F);
         this.armRight = SAPClientUtils.createNewBox(this, 40, 16, false, -3.0F, -2.0F, -2.0F, 3, 12, 3, scaling, -4.0F, 2.0F, 0.5F, 0.0F, 0.0F, 0.09983283F);
         this.armLeft2 = SAPClientUtils.createNewBox(this, 40, 32, true, -1.0F, 5.0F, -2.0F, 3, 5, 3, scaling, 5.0F, 2.0F, 0.5F, -0.00331613F, 0.0F, -0.09983283F);

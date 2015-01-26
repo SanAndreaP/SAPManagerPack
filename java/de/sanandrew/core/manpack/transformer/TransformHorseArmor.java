@@ -6,31 +6,13 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.transformer;
 
+import de.sanandrew.core.manpack.mod.ModCntManPack;
+import net.minecraft.launchwrapper.IClassTransformer;
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.FrameNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.IntInsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.LineNumberNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.TypeInsnNode;
-import org.objectweb.asm.tree.VarInsnNode;
-
-import net.minecraft.launchwrapper.IClassTransformer;
-
-import cpw.mods.fml.common.FMLLog;
-
-import de.sanandrew.core.manpack.mod.ModCntManPack;
+import org.objectweb.asm.tree.*;
 
 public class TransformHorseArmor
         implements IClassTransformer
@@ -64,7 +46,7 @@ public class TransformHorseArmor
         try {
             transformArmorTexture(ASMHelper.findMethod(clazz, ASMNames.M_setHorseTexturePaths, "()V"));
         } catch( ASMHelper.MethodNotFoundException e ) {
-            FMLLog.log(ModCntManPack.MOD_LOG, Level.INFO, "Running on dedicated server, no need to transform Method %s!", ASMNames.M_setHorseTexturePaths);
+            ModCntManPack.MOD_LOG.log(Level.INFO, "Running on dedicated server, no need to transform Method %s!", ASMNames.M_setHorseTexturePaths);
         }
 
 	    bytes = ASMHelper.createBytes(clazz, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
