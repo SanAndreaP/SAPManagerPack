@@ -20,6 +20,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.init.ManPackLoadingPlugin;
 import de.sanandrew.core.manpack.managers.SAPUpdateManager;
+import de.sanandrew.core.manpack.managers.SAPUpdateManager.Version;
 import de.sanandrew.core.manpack.mod.client.ClientProxy;
 import de.sanandrew.core.manpack.network.NetworkManager;
 import de.sanandrew.core.manpack.util.MutableString;
@@ -40,7 +41,7 @@ public class ModCntManPack
     public static final Logger MOD_LOG = LogManager.getLogger(MOD_ID);
     public static final String UPD_LOG = "SAPUpdateMgr";
 
-    public static final String MOD_VERSION = "2.3.1";
+    public static final String MOD_VERSION = "2.4.0";
 
     public static final int FORGE_BULD_MIN = 1230;
 
@@ -92,7 +93,9 @@ public class ModCntManPack
     public void commonPreInit(FMLPreInitializationEvent event) {
         ConfigurationManager.load(event.getSuggestedConfigurationFile());
 
-        SAPUpdateManager.createUpdateManager("SAP Manager Pack", 1, 0, 0, "atestfile", "http://www.curseforge.com/projects/226994/", this.getSource());
+        SAPUpdateManager.createUpdateManager("SAP Manager Pack", new Version(MOD_VERSION),
+                                             "https://gist.githubusercontent.com/SanAndreasP/d7723d348217a8c1c36c/raw/bcd9a85cc461d497f1e089178384d92a555e1dc1/update_test.json",
+                                             "http://www.curseforge.com/projects/226994/", this.getSource());
     }
 
     @Subscribe

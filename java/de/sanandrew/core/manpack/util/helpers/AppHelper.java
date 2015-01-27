@@ -13,7 +13,6 @@ import org.apache.logging.log4j.Level;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.ProcessBuilder.Redirect;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,7 +57,7 @@ final class AppHelper
                                                      public void run() {
                                                          try {
                                                              ProcessBuilder builder = new ProcessBuilder(cmd);
-                                                             builder.redirectOutput(Redirect.from(new File("")));
+//                                                             builder.redirectOutput(Redirect.from(new File("")));
                                                              builder.inheritIO();                                  // inherit the console output from the super process
                                                              builder.start();                                      // start the new process
                                                          } catch( IOException e ) {

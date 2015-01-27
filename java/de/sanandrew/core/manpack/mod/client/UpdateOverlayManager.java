@@ -69,7 +69,7 @@ public class UpdateOverlayManager
                     if( udm.getValue1().booleanValue() ) {
                         if( udm.getValue2() != null && udm.getValue2().length() > 0 ) {
                             this.addUpdate(udm.getValue0(), udm.getValue2().stringValue());
-                            GuiModUpdate.MANAGERS.add(udm.getValue0());
+                            GuiModUpdate.addManager(udm.getValue0());
                         }
                         SAPUpdateManager.setInRenderQueue(udm.getValue0().getId());
                     }

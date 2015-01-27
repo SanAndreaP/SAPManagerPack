@@ -27,6 +27,7 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,9 @@ import java.util.regex.Pattern;
  */
 public class SAPUpdateManager
 {
+    public static final List<Triplet<SAPUpdateManager, MutableBoolean, MutableString>> UPD_MANAGERS = new ArrayList<>();
+    public static final Map<Integer, Boolean> IS_IN_RENDER_QUEUE = Maps.newHashMap();
+
 	private boolean checkedForUpdate = false;
 	private Version version;
 	private String modName;
@@ -48,8 +52,7 @@ public class SAPUpdateManager
     private UpdateFile updInfo = new UpdateFile();
 	private final int mgrId;
 
-	public static final List<Triplet<SAPUpdateManager, MutableBoolean, MutableString>> UPD_MANAGERS = new ArrayList<>();
-	public static final Map<Integer, Boolean> IS_IN_RENDER_QUEUE = Maps.newHashMap();
+    public UpdateDownloader downloader;
 
 	public static synchronized void setChecked(int mgrId) {
         UPD_MANAGERS.get(mgrId).getValue1().setTrue();
@@ -64,15 +67,16 @@ public class SAPUpdateManager
         IS_IN_RENDER_QUEUE.put(mgrId, true);
     }
 
-    private SAPUpdateManager(String modName, int majorNr, int minorNr, int revisionNr, String updateURL, String modURL, File modJar) {
+    private SAPUpdateManager(String modName, Version version, String updateURL, String modURL, File modJar) {
         this.modName = modName;
-        this.version = new Version(majorNr, minorNr, revisionNr);
+        this.version = version.clone();
         this.modInfoURL = modURL;
         this.modPackedJar = modJar;
 
         try {
             this.updURL = new URL(updateURL);
-        } catch( MalformedURLException | NullPointerException e ) {
+            this.updURL.toURI();                // check validity
+        } catch( MalformedURLException | NullPointerException | URISyntaxException e ) {
             this.updURL = null;
             FMLLog.log(ModCntManPack.UPD_LOG, Level.WARN, "The URL to the mod version file is invalid!");
             e.printStackTrace();
@@ -83,27 +87,27 @@ public class SAPUpdateManager
 
     @Deprecated
 	public SAPUpdateManager(String modName, int majorNr, int minorNr, int revisionNr, String updateURL, String modURL, String modJar) {
-        this(modName, majorNr, minorNr, revisionNr, updateURL, modURL, (File) null);
+        this(modName, new Version(majorNr, minorNr, revisionNr), updateURL, modURL, (File) null);
 	}
 
     @Deprecated
 	public SAPUpdateManager(String modName, int majorNr, int minorNr, int revisionNr, String updateURL, String modURL) {
-        this(modName, majorNr, minorNr, revisionNr, updateURL, modURL, (File) null);
+        this(modName, new Version(majorNr, minorNr, revisionNr), updateURL, modURL, (File) null);
 	}
 
     @Deprecated
     public SAPUpdateManager(String modName, String version, String updateURL, String modURL, String modJar) {
-        this(modName, 0, 0, 0, updateURL, modURL, (File) null);
+        this(modName, new Version(0, 0, 0), updateURL, modURL, (File) null);
         this.version = new Version(version);
     }
 
     @Deprecated
 	public SAPUpdateManager(String modName, String version, String updateURL, String modURL) {
-	    this(modName, version, updateURL, modURL, null);
+	    this(modName, new Version(version), updateURL, modURL, null);
 	}
 
-    public static SAPUpdateManager createUpdateManager(String modName, int majorNr, int minorNr, int revisionNr, String updateURL, String modURL, File modJar) {
-        SAPUpdateManager updMgr = new SAPUpdateManager(modName, majorNr, minorNr, revisionNr, updateURL, modURL, modJar);
+    public static SAPUpdateManager createUpdateManager(String modName, Version version, String updateURL, String modURL, File modJar) {
+        SAPUpdateManager updMgr = new SAPUpdateManager(modName, version, updateURL, modURL, modJar);
 
         if( updMgr.updURL != null ) {
             UPD_MANAGERS.add(Triplet.with(updMgr, new MutableBoolean(false), new MutableString("")));
@@ -200,6 +204,10 @@ public class SAPUpdateManager
         return this.modPackedJar;
     }
 
+    public boolean isModJarValid() {
+        return this.modPackedJar != null && this.modPackedJar.isFile() && this.modPackedJar.getName().endsWith(".jar");
+    }
+
     public int getId() {
         return this.mgrId;
     }
@@ -236,6 +244,13 @@ public class SAPUpdateManager
         return EnumUpdateSeverity.UNKNOWN;
     }
 
+    public void runUpdate() {
+        URL dl = this.updInfo.getDownload();
+        if( dl != null ) {
+            this.downloader = new UpdateDownloader(dl);
+        }
+    }
+
     public static class UpdateFile
     {
         @JsonRequired
@@ -246,6 +261,16 @@ public class SAPUpdateManager
         public String[] changelog;
 
         public UpdateFile() { }
+
+        public URL getDownload() {
+            try {
+                URL dl = new URL(this.downloadUrl);
+                dl.toURI();
+                return dl;
+            } catch( MalformedURLException | URISyntaxException e ) {
+                return null;
+            }
+        }
     }
 
     public static enum EnumUpdateSeverity
@@ -262,7 +287,7 @@ public class SAPUpdateManager
         }
     }
 
-    public static class Version
+    public static final class Version implements Cloneable
     {
         public final int revision;
         public final int minor;
@@ -305,11 +330,16 @@ public class SAPUpdateManager
         public String toString() {
             return String.format("%d.%d.%d", this.major, this.minor, this.revision);
         }
+
+        @Override
+        public Version clone() {
+            return new Version(this.major, this.minor, this.revision);
+        }
     }
 
 
     /**
-     * code from
+     * code from http://stackoverflow.com/a/14245807
      */
 
     @Retention(RetentionPolicy.RUNTIME)
@@ -317,7 +347,7 @@ public class SAPUpdateManager
     @interface JsonRequired
     { }
 
-    class AnnotatedDeserializer<T> implements JsonDeserializer<T>
+    static class AnnotatedDeserializer<T> implements JsonDeserializer<T>
     {
         public T deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException
         {
