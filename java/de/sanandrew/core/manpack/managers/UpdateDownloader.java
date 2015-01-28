@@ -37,7 +37,7 @@ public class UpdateDownloader
         this.url = url;
         this.size = -1;
         this.downloaded = 0;
-        this.status = EnumDlState.DOWNLOADING;
+        this.status = EnumDlState.PENDING;
 
         // Begin the download.
         this.download();
@@ -126,6 +126,8 @@ public class UpdateDownloader
             try( RandomAccessFile file = new RandomAccessFile(getFileName(this.url), "rw"); InputStream stream = connection.getInputStream() ){
                 file.seek(this.downloaded);         // seek to the end of the file.
 
+                this.status = EnumDlState.DOWNLOADING;
+                this.stateChanged();
                 while( this.status == EnumDlState.DOWNLOADING ) {
                     byte buffer[];   // Size buffer according to how much of the file is left to download.
 
@@ -163,6 +165,6 @@ public class UpdateDownloader
 
     public static enum EnumDlState
     {
-        DOWNLOADING, PAUSED, COMPLETE, CANCELLED, ERROR;
+        DOWNLOADING, PAUSED, COMPLETE, CANCELLED, ERROR, PENDING
     }
 }

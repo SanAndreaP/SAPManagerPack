@@ -156,13 +156,24 @@ public class GuiModUpdate
             GuiModUpdate.this.fontRendererObj.drawStringWithShadow(mgr.getModName(), xPos, yPos, 0xFFFFFFFF);
             if( mgr.downloader != null ) {
                 String result = "Begin downloading...";
+                int progBarClr = 0xA0A0A0;
+                int progBarLength = 0;
+
                 if( mgr.downloader.getStatus() == EnumDlState.DOWNLOADING && mgr.downloader.getProgress() >= 0.0F) {
-                    result = String.format("Download Update: %s%s", EnumChatFormatting.WHITE, new DecimalFormat("0.00").format(mgr.downloader.getProgress()));
+                    result = String.format("Download Update: %s%s%%", EnumChatFormatting.WHITE, new DecimalFormat("0.00").format(mgr.downloader.getProgress()));
+                    progBarClr = 0xFF3030F0;
+                    progBarLength = (int)(140.0F * mgr.downloader.getProgress() / 100.0F);
                 } else if( mgr.downloader.getStatus() == EnumDlState.ERROR ) {
                     result = String.format("Download Update: %s%s", EnumChatFormatting.RED, "Failed!");
+                    progBarClr = 0xFFE00000;
+                    progBarLength = 140;
                 } else if( mgr.downloader.getStatus() == EnumDlState.COMPLETE ) {
                     result = String.format("Download Update: %s%s", EnumChatFormatting.GREEN, "Complete!");
+                    progBarClr = 0xFF00E000;
+                    progBarLength = 140;
                 }
+
+                Gui.drawRect(xPos + 4, yPos + 23, xPos + 4 + progBarLength, yPos + 30, progBarClr);
 
                 GuiModUpdate.this.fontRendererObj.drawStringWithShadow(result, xPos, yPos + 10, 0xFF808080);
             } else {
@@ -176,7 +187,7 @@ public class GuiModUpdate
             btnUpdate.xPosition = xPos + 151;
             btnUpdate.yPosition = yPos;
             if( btnUpdate.yPosition + 15 > this.top && btnUpdate.yPosition < this.bottom ) {
-                btnUpdate.enabled = mgr.getUpdateInfo().getDownload() != null;
+                btnUpdate.enabled = mgr.getUpdateInfo().getDownload() != null && (mgr.downloader == null || mgr.downloader.getStatus() == EnumDlState.ERROR);
                 btnUpdate.drawButton(GuiModUpdate.this.mc, mouseX, mouseY);
             } else {
                 btnUpdate.enabled = false;
