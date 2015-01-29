@@ -8,6 +8,7 @@ package de.sanandrew.core.manpack.mod.client.gui;
 
 import de.sanandrew.core.manpack.managers.SAPUpdateManager;
 import de.sanandrew.core.manpack.managers.UpdateDownloader.EnumDlState;
+import de.sanandrew.core.manpack.mod.ModCntManPack;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.core.manpack.util.javatuples.Pair;
 import net.minecraft.client.Minecraft;
@@ -15,6 +16,7 @@ import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import java.text.DecimalFormat;
@@ -28,6 +30,7 @@ public class GuiModUpdate
 {
     private static final List<SAPUpdateManager> MANAGERS = new ArrayList<>();
     private static final List<Pair<GuiButtonUpdate, GuiButtonDetails>> SLOT_BUTTONS = new ArrayList<>();
+    private static final ResourceLocation TEXTURE = new ResourceLocation(ModCntManPack.MOD_ID, "textures/gui/updater/updater.png");
 
     public static void addManager(SAPUpdateManager mgr) {
         MANAGERS.add(mgr);
@@ -144,14 +147,16 @@ public class GuiModUpdate
         protected void drawSlot(int slotIndex, int xPos, int yPos, int yMin, Tessellator tessellator, int mouseX, int mouseY) {
             SAPUpdateManager mgr = GuiModUpdate.MANAGERS.get(slotIndex);
             GL11.glEnable(GL11.GL_BLEND);
-            OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+            OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            if( this.isSelected(slotIndex) ) {
-                GuiModUpdate.drawGlossEffect(xPos + 100, yPos - 1, yPos + this.getSlotHeight() - 3, 1.0F, 15);
-                GuiModUpdate.drawGlossEffect(xPos + 117, yPos - 1, yPos + this.getSlotHeight() - 3, 1.0F, 1);
-                GuiModUpdate.drawGlossEffect(xPos + 120, yPos - 1, yPos + this.getSlotHeight() - 3, 1.0F, 5);
-            }
+            GuiModUpdate.this.mc.renderEngine.bindTexture(TEXTURE);
+            GuiModUpdate.this.drawTexturedModalRect(xPos - 2, yPos - 2, 0, 0, this.getListWidth(), this.slotHeight);
+//            if( this.isSelected(slotIndex) ) {
+//                GuiModUpdate.drawGlossEffect(xPos + 100, yPos - 1, yPos + this.getSlotHeight() - 3, 1.0F, 15);
+//                GuiModUpdate.drawGlossEffect(xPos + 117, yPos - 1, yPos + this.getSlotHeight() - 3, 1.0F, 1);
+//                GuiModUpdate.drawGlossEffect(xPos + 120, yPos - 1, yPos + this.getSlotHeight() - 3, 1.0F, 5);
+//            }
 
             GuiModUpdate.this.fontRendererObj.drawStringWithShadow(mgr.getModName(), xPos, yPos, 0xFFFFFFFF);
             if( mgr.downloader != null ) {
