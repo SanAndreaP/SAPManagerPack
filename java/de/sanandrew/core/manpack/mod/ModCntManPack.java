@@ -39,7 +39,7 @@ public class ModCntManPack
     public static final String MOD_CHANNEL = "sapmanpack";
     public static final String MOD_ID = "sapmanpack";
     public static final Logger MOD_LOG = LogManager.getLogger(MOD_ID);
-    public static final String UPD_LOG = "SAPUpdateMgr";
+    public static final Logger UPD_LOG = LogManager.getLogger("SAPUpdateMgr");
 
     public static final String MOD_VERSION = "2.4.0";
 
@@ -95,6 +95,18 @@ public class ModCntManPack
 
         SAPUpdateManager.createUpdateManager("SAP Manager Pack", new Version(MOD_VERSION),
                                              "https://gist.githubusercontent.com/SanAndreasP/d7723d348217a8c1c36c/raw/bcd9a85cc461d497f1e089178384d92a555e1dc1/update_test.json",
+                                             "http://www.curseforge.com/projects/226994/", this.getSource());
+        SAPUpdateManager.createUpdateManager("SAP Manager Pack a", new Version("2.0.0-alpha"),
+                                             "https://gist.githubusercontent.com/SanAndreasP/5370d0ffed95f0eea66a/raw/eaccb1f2de886b0e599715e913d6debe9fe4c31d/update_test_preversion.json",
+                                             "http://www.curseforge.com/projects/226994/", this.getSource());
+        SAPUpdateManager.createUpdateManager("SAP Manager Pack a2", new Version("2.0.0-alpha.2"),
+                                             "https://gist.githubusercontent.com/SanAndreasP/5370d0ffed95f0eea66a/raw/eaccb1f2de886b0e599715e913d6debe9fe4c31d/update_test_preversion.json",
+                                             "http://www.curseforge.com/projects/226994/", this.getSource());
+        SAPUpdateManager.createUpdateManager("SAP Manager Pack b", new Version("2.0.0-beta.1"),
+                                             "https://gist.githubusercontent.com/SanAndreasP/5370d0ffed95f0eea66a/raw/eaccb1f2de886b0e599715e913d6debe9fe4c31d/update_test_preversion.json",
+                                             "http://www.curseforge.com/projects/226994/", this.getSource());
+        SAPUpdateManager.createUpdateManager("SAP Manager Pack b", new Version("1.9.9"),
+                                             "https://gist.githubusercontent.com/SanAndreasP/5370d0ffed95f0eea66a/raw/eaccb1f2de886b0e599715e913d6debe9fe4c31d/update_test_preversion.json",
                                              "http://www.curseforge.com/projects/226994/", this.getSource());
     }
 

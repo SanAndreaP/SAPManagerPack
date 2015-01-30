@@ -8,7 +8,7 @@ package de.sanandrew.core.manpack.managers;
 
 import com.google.common.collect.Maps;
 import com.google.gson.*;
-import cpw.mods.fml.common.FMLLog;
+import de.sanandrew.core.manpack.mod.ConfigurationManager;
 import de.sanandrew.core.manpack.mod.ModCntManPack;
 import de.sanandrew.core.manpack.util.MutableString;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
@@ -78,7 +78,7 @@ public class SAPUpdateManager
             this.updURL.toURI();                // check validity
         } catch( MalformedURLException | NullPointerException | URISyntaxException e ) {
             this.updURL = null;
-            FMLLog.log(ModCntManPack.UPD_LOG, Level.WARN, "The URL to the mod version file is invalid!");
+            ModCntManPack.UPD_LOG.log(Level.WARN, "The URL to the mod version file is invalid!");
             e.printStackTrace();
         }
 
@@ -87,17 +87,17 @@ public class SAPUpdateManager
 
     @Deprecated
 	public SAPUpdateManager(String modName, int majorNr, int minorNr, int revisionNr, String updateURL, String modURL, String modJar) {
-        this(modName, new Version(majorNr, minorNr, revisionNr), updateURL, modURL, (File) null);
+        this(modName, new Version(majorNr, minorNr, revisionNr), updateURL, modURL, null);
 	}
 
     @Deprecated
 	public SAPUpdateManager(String modName, int majorNr, int minorNr, int revisionNr, String updateURL, String modURL) {
-        this(modName, new Version(majorNr, minorNr, revisionNr), updateURL, modURL, (File) null);
+        this(modName, new Version(majorNr, minorNr, revisionNr), updateURL, modURL, null);
 	}
 
     @Deprecated
     public SAPUpdateManager(String modName, String version, String updateURL, String modURL, String modJar) {
-        this(modName, new Version(0, 0, 0), updateURL, modURL, (File) null);
+        this(modName, new Version(0, 0, 0), updateURL, modURL, null);
         this.version = new Version(version);
     }
 
@@ -122,7 +122,7 @@ public class SAPUpdateManager
             @Override
             public void run() {
                 try {
-                    FMLLog.log(ModCntManPack.UPD_LOG, Level.INFO, "Checking for %s update", SAPUpdateManager.this.getModName());
+                    ModCntManPack.UPD_LOG.printf(Level.INFO, "Checking for %s update", SAPUpdateManager.this.getModName());
                     if( SAPUpdateManager.this.getUpdateURL() == null ) {
                         throw new MalformedURLException("[NULL]");
                     }
@@ -131,8 +131,8 @@ public class SAPUpdateManager
 
                     try( BufferedReader in = new BufferedReader(new InputStreamReader(SAPUpdateManager.this.getUpdateURL().openStream())) ) {
                         SAPUpdateManager.this.updInfo = gson.fromJson(in, UpdateFile.class);
-                    } catch( IOException | JsonSyntaxException e ) {
-                        FMLLog.log(ModCntManPack.UPD_LOG, Level.WARN, e, "Check for Update failed!");
+                    } catch( IOException | JsonSyntaxException ex ) {
+                        ModCntManPack.UPD_LOG.printf(Level.WARN, "Check for Update failed!", ex);
                     }
 
                     if( SAPUpdateManager.this.updInfo.version == null || SAPUpdateManager.this.updInfo.version.length() < 1 ) {
@@ -140,41 +140,84 @@ public class SAPUpdateManager
                         return;
                     }
 
-                    Version webVersion = new Version(SAPUpdateManager.this.updInfo.version);
+                    Version webVersion = SAPUpdateManager.this.updInfo.getVersionInst();
                     SAPUpdateManager.this.updInfo.version = webVersion.toString();              // reformat the version number to the format major.minor.revision
 
-                    if( webVersion.major > SAPUpdateManager.this.getVersion().major ) {
-                        FMLLog.log(ModCntManPack.UPD_LOG, Level.INFO, "New major update for %s is out: %s", SAPUpdateManager.this.getModName(),
-                                   SAPUpdateManager.this.updInfo.version);
-                        SAPUpdateManager.setHasUpdate(SAPUpdateManager.this.mgrId, SAPUpdateManager.this.updInfo.version);
-                        return;
-                    } else if( webVersion.major == SAPUpdateManager.this.getVersion().major ) {
-                        if( webVersion.minor > SAPUpdateManager.this.getVersion().minor ) {
-                            FMLLog.log(ModCntManPack.UPD_LOG, Level.INFO, "New minor update for %s is out: %s", SAPUpdateManager.this.getModName(),
-                                       SAPUpdateManager.this.updInfo.version);
-                            SAPUpdateManager.setHasUpdate(SAPUpdateManager.this.mgrId, SAPUpdateManager.this.updInfo.version);
-                            return;
-                        } else if( webVersion.minor == SAPUpdateManager.this.getVersion().minor ) {
-                            if( webVersion.revision > SAPUpdateManager.this.getVersion().revision ) {
-                                FMLLog.log(ModCntManPack.UPD_LOG, Level.INFO, "New bugfix update for %s is out: %s", SAPUpdateManager.this.getModName(),
-                                           SAPUpdateManager.this.updInfo.version);
-                                SAPUpdateManager.setHasUpdate(SAPUpdateManager.this.mgrId, SAPUpdateManager.this.updInfo.version);
+                    Version currVersion = SAPUpdateManager.this.getVersion();
+                    String currModName = SAPUpdateManager.this.getModName();
+                    if( webVersion.versionType != EnumVersionType.RELEASE ) {
+                        if( ConfigurationManager.subscribeToUnstable || currVersion.versionType != EnumVersionType.RELEASE ) {
+                            if( webVersion.versionType.ordinal() > currVersion.versionType.ordinal() ) {
+                                switch( webVersion.versionType ) {
+                                    case BETA:
+                                        ModCntManPack.UPD_LOG.printf(Level.INFO, "A beta for %s is available: %s", currModName, webVersion);
+                                        break;
+                                    case RELEASECANDIDATE:
+                                        ModCntManPack.UPD_LOG.printf(Level.INFO, "A release candidate for %s is available: %s", currModName, webVersion);
+                                        break;
+                                    default:
+                                        ModCntManPack.UPD_LOG.printf(Level.INFO, "No new update for %s is available.", currModName);
+                                        SAPUpdateManager.setChecked(SAPUpdateManager.this.getId());
+                                        return;
+                                }
+
+                                SAPUpdateManager.setHasUpdate(SAPUpdateManager.this.mgrId, webVersion.toString());
                                 return;
+                            } else if( webVersion.preVersionNr > currVersion.preVersionNr ) {
+                                switch( webVersion.versionType ) {
+                                    case ALPHA:
+                                        ModCntManPack.UPD_LOG.printf(Level.INFO, "A new alpha for %s is out: %s", currModName, webVersion);
+                                        break;
+                                    case BETA:
+                                        ModCntManPack.UPD_LOG.printf(Level.INFO, "A new beta for %s is out: %s", currModName, webVersion);
+                                        break;
+                                    case RELEASECANDIDATE:
+                                        ModCntManPack.UPD_LOG.printf(Level.INFO, "A new release candidate for %s is out: %s", currModName, webVersion);
+                                        break;
+                                    default:
+                                        ModCntManPack.UPD_LOG.printf(Level.INFO, "No new update for %s is available.", currModName);
+                                        SAPUpdateManager.setChecked(SAPUpdateManager.this.getId());
+                                        return;
+                                }
+
+                                SAPUpdateManager.setHasUpdate(SAPUpdateManager.this.mgrId, webVersion.toString());
+                                return;
+                            }
+                        }
+                    } else {
+                        if( webVersion.major > currVersion.major ) {
+                            ModCntManPack.UPD_LOG.printf(Level.INFO, "New major update for %s is out: %s", currModName, webVersion);
+                            SAPUpdateManager.setHasUpdate(SAPUpdateManager.this.mgrId, webVersion.toString());
+                            return;
+                        } else if( webVersion.major == currVersion.major ) {
+                            if( webVersion.minor > currVersion.minor ) {
+                                ModCntManPack.UPD_LOG.printf(Level.INFO, "New minor update for %s is out: %s", currModName, webVersion);
+                                SAPUpdateManager.setHasUpdate(SAPUpdateManager.this.mgrId, webVersion.toString());
+                                return;
+                            } else if( webVersion.minor == currVersion.minor ) {
+                                if( webVersion.revision > currVersion.revision ) {
+                                    ModCntManPack.UPD_LOG.printf(Level.INFO, "New bugfix update for %s is out: %s", currModName, webVersion);
+                                    SAPUpdateManager.setHasUpdate(SAPUpdateManager.this.mgrId, webVersion.toString());
+                                    return;
+                                } else if( webVersion.revision == currVersion.revision && currVersion.versionType != EnumVersionType.RELEASE ) {
+                                    ModCntManPack.UPD_LOG.printf(Level.INFO, "A stable release for %s is available: %s", currModName, webVersion);
+                                    SAPUpdateManager.setHasUpdate(SAPUpdateManager.this.mgrId, webVersion.toString());
+                                    return;
+                                }
                             }
                         }
                     }
 
-                    FMLLog.log(ModCntManPack.UPD_LOG, Level.INFO, "No new update for %s is available.", SAPUpdateManager.this.getModName());
-                } catch( IOException e ) {
-                    FMLLog.log(ModCntManPack.UPD_LOG, Level.WARN, "Update Check for %s failed!", SAPUpdateManager.this.getModName());
-                    e.printStackTrace();
+                    ModCntManPack.UPD_LOG.printf(Level.INFO, "No new update for %s is available.", currModName);
+                } catch( IOException ioex ) {
+                    ModCntManPack.UPD_LOG.printf(Level.WARN, String.format("Update Check for %s failed!", SAPUpdateManager.this.modName), ioex);
                 }
 
                 SAPUpdateManager.setChecked(SAPUpdateManager.this.getId());
             }
         };
 
-        (new Thread(threadProcessor, "SAPUpdateThread")).start();
+        new Thread(threadProcessor, "SAPUpdateThread").start();
 	}
 
 	public void checkForUpdate() {
@@ -271,6 +314,10 @@ public class SAPUpdateManager
                 return null;
             }
         }
+
+        public Version getVersionInst() {
+            return new Version(version);
+        }
     }
 
     public static enum EnumUpdateSeverity
@@ -292,16 +339,28 @@ public class SAPUpdateManager
         public final int revision;
         public final int minor;
         public final int major;
+        public final EnumVersionType versionType;
+        public final int preVersionNr;
 
         private static final Pattern[] VERSION_PATTERNS = new Pattern[] {
-                Pattern.compile("\\d+\\.\\d+[\\.|_]\\d+-(\\d+)\\.(\\d+)[\\.|_](\\d+)"),     // 1.7.2-1.0.4 or 1.7_01-1.5_02
-                Pattern.compile("(\\d+)\\.(\\d+)[\\.|_](\\d+)")                             // 1.0.4 or 1.5_02
+                // {1.7.10-}1.0.0{-beta{.2}}
+                Pattern.compile("(\\d+.\\d+[\\.|_]\\d+-)?(?<major>\\d+)\\.(?<minor>\\d+)[\\.|_](?<revision>\\d+)(-(?<prType>alpha|beta|rc)(\\.(?<prNr>\\d+))?)?")
         };
 
         public Version(int majorNr, int minorNr, int revisionNr) {
             this.major = majorNr;
             this.minor = minorNr;
             this.revision = revisionNr;
+            this.versionType = EnumVersionType.RELEASE;
+            this.preVersionNr = 0;
+        }
+
+        public Version(int majorNr, int minorNr, int revisionNr, EnumVersionType type, int preVersionNr) {
+            this.major = majorNr;
+            this.minor = minorNr;
+            this.revision = revisionNr;
+            this.versionType = type;
+            this.preVersionNr = preVersionNr;
         }
 
         public Version(String version) {
@@ -310,9 +369,23 @@ public class SAPUpdateManager
                 for( Pattern verPattern : VERSION_PATTERNS ) {
                     matcher = verPattern.matcher(version);
                     if( matcher.find() ) {
-                        this.major = Integer.valueOf(matcher.group(1));
-                        this.minor = Integer.valueOf(matcher.group(2));
-                        this.revision = Integer.valueOf(matcher.group(3));
+                        this.major = Integer.valueOf(matcher.group("major"));
+                        this.minor = Integer.valueOf(matcher.group("minor"));
+                        this.revision = Integer.valueOf(matcher.group("revision"));
+                        if( matcher.group("prType") != null ) {
+                            String prType = matcher.group("prType");
+                            switch( prType ) {
+                                case "alpha": this.versionType = EnumVersionType.ALPHA; break;
+                                case "beta": this.versionType = EnumVersionType.BETA; break;
+                                case "rc": this.versionType = EnumVersionType.RELEASECANDIDATE; break;
+                                default: this.versionType = EnumVersionType.UNKNOWN;
+                            }
+
+                            this.preVersionNr = matcher.group("prNr") != null ? Integer.valueOf(matcher.group("prNr")) : 1;
+                        } else {
+                            this.versionType = EnumVersionType.RELEASE;
+                            this.preVersionNr = 0;
+                        }
                         return;
                     }
                 }
@@ -321,6 +394,8 @@ public class SAPUpdateManager
             this.major = -1;
             this.minor = -1;
             this.revision = -1;
+            this.versionType = EnumVersionType.UNKNOWN;
+            this.preVersionNr = -1;
 //	        FMLLog.log(ModCntManPack.UPD_LOG, Level.WARN,
 //	                   "Version Number for the mod %s could not be compiled! The version number %s does not have the required formatting!",
 //	                   this.modName, version);
@@ -328,12 +403,35 @@ public class SAPUpdateManager
 
         @Override
         public String toString() {
-            return String.format("%d.%d.%d", this.major, this.minor, this.revision);
+            if( this.versionType == EnumVersionType.RELEASE ) {
+                return String.format("%d.%d.%d", this.major, this.minor, this.revision);
+            } else {
+                return String.format("%d.%d.%d-%s.%d", this.major, this.minor, this.revision, this.versionType, this.preVersionNr);
+            }
         }
 
         @Override
         public Version clone() {
-            return new Version(this.major, this.minor, this.revision);
+            return new Version(this.major, this.minor, this.revision, this.versionType, this.preVersionNr);
+        }
+    }
+
+    public static enum EnumVersionType {
+        ALPHA("alpha"), BETA("beta"), RELEASECANDIDATE("rc"), RELEASE, UNKNOWN;
+
+        private final String versionStr;
+
+        private EnumVersionType() {
+            this.versionStr = this.name();
+        }
+
+        private EnumVersionType(String verStr) {
+            this.versionStr = verStr;
+        }
+
+        @Override
+        public String toString() {
+            return this.versionStr;
         }
     }
 
@@ -362,7 +460,7 @@ public class SAPUpdateManager
                             throw new JsonParseException("Missing field in JSON: " + f.getName());
                         }
                     } catch( IllegalArgumentException | IllegalAccessException ex ) {
-                        FMLLog.log(ModCntManPack.UPD_LOG, Level.WARN, null, ex);
+                        ModCntManPack.UPD_LOG.log(Level.WARN, ex, null);
                     }
                 }
             }

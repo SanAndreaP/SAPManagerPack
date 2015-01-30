@@ -148,43 +148,42 @@ public class GuiModUpdate
             SAPUpdateManager mgr = GuiModUpdate.MANAGERS.get(slotIndex);
             GL11.glEnable(GL11.GL_BLEND);
             OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
+            GL11.glDisable(GL11.GL_ALPHA_TEST);
             GuiModUpdate.this.mc.renderEngine.bindTexture(TEXTURE);
-            GuiModUpdate.this.drawTexturedModalRect(xPos - 2, yPos - 2, 0, 0, this.getListWidth(), this.slotHeight);
-//            if( this.isSelected(slotIndex) ) {
-//                GuiModUpdate.drawGlossEffect(xPos + 100, yPos - 1, yPos + this.getSlotHeight() - 3, 1.0F, 15);
-//                GuiModUpdate.drawGlossEffect(xPos + 117, yPos - 1, yPos + this.getSlotHeight() - 3, 1.0F, 1);
-//                GuiModUpdate.drawGlossEffect(xPos + 120, yPos - 1, yPos + this.getSlotHeight() - 3, 1.0F, 5);
-//            }
+            if( this.isSelected(slotIndex) ) {
+                GuiModUpdate.this.drawTexturedModalRect(xPos - 2, yPos - 2, 0, 0, this.getListWidth(), this.slotHeight);
+            }
 
-            GuiModUpdate.this.fontRendererObj.drawStringWithShadow(mgr.getModName(), xPos, yPos, 0xFFFFFFFF);
             if( mgr.downloader != null ) {
                 String result = "Begin downloading...";
-                int progBarClr = 0xA0A0A0;
+                int progBarClr = 0;
                 int progBarLength = 0;
 
                 if( mgr.downloader.getStatus() == EnumDlState.DOWNLOADING && mgr.downloader.getProgress() >= 0.0F) {
                     result = String.format("Download Update: %s%s%%", EnumChatFormatting.WHITE, new DecimalFormat("0.00").format(mgr.downloader.getProgress()));
-                    progBarClr = 0xFF3030F0;
+                    progBarClr = 0;
                     progBarLength = (int)(140.0F * mgr.downloader.getProgress() / 100.0F);
                 } else if( mgr.downloader.getStatus() == EnumDlState.ERROR ) {
                     result = String.format("Download Update: %s%s", EnumChatFormatting.RED, "Failed!");
-                    progBarClr = 0xFFE00000;
+                    progBarClr = 2;
                     progBarLength = 140;
                 } else if( mgr.downloader.getStatus() == EnumDlState.COMPLETE ) {
                     result = String.format("Download Update: %s%s", EnumChatFormatting.GREEN, "Complete!");
-                    progBarClr = 0xFF00E000;
+                    progBarClr = 1;
                     progBarLength = 140;
                 }
 
-                Gui.drawRect(xPos + 4, yPos + 23, xPos + 4 + progBarLength, yPos + 30, progBarClr);
+                GuiModUpdate.this.drawTexturedModalRect(xPos + 4, yPos + 23, 0, 36, 140, 5);
+                GuiModUpdate.this.drawTexturedModalRect(xPos + 4, yPos + 23, 0, 41 + progBarClr * 5, progBarLength, 5);
 
                 GuiModUpdate.this.fontRendererObj.drawStringWithShadow(result, xPos, yPos + 10, 0xFF808080);
             } else {
-                GuiModUpdate.this.fontRendererObj.drawStringWithShadow("Installed Version: " + mgr.getVersion(), xPos, yPos + 10, 0xFF808080);
-                GuiModUpdate.this.fontRendererObj.drawStringWithShadow("Latest Version: " + mgr.getVersionDiffSeverity().format + mgr.getUpdateInfo().version, xPos, yPos + 20, 0xFF808080);
+                GuiModUpdate.this.fontRendererObj.drawStringWithShadow("Installed: " + mgr.getVersion(), xPos, yPos + 10, 0xFF808080);
+                GuiModUpdate.this.fontRendererObj.drawStringWithShadow("Latest: " + mgr.getVersionDiffSeverity().format + mgr.getUpdateInfo().version, xPos, yPos + 20, 0xFF808080);
             }
+
+            GuiModUpdate.this.fontRendererObj.drawStringWithShadow(mgr.getModName(), xPos, yPos, 0xFFFFFFFF);
 
             GuiButtonUpdate btnUpdate =  SLOT_BUTTONS.get(slotIndex).getValue0();
             GuiButtonDetails btnDetails =  SLOT_BUTTONS.get(slotIndex).getValue1();
