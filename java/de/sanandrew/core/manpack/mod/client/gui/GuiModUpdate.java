@@ -28,8 +28,8 @@ public class GuiModUpdate
         extends GuiScreen
         implements GuiYesNoCallback
 {
-    private static final List<SAPUpdateManager> MANAGERS = new ArrayList<>();
-    private static final List<Pair<GuiButtonUpdate, GuiButtonDetails>> SLOT_BUTTONS = new ArrayList<>();
+    private static final List<SAPUpdateManager> MANAGERS = new ArrayList<>(5);
+    private static final List<Pair<GuiButtonUpdate, GuiButtonDetails>> SLOT_BUTTONS = new ArrayList<>(10);
     private static final ResourceLocation TEXTURE = new ResourceLocation(ModCntManPack.MOD_ID, "textures/gui/updater/updater.png");
 
     public static void addManager(SAPUpdateManager mgr) {
@@ -41,6 +41,7 @@ public class GuiModUpdate
 
     private GuiButton restartMC;
     private GuiButton back2Menu;
+    private GuiButton updateAll;
     private final GuiScreen mainMenu;
     private int selectedItem;
 
@@ -62,8 +63,9 @@ public class GuiModUpdate
             this.buttonList.add(slotBtns.getValue1());
         }
 
-        this.buttonList.add(this.restartMC = new GuiButton(this.buttonList.size(), (this.width - 200) / 2, this.height - 52, "Restart Minecraft"));
-        this.buttonList.add(this.back2Menu = new GuiButton(this.buttonList.size(), (this.width - 200) / 2, this.height - 32, "Back to main menu"));
+        this.buttonList.add(this.restartMC = new GuiButton(this.buttonList.size(), (this.width - 300) / 2, this.height - 52, 150, 20, "Restart Minecraft"));
+        this.buttonList.add(this.back2Menu = new GuiButton(this.buttonList.size(), (this.width - 300) / 2, this.height - 32, 150, 20, "Back to main menu"));
+        this.buttonList.add(this.updateAll = new GuiButton(this.buttonList.size(), (this.width) / 2, this.height - 52, 150, 20, "Update all"));
 
         this.modList = new GuiModSlots();
         this.modList.registerScrollButtons(this.buttonList.size(), this.buttonList.size() + 1);
@@ -75,6 +77,7 @@ public class GuiModUpdate
 
         this.restartMC.drawButton(this.mc, mouseX, mouseY);
         this.back2Menu.drawButton(this.mc, mouseX, mouseY);
+        this.updateAll.drawButton(this.mc, mouseX, mouseY);
     }
 
     @Override
@@ -85,10 +88,12 @@ public class GuiModUpdate
         } else if( button == this.back2Menu ) {
             this.mc.displayGuiScreen(this.mainMenu);
         } else if( button instanceof GuiButtonUpdate ) {
-            MANAGERS.get(((GuiButtonUpdate)button).slot).runUpdate();
-//            System.out.println(((GuiButtonUpdate)button).slot);
+            MANAGERS.get(((GuiButtonUpdate) button).slot).runUpdate();
         } else if( button instanceof GuiButtonDetails ) {
-            System.out.println(((GuiButtonDetails)button).slot);
+            System.out.println(((GuiButtonDetails) button).slot);
+        } else if( button == this.updateAll ) {
+            this.updateAll.enabled = false;
+            new AllUpdater().run();
         } else {
             this.modList.actionPerformed(button);
         }
@@ -109,12 +114,16 @@ public class GuiModUpdate
         super.confirmClicked(isConfirmed, guiId);
     }
 
-    static void drawGlossEffect(int x, int y1, int y2, float shift, int size) {
-        int yShiftMax = y2 - y1;
-        for( int layer = 0, xShift; layer < yShiftMax; layer++ ) {
-            xShift = (int) (x + shift * yShiftMax - shift * layer);
-            drawRect(xShift, y1 + layer, xShift + size, y1 + layer + 1, 0x40FFFFFF);
-        }
+//    static void drawGlossEffect(int x, int y1, int y2, float shift, int size) {
+//        int yShiftMax = y2 - y1;
+//        for( int layer = 0, xShift; layer < yShiftMax; layer++ ) {
+//            xShift = (int) (x + shift * yShiftMax - shift * layer);
+//            drawRect(xShift, y1 + layer, xShift + size, y1 + layer + 1, 0x40FFFFFF);
+//        }
+//    }
+
+    static boolean checkIfMgrCanUpdate(SAPUpdateManager mgr) {
+        return mgr.getUpdateInfo().getDownload() != null && (mgr.downloader == null || mgr.downloader.getStatus() == EnumDlState.ERROR);
     }
 
     class GuiModSlots extends GuiSlot
@@ -191,7 +200,7 @@ public class GuiModUpdate
             btnUpdate.xPosition = xPos + 151;
             btnUpdate.yPosition = yPos;
             if( btnUpdate.yPosition + 15 > this.top && btnUpdate.yPosition < this.bottom ) {
-                btnUpdate.enabled = mgr.getUpdateInfo().getDownload() != null && (mgr.downloader == null || mgr.downloader.getStatus() == EnumDlState.ERROR);
+                btnUpdate.enabled = checkIfMgrCanUpdate(mgr);
                 btnUpdate.drawButton(GuiModUpdate.this.mc, mouseX, mouseY);
             } else {
                 btnUpdate.enabled = false;
@@ -240,8 +249,8 @@ public class GuiModUpdate
                              hoverState == 2 ? 0xFFFFFF80 : hoverState == 1 ? 0xFFFFFFFF : 0x80808080);
 
                 // background
-                GuiModUpdate.drawGlossEffect(this.xPosition + 45, this.yPosition + 1, this.yPosition + this.height - 1, 1.0F, 2);
-                GuiModUpdate.drawGlossEffect(this.xPosition + 49, this.yPosition + 1, this.yPosition + this.height - 1, 1.0F, 1);
+//                GuiModUpdate.drawGlossEffect(this.xPosition + 45, this.yPosition + 1, this.yPosition + this.height - 1, 1.0F, 2);
+//                GuiModUpdate.drawGlossEffect(this.xPosition + 49, this.yPosition + 1, this.yPosition + this.height - 1, 1.0F, 1);
                 Gui.drawRect(this.xPosition + 1, this.yPosition + 1, this.xPosition + this.width - 1, this.yPosition + this.height - 1,
                              hoverState == 2 ? 0x80404020 : hoverState == 1 ? 0x80404040 : 0x80000000);
 
@@ -260,14 +269,33 @@ public class GuiModUpdate
     }
 
     static class GuiButtonUpdate extends GuiButtonSlot {
-        public GuiButtonUpdate(int id, int slotId, String name) {
+        GuiButtonUpdate(int id, int slotId, String name) {
             super(id, slotId, name);
         }
     }
 
     static class GuiButtonDetails extends GuiButtonSlot {
-        public GuiButtonDetails(int id, int slotId, String name) {
+        GuiButtonDetails(int id, int slotId, String name) {
             super(id, slotId, name);
+        }
+    }
+
+    static class AllUpdater implements Runnable
+    {
+        static int currMgrIndex = 0;
+
+        @Override
+        public void run() {
+            if( currMgrIndex >= MANAGERS.size() ) {
+                return;
+            }
+
+            SAPUpdateManager mgr = MANAGERS.get(currMgrIndex);
+            if( checkIfMgrCanUpdate(mgr) ) {
+                mgr.runUpdate();
+                mgr.downloader.setSucceedRunnable(new AllUpdater());
+            }
+            currMgrIndex++;
         }
     }
 }

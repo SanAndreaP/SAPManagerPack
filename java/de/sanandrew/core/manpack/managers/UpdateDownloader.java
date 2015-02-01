@@ -30,7 +30,8 @@ public class UpdateDownloader
     private URL url; // download URL
     private int size; // size of download in bytes
     private int downloaded; // number of bytes downloaded
-    private EnumDlState status; // current status of download
+    private volatile EnumDlState status; // current status of download
+    private Runnable execWhenSucceed;
 
     // Constructor for Download.
     public UpdateDownloader(URL url) {
@@ -41,6 +42,10 @@ public class UpdateDownloader
 
         // Begin the download.
         this.download();
+    }
+
+    public void setSucceedRunnable(Runnable runnable) {
+        this.execWhenSucceed = runnable;
     }
 
     // Get this download's URL.
@@ -152,6 +157,9 @@ public class UpdateDownloader
             if( this.status == EnumDlState.DOWNLOADING ) {          // Change status to complete if this point was reached because downloading has finished.
                 this.status = EnumDlState.COMPLETE;
                 this.stateChanged();
+                if( UpdateDownloader.this.execWhenSucceed != null ) {
+                    UpdateDownloader.this.execWhenSucceed.run();
+                }
             }
         } catch (Exception e) {
             error();

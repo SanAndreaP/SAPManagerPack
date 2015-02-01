@@ -6,7 +6,6 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.util.modcompatibility;
 
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
 import de.sanandrew.core.manpack.mod.ModCntManPack;
 import org.apache.logging.log4j.Level;
@@ -41,7 +40,8 @@ public class ModInitHelperInst
                 }
             } catch( ClassNotFoundException | InvocationTargetException | IllegalAccessException | InstantiationException | NoSuchMethodException e ) {
                 ModCntManPack.MOD_LOG.log(Level.ERROR, "Unexpected exception while trying to build instance of compatibility class!");
-                throw new RuntimeException(e);
+                return new ModInitHelperInst(new EmptyModInitHelper());
+//                throw new RuntimeException(e);
             }
         } else {
             ModCntManPack.MOD_LOG.log(Level.INFO, "Mod %s is unavailable. Skipping initialization of compatibility class %s!", modId, helperClass);
