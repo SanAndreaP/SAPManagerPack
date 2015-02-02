@@ -6,6 +6,10 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.managers;
 
+import com.sun.istack.internal.NotNull;
+
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
@@ -22,23 +26,20 @@ public class UpdateDownloader
     // Max size of download buffer.
     private static final int MAX_BUFFER_SIZE = 1024;
 
-    // These are the status names.
-    public static final String STATUSES[] = { "Downloading", "Paused", "Complete", "Cancelled", "Error" };
-
-    // These are the status codes.
-
-    private URL url; // download URL
+    private final URL url; // download URL
     private int size; // size of download in bytes
     private int downloaded; // number of bytes downloaded
+    private final File modJar;
     private volatile EnumDlState status; // current status of download
     private Runnable execWhenSucceed;
 
     // Constructor for Download.
-    public UpdateDownloader(URL url) {
+    public UpdateDownloader(URL url, @NotNull File jar) {
         this.url = url;
         this.size = -1;
         this.downloaded = 0;
         this.status = EnumDlState.PENDING;
+        this.modJar = jar;
 
         // Begin the download.
         this.download();
@@ -128,7 +129,9 @@ public class UpdateDownloader
                 this.stateChanged();
             }
 
-            try( RandomAccessFile file = new RandomAccessFile(getFileName(this.url), "rw"); InputStream stream = connection.getInputStream() ){
+            try( RandomAccessFile file = new RandomAccessFile(new File(this.modJar.getParent(), getFileName(this.url)), "rw");
+                 InputStream stream = connection.getInputStream() )
+            {
                 file.seek(this.downloaded);         // seek to the end of the file.
 
                 this.status = EnumDlState.DOWNLOADING;
@@ -153,15 +156,19 @@ public class UpdateDownloader
                 }
             }
 
-
             if( this.status == EnumDlState.DOWNLOADING ) {          // Change status to complete if this point was reached because downloading has finished.
                 this.status = EnumDlState.COMPLETE;
                 this.stateChanged();
+
+                if( !this.modJar.delete() ) {
+                    error();
+                }
+
                 if( UpdateDownloader.this.execWhenSucceed != null ) {
                     UpdateDownloader.this.execWhenSucceed.run();
                 }
             }
-        } catch (Exception e) {
+        } catch( IOException | SecurityException e ) {
             error();
         }
     }

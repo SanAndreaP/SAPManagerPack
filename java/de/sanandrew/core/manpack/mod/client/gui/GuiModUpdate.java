@@ -123,7 +123,8 @@ public class GuiModUpdate
 //    }
 
     static boolean checkIfMgrCanUpdate(SAPUpdateManager mgr) {
-        return mgr.getUpdateInfo().getDownload() != null && (mgr.downloader == null || mgr.downloader.getStatus() == EnumDlState.ERROR);
+        return mgr.getUpdateInfo().getDownload() != null && mgr.getModJar() != null && mgr.getModJar().getName().endsWith(".jar")
+               && (mgr.downloader == null || mgr.downloader.getStatus() == EnumDlState.ERROR);
     }
 
     class GuiModSlots extends GuiSlot

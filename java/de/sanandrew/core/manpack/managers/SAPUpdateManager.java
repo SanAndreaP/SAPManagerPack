@@ -290,7 +290,7 @@ public class SAPUpdateManager
     public void runUpdate() {
         URL dl = this.updInfo.getDownload();
         if( dl != null ) {
-            this.downloader = new UpdateDownloader(dl);
+            this.downloader = new UpdateDownloader(dl, this.modPackedJar);
         }
     }
 
