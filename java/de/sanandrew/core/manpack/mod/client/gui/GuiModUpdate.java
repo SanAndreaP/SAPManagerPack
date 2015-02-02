@@ -90,7 +90,7 @@ public class GuiModUpdate
         } else if( button instanceof GuiButtonUpdate ) {
             MANAGERS.get(((GuiButtonUpdate) button).slot).runUpdate();
         } else if( button instanceof GuiButtonDetails ) {
-            System.out.println(((GuiButtonDetails) button).slot);
+            this.mc.displayGuiScreen(new GuiUpdateDetails(this, MANAGERS.get(((GuiButtonDetails) button).slot)));
         } else if( button == this.updateAll ) {
             this.updateAll.enabled = false;
             new AllUpdater().run();
@@ -113,14 +113,6 @@ public class GuiModUpdate
 
         super.confirmClicked(isConfirmed, guiId);
     }
-
-//    static void drawGlossEffect(int x, int y1, int y2, float shift, int size) {
-//        int yShiftMax = y2 - y1;
-//        for( int layer = 0, xShift; layer < yShiftMax; layer++ ) {
-//            xShift = (int) (x + shift * yShiftMax - shift * layer);
-//            drawRect(xShift, y1 + layer, xShift + size, y1 + layer + 1, 0x40FFFFFF);
-//        }
-//    }
 
     static boolean checkIfMgrCanUpdate(SAPUpdateManager mgr) {
         return mgr.getUpdateInfo().getDownload() != null && mgr.getModJar() != null && mgr.getModJar().getName().endsWith(".jar")
