@@ -14,6 +14,7 @@ import cpw.mods.fml.common.DummyModContainer;
 import cpw.mods.fml.common.LoadController;
 import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 import cpw.mods.fml.relauncher.Side;
@@ -25,6 +26,7 @@ import de.sanandrew.core.manpack.mod.client.ClientProxy;
 import de.sanandrew.core.manpack.network.NetworkManager;
 import de.sanandrew.core.manpack.util.MutableString;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
+import net.minecraft.nbt.NBTTagCompound;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -109,6 +111,17 @@ public class ModCntManPack
 
         for( Triplet<SAPUpdateManager, MutableBoolean, MutableString> udm : SAPUpdateManager.UPD_MANAGERS ) {
             udm.getValue0().checkForUpdate();
+        }
+    }
+
+    @Subscribe
+    public void imcReceive(FMLInterModComms.IMCEvent event) {
+        for( IMCMessage msg : event.getMessages() ) {
+            if( msg.key.equalsIgnoreCase("add-updatemgr") && msg.isNBTMessage() ) {
+                NBTTagCompound nbt = msg.getNBTValue();
+                SAPUpdateManager.createUpdateManager(nbt.getString("modName"), new Version(nbt.getString("version")), nbt.getString("updateInfoUrl"),
+                                                     nbt.getString("projectLink"), nbt.hasKey("jarLocation") ? new File(nbt.getString("jarLocation")) : null);
+            }
         }
     }
 
