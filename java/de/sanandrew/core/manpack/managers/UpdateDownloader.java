@@ -6,8 +6,6 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.managers;
 
-import com.sun.istack.internal.NotNull;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +32,7 @@ public class UpdateDownloader
     private Runnable execWhenSucceed;
 
     // Constructor for Download.
-    public UpdateDownloader(URL url, @NotNull File jar) {
+    public UpdateDownloader(URL url, File jar) {
         this.url = url;
         this.size = -1;
         this.downloaded = 0;
