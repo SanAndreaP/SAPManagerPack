@@ -43,7 +43,7 @@ public class ModCntManPack
 
     public static final String MOD_VERSION = "2.4.0";
 
-    public static final int FORGE_BULD_MIN = 1230;
+    public static final int FORGE_BULD_MIN = 1286;
 
     public static CommonProxy proxy;
 
@@ -94,7 +94,7 @@ public class ModCntManPack
         ConfigurationManager.load(event.getSuggestedConfigurationFile());
 
         SAPUpdateManager.createUpdateManager("SAP Manager Pack", new Version(MOD_VERSION),
-                                             "https://gist.githubusercontent.com/SanAndreasP/d7723d348217a8c1c36c/raw/bcd9a85cc461d497f1e089178384d92a555e1dc1/update_test.json",
+                                             "https://raw.githubusercontent.com/SanAndreasP/SAPManagerPack/master/update.json",
                                              "http://www.curseforge.com/projects/226994/", this.getSource());
     }
 

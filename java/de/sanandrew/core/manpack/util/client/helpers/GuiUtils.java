@@ -6,6 +6,7 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.util.client.helpers;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -63,5 +64,21 @@ public final class GuiUtils
         }
 
         renderer.drawString(s, x, y, foreColor);
+    }
+
+    public static void doGlScissor(int x, int y, int width, int height) {
+        Minecraft mc = Minecraft.getMinecraft();
+        int scaleFactor = 1;
+        int k = mc.gameSettings.guiScale;
+
+        if( k == 0 ) {
+            k = 1000;
+        }
+
+        while( scaleFactor < k && mc.displayWidth / (scaleFactor + 1) >= 320 && mc.displayHeight / (scaleFactor + 1) >= 240 ) {
+            ++scaleFactor;
+        }
+
+        GL11.glScissor(x * scaleFactor, mc.displayHeight - (y + height) * scaleFactor, width * scaleFactor, height * scaleFactor);
     }
 }

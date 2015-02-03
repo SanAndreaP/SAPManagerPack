@@ -1,0 +1,17 @@
+{
+  "version": "2.4.0",
+  "downloadUrl": "",
+  "description": "Initial release with new update manager! Nothing exciting going in here...",
+  "changelog": [
+    "upgraded and finished new Update Manager",
+    "of",
+    "stuff",
+    "going",
+    "on",
+    "here",
+    "man",
+    ".",
+    "a very big chunk of text which should be truncated within the details GUI, fun stuff indeed. Lorem ipsum dolor sit amet, I can't remember anything else anymore :("
+    "Here, have some more text wrapped in the details GUI"
+  ]
+}
