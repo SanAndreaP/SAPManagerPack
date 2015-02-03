@@ -7,7 +7,6 @@
 package de.sanandrew.core.manpack.network;
 
 import com.google.common.collect.Maps;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
@@ -16,7 +15,6 @@ import de.sanandrew.core.manpack.util.javatuples.Quintet;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import de.sanandrew.core.manpack.util.javatuples.Tuple;
 import de.sanandrew.core.manpack.util.javatuples.Unit;
-import de.sanandrew.mods.enderstuffp.util.EnderStuffPlus;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -71,7 +69,7 @@ public final class NetworkManager
             IPacket pktInst = getPacketProcessor(modId).getPacketCls(packet).getConstructor().newInstance();
             FMLEventChannel channel = getPacketChannel(modId);
             pktInst.writeData(bbos, packetData);
-            FMLProxyPacket proxyPacket = new FMLProxyPacket(bbos.buffer(), EnderStuffPlus.MOD_CHANNEL);
+            FMLProxyPacket proxyPacket = new FMLProxyPacket(bbos.buffer(), getPacketChannelName(modId));
             switch( direction ) {
                 case TO_SERVER:
                     channel.sendToServer(proxyPacket);
@@ -101,6 +99,10 @@ public final class NetworkManager
         } catch( NoSuchMethodException | InvocationTargetException e ) {
             e.printStackTrace();
         }
+    }
+
+    public static String getPacketChannelName(String modId) {
+        return PROCESSORS.get(modId).getValue0();
     }
 
     public static PacketProcessor getPacketProcessor(String modId) {

@@ -4,14 +4,14 @@
   "description": "Initial release with new update manager! Nothing exciting going in here...",
   "changelog": [
     "upgraded and finished new Update Manager",
-    "of",
-    "stuff",
-    "going",
-    "on",
-    "here",
-    "man",
-    ".",
-    "a very big chunk of text which should be truncated within the details GUI, fun stuff indeed. Lorem ipsum dolor sit amet, I can't remember anything else anymore :("
-    "Here, have some more text wrapped in the details GUI"
+    "added helper method for glScissor",
+    "added more javadoc",
+    "cleanups",
+    "Logger is now its own instance instead of a String being used by FMLLog",
+    "new ModelBoxBuilder, effectively replaces SAPClientUtils.createBox methods with their enormous amounts of parameters",
+    "scaling on my player model's right leg is now applied",
+    "fixed cauldron server crash (maybe????)",
+    "now requires Forge 1286 at minimum",
+    "fixed packet manager sending the packets to the EnerStuff+ mod channel"
   ]
 }
