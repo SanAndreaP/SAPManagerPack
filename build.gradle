@@ -15,6 +15,10 @@ buildscript {
     }
 }
 
+configurations {
+    mvnSourceJar
+}
+
 apply plugin: 'forge'
 apply plugin: 'maven'
 
@@ -25,6 +29,10 @@ archivesBaseName = 'SAPManPack'
 minecraft {
 	version = "1.7.10-10.13.2.1286"
     runDir = "eclipse"
+}
+
+configurations {
+    allJars
 }
 
 processResources {
@@ -39,10 +47,6 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
-}
-
-project.ext{
-    releaseRepoUrl = "file://${project(':').projectDir}/maven-repo/releases"
 }
 
 sourceSets {
@@ -70,14 +74,12 @@ jar {
 }
 
 task sourceJar(type: Jar) {
-    classifier = 'src'
     from sourceSets.main.allSource
     appendix = 'src'
     archiveName = baseName + "-" + version + "-" + appendix + ".jar"
 }
 
 task deobfJar(type: Jar) {
-    classifier = 'deobf'
     from sourceSets.main.output
     appendix = 'deobf'
     archiveName = baseName + "-" + version + "-" + appendix + ".jar"
@@ -87,14 +89,19 @@ task deobfJar(type: Jar) {
     }
 }
 
-uploadArchives {
-    repositories.mavenDeployer {
-        repository(url: project.releaseRepoUrl)
-    }
-}
-
 artifacts {
     archives deobfJar
     archives sourceJar
     archives jar
+    allJars deobfJar
+}
+
+project.ext {
+    releaseRepoUrl = "file://${project(':').projectDir}/maven-repo/releases"
+}
+
+uploadAllJars {
+    repositories.mavenDeployer {
+        repository(url: project.releaseRepoUrl)
+    }
 }

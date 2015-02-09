@@ -3,6 +3,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.sanandrew.core.manpack</groupId>
-  <artifactId>SAPManPack</artifactId>
+  <artifactId>SAPManPack-deobf</artifactId>
   <version>1.7.10-2.4.0</version>
 </project>

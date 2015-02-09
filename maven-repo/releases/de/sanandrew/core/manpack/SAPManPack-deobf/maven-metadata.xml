@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
   <groupId>de.sanandrew.core.manpack</groupId>
-  <artifactId>SAPManPack</artifactId>
+  <artifactId>SAPManPack-deobf</artifactId>
   <version>1.7.10-2.4.0</version>
   <versioning>
     <versions>
       <version>1.7.10-2.4.0</version>
     </versions>
-    <lastUpdated>20150209101151</lastUpdated>
+    <lastUpdated>20150209120328</lastUpdated>
   </versioning>
 </metadata>
