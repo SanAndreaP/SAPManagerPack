@@ -42,6 +42,7 @@ processResources {
 
 sourceSets {
     main {
+		output.resourcesDir = output.classesDir
         java { srcDir 'java' }
         resources { srcDir 'resources' }
     }
