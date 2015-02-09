@@ -15,12 +15,7 @@ buildscript {
     }
 }
 
-configurations {
-    mvnSourceJar
-}
-
 apply plugin: 'forge'
-apply plugin: 'maven'
 
 version = "1.7.10-2.4.0"
 group = "de.sanandrew.core.manpack"
@@ -29,10 +24,6 @@ archivesBaseName = 'SAPManPack'
 minecraft {
 	version = "1.7.10-10.13.2.1286"
     runDir = "eclipse"
-}
-
-configurations {
-    allJars
 }
 
 processResources {
@@ -55,10 +46,6 @@ sourceSets {
         java { srcDir 'java' }
         resources { srcDir 'resources' }
     }
-}
-
-repositories {
-    mavenCentral()
 }
 
 tasks.withType(JavaCompile) {
@@ -89,18 +76,22 @@ task deobfJar(type: Jar) {
     }
 }
 
+configurations {
+    mvnDeobfJar
+}
+
 artifacts {
     archives deobfJar
     archives sourceJar
     archives jar
-    allJars deobfJar
+    mvnDeobfJar deobfJar
 }
 
 project.ext {
     releaseRepoUrl = "file://${project(':').projectDir}/maven-repo/"
 }
 
-uploadAllJars {
+uploadMvnDeobfJar {
     repositories.mavenDeployer {
         repository(url: project.releaseRepoUrl)
     }
