@@ -97,7 +97,7 @@ artifacts {
 }
 
 project.ext {
-    releaseRepoUrl = "file://${project(':').projectDir}/maven-repo/releases"
+    releaseRepoUrl = "file://${project(':').projectDir}/maven-repo/"
 }
 
 uploadAllJars {
