@@ -16,6 +16,7 @@ buildscript {
 }
 
 apply plugin: 'forge'
+apply plugin: 'maven'
 
 version = "1.7.10-2.4.0"
 group = "de.sanandrew.core.manpack"
@@ -38,6 +39,10 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+project.ext{
+    releaseRepoUrl = "file://${project(':').projectDir}/maven-repo/releases"
 }
 
 sourceSets {
@@ -65,12 +70,14 @@ jar {
 }
 
 task sourceJar(type: Jar) {
+    classifier = 'src'
     from sourceSets.main.allSource
     appendix = 'src'
     archiveName = baseName + "-" + version + "-" + appendix + ".jar"
 }
 
 task deobfJar(type: Jar) {
+    classifier = 'deobf'
     from sourceSets.main.output
     appendix = 'deobf'
     archiveName = baseName + "-" + version + "-" + appendix + ".jar"
@@ -80,8 +87,14 @@ task deobfJar(type: Jar) {
     }
 }
 
+uploadArchives {
+    repositories.mavenDeployer {
+        repository(url: project.releaseRepoUrl)
+    }
+}
+
 artifacts {
-	archives deobfJar
-	archives sourceJar
-	archives jar
+    archives deobfJar
+    archives sourceJar
+    archives jar
 }
