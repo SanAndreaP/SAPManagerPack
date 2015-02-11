@@ -18,7 +18,7 @@ buildscript {
 apply plugin: 'forge'
 
 version = "1.7.10-2.4.0"
-group = "de.sanandrew.core.manpack"
+group = "de.sanandrew.core"
 archivesBaseName = 'SAPManPack'
 
 minecraft {
@@ -48,10 +48,8 @@ sourceSets {
     }
 }
 
-tasks.withType(JavaCompile) {
-    sourceCompatibility = JavaVersion.VERSION_1_7
-    targetCompatibility = JavaVersion.VERSION_1_7
-}
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
 
 jar {
     manifest {
@@ -63,13 +61,13 @@ jar {
 task sourceJar(type: Jar) {
     from sourceSets.main.allSource
     appendix = 'src'
-    archiveName = baseName + "-" + version + "-" + appendix + ".jar"
+    archiveName = "${baseName}-${version}-${appendix}.jar"
 }
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
     appendix = 'deobf'
-    archiveName = baseName + "-" + version + "-" + appendix + ".jar"
+    archiveName = "${baseName}-${version}-${appendix}.jar"
     manifest {
         attributes 'FMLCorePlugin': 'de.sanandrew.core.manpack.init.ManPackLoadingPlugin'
         attributes 'FMLCorePluginContainsFMLMod' : 'true'
@@ -77,22 +75,26 @@ task deobfJar(type: Jar) {
 }
 
 configurations {
-    mvnDeobfJar
+    deployDev
 }
 
 artifacts {
     archives deobfJar
     archives sourceJar
     archives jar
-    mvnDeobfJar deobfJar
+    deployDev deobfJar
 }
 
 project.ext {
     releaseRepoUrl = "file://${project(':').projectDir}/maven-repo/"
 }
 
-uploadMvnDeobfJar {
+uploadDeployDev {
+    dependsOn("deobfJar")
+    configuration = configurations.deployDev
     repositories.mavenDeployer {
+        pom.artifactId = project.name
+        pom.version = project.version + '-deobf'
         repository(url: project.releaseRepoUrl)
     }
 }
