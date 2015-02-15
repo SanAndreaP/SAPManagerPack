@@ -6,14 +6,18 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.mod.client.render;
 
+import com.google.gson.Gson;
 import de.sanandrew.core.manpack.mod.ModCntManPack;
 import de.sanandrew.core.manpack.mod.client.model.ModelSanPlayer;
 import de.sanandrew.core.manpack.util.client.helpers.AverageColorHelper;
 import de.sanandrew.core.manpack.util.client.helpers.ItemRenderHelper;
+import de.sanandrew.core.manpack.util.client.helpers.ModelBoxBuilder;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils.RGBAValues;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,8 +28,10 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.opengl.GL11;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +45,7 @@ public class RenderSanPlayer
     private ModelSanPlayer myModelArmor = new ModelSanPlayer(0.05F, true);
 
     private Map<String, RGBAValues> unknownTextureColorMap = new HashMap<>();
+    private Map<String, CubeLoader> hatRenderList = new HashMap<>();
 
     public RenderSanPlayer() {
         super();
@@ -58,8 +65,13 @@ public class RenderSanPlayer
 
         ItemStack stack = player.inventory.armorItemInSlot(3 - renderPass);
 
+        if( renderPass == 0 ) {
+            this.myModel.hideTails = false;
+        }
+
         if( stack != null ) {
             Item item = stack.getItem();
+            this.myModelArmor.hatBase = null;
 
             if( item instanceof ItemArmor ) {
                 ItemArmor armorItem = (ItemArmor) item;
@@ -68,6 +80,14 @@ public class RenderSanPlayer
                 switch( renderPass ) {
                     case 0:
                         this.bindTexture(tryLoadArmorPiece("Hat", unlocName, player, stack, renderPass));
+                        if( !this.hatRenderList.containsKey(unlocName) ) {
+                            CubeLoader cubes = CubeLoader.loadFromResource(new ResourceLocation("sapmanpack", "model/hats/" + unlocName + ".json"));
+                            cubes.initCubeInstances(this.myModelArmor);
+                            hatRenderList.put(unlocName, cubes);
+                        }
+
+                        this.myModelArmor.hatBase = this.hatRenderList.get(unlocName).getCubeParent();
+                        this.myModel.hideTails = this.hatRenderList.get(unlocName).hideTails;
                         break;
                     case 1:
                         this.bindTexture(tryLoadArmorPiece("Chest", unlocName, player, stack, renderPass));
@@ -80,7 +100,7 @@ public class RenderSanPlayer
                         break;
                 }
 
-                myModelArmor.hatBase.showModel = renderPass == 0;
+//                myModelArmor.hatBase.showModel = renderPass == 0;
                 myModelArmor.body.showModel = renderPass == 1 || renderPass == 2;
                 myModelArmor.armLeft.showModel = renderPass == 1;
                 myModelArmor.armLeft2.showModel = renderPass == 1;
@@ -226,5 +246,62 @@ public class RenderSanPlayer
         }
 
         return resLoc;
+    }
+
+    public static class CubeLoader {
+        public CubeLoaderCube[] cubes;
+        public boolean hideTails;
+        private ModelRenderer[] cubeInsts = new ModelRenderer[1];
+
+        public static CubeLoader loadFromResource(ResourceLocation loc) {
+            try( BufferedReader in = new BufferedReader(new InputStreamReader(Minecraft.getMinecraft().getResourceManager().getResource(loc).getInputStream())) ) {
+                return new Gson().fromJson(in, CubeLoader.class);
+            } catch( IOException ex ) {
+                ex.printStackTrace();
+                return null;
+            }
+        }
+
+        public void initCubeInstances(ModelBase model) {
+            this.cubeInsts = new ModelRenderer[this.cubes.length];
+            ModelRenderer parent = null;
+            for( int index = 0; index < this.cubes.length; index++ ) {
+                CubeLoaderCube cubeDef = this.cubes[index];
+                this.cubeInsts[index] = ModelBoxBuilder.newBuilder(model).setTexture(cubeDef.textureX, cubeDef.textureY, cubeDef.mirror)
+                                                       .setLocation(cubeDef.rotationPointX, cubeDef.rotationPointY, cubeDef.rotationPointZ)
+                                                       .setRotation(cubeDef.rotationX, cubeDef.rotationY, cubeDef.rotationZ)
+                                                       .getBox(cubeDef.boxX, cubeDef.boxY, cubeDef.boxZ, cubeDef.sizeX, cubeDef.sizeY,
+                                                               cubeDef.sizeZ, cubeDef.scale
+                                                       );
+                if( index == 0 ) {
+                    parent = this.cubeInsts[index];
+                } else {
+                    parent.addChild(this.cubeInsts[index]);
+                }
+            }
+        }
+
+        public ModelRenderer getCubeParent() {
+            return this.cubeInsts[0];
+        }
+    }
+
+    public static class CubeLoaderCube {
+        public int textureX;
+        public int textureY;
+        public boolean mirror;
+        public float boxX;
+        public float boxY;
+        public float boxZ;
+        public int sizeX;
+        public int sizeY;
+        public int sizeZ;
+        public float rotationPointX;
+        public float rotationPointY;
+        public float rotationPointZ;
+        public float rotationX;
+        public float rotationY;
+        public float rotationZ;
+        public float scale;
     }
 }
