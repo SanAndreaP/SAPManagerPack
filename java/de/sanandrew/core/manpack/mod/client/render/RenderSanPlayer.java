@@ -187,6 +187,7 @@ public class RenderSanPlayer
                 this.bindTexture(this.getEntityTexture(player));
                 this.myModel.armRight.render(0.0625F);
                 String armoredChest = player.getCurrentArmor(2).getUnlocalizedName();
+                boolean prevArmR2Visible = this.myModel.armRight2.showModel;
 
                 Minecraft.getMinecraft().getTextureManager().bindTexture(tryLoadArmorPiece("Chest", armoredChest, player, player.getCurrentArmor(2), 1));
 
@@ -207,9 +208,12 @@ public class RenderSanPlayer
 
                 this.myModel.armRight2.showModel = true;
                 this.myModel.armRight2.render(0.0625F);
+                this.myModel.armRight2.showModel = prevArmR2Visible;
                 GL11.glColor3f(1.0F, 1.0F, 1.0F);
                 GL11.glPopMatrix();
             } else {
+                boolean prevArmR2Visible = this.myModel.armRight2.showModel;
+
                 this.bindTexture(this.getEntityTexture(player));
                 this.myModel.armRight.render(0.0625F);
                 GL11.glPushMatrix();
@@ -217,6 +221,7 @@ public class RenderSanPlayer
                 GL11.glTranslatef(0.015F, 0.00F, 0.0F);
                 this.myModel.armRight2.showModel = true;
                 this.myModel.armRight2.render(0.0625F);
+                this.myModel.armRight2.showModel = prevArmR2Visible;
                 GL11.glPopMatrix();
             }
         }
@@ -258,7 +263,7 @@ public class RenderSanPlayer
                 return new Gson().fromJson(in, CubeLoader.class);
             } catch( IOException ex ) {
                 ex.printStackTrace();
-                return null;
+                return new CubeLoader();
             }
         }
 
