@@ -236,12 +236,12 @@ public class RenderSanPlayer
             try {
                 Minecraft.getMinecraft().getResourceManager().getResource(resLoc);
             } catch( IOException ex ) {
-                ModCntManPack.MOD_LOG.log(Level.WARN, "Can't load armor texture for item %s!", unlocName);
+                ModCntManPack.MOD_LOG.printf(Level.WARN, "Can't load armor texture for item %s!", unlocName);
                 resLoc = RenderBiped.getArmorResource(player, stack, pass, null);
                 try( InputStream textureStream = Minecraft.getMinecraft().getResourceManager().getResource(resLoc).getInputStream() ) {
                     this.unknownTextureColorMap.put(unlocName, AverageColorHelper.getAverageColor(textureStream));
                 } catch( IOException ex2 ) {
-                    ModCntManPack.MOD_LOG.log(Level.WARN, "Can't get avg. color for armor texture %s!", unlocName);
+                    ModCntManPack.MOD_LOG.printf(Level.WARN, "Can't get avg. color for armor texture %s!", unlocName);
                     ModCntManPack.MOD_LOG.log(Level.WARN, "", ex2);
                     this.unknownTextureColorMap.put(unlocName, new RGBAValues(255, 255, 255, 255));
                 }
@@ -254,7 +254,7 @@ public class RenderSanPlayer
     }
 
     public static class CubeLoader {
-        public CubeLoaderCube[] cubes;
+        public CubeLoaderCube[] cubes = new CubeLoaderCube[0];
         public boolean hideTails;
         private ModelRenderer[] cubeInsts = new ModelRenderer[1];
 
@@ -287,7 +287,7 @@ public class RenderSanPlayer
         }
 
         public ModelRenderer getCubeParent() {
-            return this.cubeInsts[0];
+            return this.cubeInsts.length > 0 ? this.cubeInsts[0] : null;
         }
     }
 

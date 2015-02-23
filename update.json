@@ -1,17 +1,9 @@
 {
-  "version": "2.4.0",
-  "downloadUrl": "",
-  "description": "Initial release with new update manager! Nothing exciting going in here...",
+  "version": "2.4.1",
+  "downloadUrl": "http://minecraft.curseforge.com/mc-mods/226994-sanandreasps-manager-pack/files/2228438/download",
+  "description": "very minor update, fixing some logging errors.",
   "changelog": [
-    "upgraded and finished new Update Manager",
-    "added helper method for glScissor",
-    "added more javadoc",
-    "cleanups",
-    "Logger is now its own instance instead of a String being used by FMLLog",
-    "new ModelBoxBuilder, effectively replaces SAPClientUtils.createBox methods with their enormous amounts of parameters",
-    "scaling on my player model's right leg is now applied",
-    "fixed cauldron server crash (maybe????)",
-    "now requires Forge 1286 at minimum",
-    "fixed packet manager sending the packets to the EnerStuff+ mod channel"
+    "fixed some logging errors",
+    "some changes to my player model (irrelevant for others)"
   ]
 }

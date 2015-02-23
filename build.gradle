@@ -17,7 +17,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.7.10-2.4.0"
+version = "1.7.10-2.4.1"
 group = "de.sanandrew.core"
 archivesBaseName = 'SAPManPack'
 
@@ -45,6 +45,18 @@ sourceSets {
         java { srcDir 'java' }
         resources { srcDir 'resources' }
     }
+}
+
+repositories {
+    maven {
+        name = 'CodeChicken'
+        url = 'http://chickenbones.net/maven/'
+    }
+}
+
+dependencies {
+    compile 'codechicken:CodeChickenCore:1.7.10-1.0.4.35:dev'
+    compile 'codechicken:CodeChickenLib:1.7.10-1.1.3.127:dev'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_7

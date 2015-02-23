@@ -1,6 +1,6 @@
 /*******************************************************************************************************************
  * Authors:   SanAndreasP
- * Copyright: SanAndreasP, SilverChiren and CliffracerX
+ * Copyright: SanAndreasP
  * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
  *                http://creativecommons.org/licenses/by-nc-sa/4.0/
  *******************************************************************************************************************/
@@ -23,7 +23,7 @@ public class ModInitHelperInst
     @SuppressWarnings("unchecked")
     public static ModInitHelperInst loadWhenModAvailable(String modId, String helperClass) {
         if( modId == null || modId.isEmpty() ) {
-            ModCntManPack.MOD_LOG.log(Level.FATAL, "Cannot check for null/empty mod ID!");
+            ModCntManPack.MOD_LOG.printf(Level.FATAL, "Cannot check for null/empty mod ID!");
             throw new RuntimeException();
         }
 
@@ -32,19 +32,18 @@ public class ModInitHelperInst
                 Class helperClassInst = Class.forName(helperClass);
                 if( IModInitHelper.class.isAssignableFrom(helperClassInst) ) {
                     IModInitHelper inst = (IModInitHelper) helperClassInst.getConstructor().newInstance();
-                    ModCntManPack.MOD_LOG.log(Level.INFO,"Mod %s is available. Initialized compatibillity class %s.", modId, helperClass);
+                    ModCntManPack.MOD_LOG.printf(Level.INFO, "Mod %s is available. Initialized compatibillity class %s.", modId, helperClass);
                     return new ModInitHelperInst(inst);
                 } else {
-                    ModCntManPack.MOD_LOG.log(Level.ERROR, "Class %s is not a subclass of IModInitHelper! This is a serious modder error!", helperClass);
+                    ModCntManPack.MOD_LOG.printf(Level.ERROR, "Class %s is not a subclass of IModInitHelper! This is a serious modder error!", helperClass);
                     throw new RuntimeException();
                 }
             } catch( ClassNotFoundException | InvocationTargetException | IllegalAccessException | InstantiationException | NoSuchMethodException e ) {
-                ModCntManPack.MOD_LOG.log(Level.ERROR, "Unexpected exception while trying to build instance of compatibility class!");
+                ModCntManPack.MOD_LOG.printf(Level.ERROR, "Unexpected exception while trying to build instance of compatibility class!");
                 return new ModInitHelperInst(new EmptyModInitHelper());
-//                throw new RuntimeException(e);
             }
         } else {
-            ModCntManPack.MOD_LOG.log(Level.INFO, "Mod %s is unavailable. Skipping initialization of compatibility class %s!", modId, helperClass);
+            ModCntManPack.MOD_LOG.printf(Level.INFO, "Mod %s is unavailable. Skipping initialization of compatibility class %s!", modId, helperClass);
             return new ModInitHelperInst(new EmptyModInitHelper());
         }
     }
