@@ -5,7 +5,7 @@ A Manager Pack which helps me to keep my stuff organized and doing some fancy st
 through ASM.<br>
 If you have suggestions to this, feel free to submit a Pull Request or (if you can't do a PR) contact me.<br>
 <br>
-<b>Install the Manager Pack in MCP</b><br>
+<b>Install the Manager Pack for development</b><br>
 * Fork this repo and download it via a git client (I recommend SourceTree)
 * run <tt>gradlew setupDecompWorkspace</tt>
 * setup a new workspace in your preferred IDE, here an example for IntelliJ:
