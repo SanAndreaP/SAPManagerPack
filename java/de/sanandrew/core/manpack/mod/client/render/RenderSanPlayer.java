@@ -186,7 +186,7 @@ public class RenderSanPlayer
             if( player.getCurrentArmor(2) != null ) {
                 this.bindTexture(this.getEntityTexture(player));
                 this.myModel.armRight.render(0.0625F);
-                String armoredChest = player.getCurrentArmor(2).getUnlocalizedName();
+                String armoredChest = player.getCurrentArmor(2).getUnlocalizedName().replace(':', '_');
                 boolean prevArmR2Visible = this.myModel.armRight2.showModel;
 
                 Minecraft.getMinecraft().getTextureManager().bindTexture(tryLoadArmorPiece("Chest", armoredChest, player, player.getCurrentArmor(2), 1));
