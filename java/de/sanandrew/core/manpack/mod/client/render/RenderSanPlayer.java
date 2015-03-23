@@ -75,7 +75,7 @@ public class RenderSanPlayer
 
             if( item instanceof ItemArmor ) {
                 ItemArmor armorItem = (ItemArmor) item;
-                String unlocName = stack.getUnlocalizedName();
+                String unlocName = stack.getUnlocalizedName().replace(':', '_');
 
                 switch( renderPass ) {
                     case 0:
