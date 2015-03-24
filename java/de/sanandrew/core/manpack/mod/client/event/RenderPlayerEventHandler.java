@@ -44,7 +44,7 @@ public class RenderPlayerEventHandler
 
     @SubscribeEvent
     public void onLivingRender(RenderLivingEvent.Pre event) {
-        if( event.entity instanceof EntityPlayer && event.renderer != sanPlayerModel && event.entity.getCommandSenderName().equals("sanandreasMC") ) {
+        if( event.entity instanceof EntityPlayer && event.renderer != this.sanPlayerModel && event.entity.getCommandSenderName().equals("sanandreasMC") ) {
             this.sanPlayerModel.doRender(event.entity, event.x, event.y + event.entity.yOffset, event.z, 0.0F, this.playerPartTicks);
             event.setCanceled(true);
         }
