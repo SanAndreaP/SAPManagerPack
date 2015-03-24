@@ -45,7 +45,7 @@ public class ModCntManPack
 
     public static final String MOD_VERSION = "2.4.2";
 
-    public static final int FORGE_BULD_MIN = 1286;
+    public static final int FORGE_BULD_MIN = 1291;
 
     public static CommonProxy proxy;
 
