@@ -7,27 +7,14 @@
 package de.sanandrew.core.manpack.util.helpers;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
-import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.ArrayList;
-import java.util.List;
-
+@Deprecated
 final class ItemHelper
 {
-    static ItemStack decrStackSize(ItemStack is, int amount) {
-        is.stackSize -= amount;
-        if( is.stackSize <= 0 ) {
-            return null;
-        }
-        return is;
-    }
-
+    @Deprecated
     static ItemStack decrInvStackSize(ItemStack is, int amount) {
         ItemStack returnedStack = is.copy();
 
@@ -37,61 +24,7 @@ final class ItemHelper
         return returnedStack;
     }
 
-    static boolean areStacksEqual(ItemStack is1, ItemStack is2, boolean checkNbt) {
-        if( is1 == null || is2 == null ) {
-            return is1 == is2;
-        }
-
-        if( is1.getItem() == null || is2.getItem() == null ) {
-            return is1.getItem() == is2.getItem();
-        }
-
-        if( is1.getItem() == is2.getItem() ) {
-            if( checkNbt ) {
-                if( is1.hasTagCompound() ) {
-                    if( !is1.getTagCompound().equals(is2.getTagCompound()) ) {
-                        return false;
-                    }
-                } else if( is2.hasTagCompound() && !is2.getTagCompound().equals(is1.getTagCompound()) ) {
-                    return false;
-                }
-            }
-
-            return is1.getItemDamage() == OreDictionary.WILDCARD_VALUE || is2.getItemDamage() == OreDictionary.WILDCARD_VALUE
-                   || is1.getItemDamage() == is2.getItemDamage();
-        }
-
-        return false;
-    }
-
-    static ItemStack[] getGoodItemStacks(ItemStack is) {
-        List<ItemStack> isMap = new ArrayList<>();
-        if( is.stackSize <= is.getMaxStackSize() && is.stackSize > 0 ) {
-            isMap.add(is);
-        } else if( is.stackSize > 0 ) {
-            int stk = is.stackSize;
-            for( int i = 0; i < MathHelper.ceiling_float_int((float) is.stackSize / (float) is.getMaxStackSize()); i++ ) {
-                ItemStack is1 = is.copy();
-                if( stk > is.getMaxStackSize() ) {
-                    stk -= is1.stackSize = is.getMaxStackSize();
-                } else {
-                    is1.stackSize = stk;
-                }
-                isMap.add(is1);
-            }
-        }
-        return isMap.toArray(new ItemStack[isMap.size()]);
-    }
-
-    static boolean isItemInStackArray(ItemStack base, boolean checkNbt, ItemStack... stackArray) {
-        for( ItemStack stack : stackArray ) {
-            if( base != null && stack != null && areStacksEqual(base, stack, checkNbt) ) {
-                return true;
-            }
-        }
-        return false;
-    }
-
+    @Deprecated
     static boolean areItemInstEqual(Object instance1, Object instance2) {
         if( instance1 instanceof Item ) {
             if( instance2 instanceof Item ) {
@@ -113,45 +46,5 @@ final class ItemHelper
             }
         }
         return false;
-    }
-
-    static ItemStack addItemStackToInventory(ItemStack is, IInventory inv) {
-        int invSize = inv.getSizeInventory() - (inv instanceof InventoryPlayer ? 4 : 0);
-        for( int i1 = 0; i1 < invSize && is != null; i1++ ) {
-            ItemStack invIS = inv.getStackInSlot(i1);
-            if( invIS != null && is.isItemEqual(invIS) ) {
-                int combinedCount = is.stackSize + invIS.stackSize;
-                int maxStack = Math.min(invIS.getMaxStackSize(), inv.getInventoryStackLimit());
-                if( combinedCount <= maxStack ) {
-                    invIS.stackSize = combinedCount;
-                    inv.setInventorySlotContents(i1, invIS.copy());
-                    is = null;
-                    break;
-                } else {
-                    int rest = combinedCount - maxStack;
-                    invIS.stackSize = maxStack;
-                    inv.setInventorySlotContents(i1, invIS.copy());
-                    is.stackSize = rest;
-                }
-            }
-        }
-
-        // if the given stack is not empty yet, search for an empty slot and put it there
-        for( int i2 = 0; i2 < invSize && is != null; i2++ ) {
-            ItemStack invIS = inv.getStackInSlot(i2);
-            if( invIS == null && inv.isItemValidForSlot(i2, is) ) {
-                if( is.stackSize <= inv.getInventoryStackLimit() ) {
-                    inv.setInventorySlotContents(i2, is.copy());
-                    is = null;
-                    break;
-                } else {
-                    int rest = is.stackSize - inv.getInventoryStackLimit();
-                    is.stackSize = inv.getInventoryStackLimit();
-                    inv.setInventorySlotContents(i2, is.copy());
-                    is.stackSize = rest;
-                }
-            }
-        }
-        return is;
     }
 }

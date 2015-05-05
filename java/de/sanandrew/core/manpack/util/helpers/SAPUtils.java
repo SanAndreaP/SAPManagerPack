@@ -1,3 +1,11 @@
+/**
+ * ****************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ * http://creativecommons.org/licenses/by-nc-sa/4.0/
+ * *****************************************************************************************************************
+ */
 package de.sanandrew.core.manpack.util.helpers;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -27,68 +35,40 @@ import java.util.Set;
  * A helper class for common used stuff, which is not found somewhere else and
  * not as easy and short to write. It's goal is to shorten and cleanse the
  * sourcecode with unnecessary stuff.
- *
- * @author SanAndreasP
  */
 public final class SAPUtils
 {
     /** My personal RNG Deity, to be used whenever a global RNG is needed */
     public static final Random RNG = new Random();
 
-    /**
-     * decreases the ItemStack stackSize by 1
-     *
-     * @param stack ItemStack, whose stackSize will be decreased
-     * @return The stackSize-decreased ItemStack or null if stackSize <= 0
-     **/
+    @Deprecated
     public static ItemStack decrStackSize(ItemStack stack) {
-        return decrStackSize(stack, 1);
+        return ItemUtils.decrStackSize(stack, 1);
     }
 
-    /**
-     * decreases the ItemStack stackSize by the amount value
-     *
-     * @param stack ItemStack, whose stackSize will be decreased
-     * @param amount The amount which will be subtracted from the stackSize
-     * @return The stackSize-decreased ItemStack or null if stackSize <= 0
-     **/
+    @Deprecated
     public static ItemStack decrStackSize(ItemStack stack, int amount) {
-        return ItemHelper.decrStackSize(stack, amount);
+        return ItemUtils.decrStackSize(stack, amount);
     }
 
+    @Deprecated
     public static ItemStack decrInvStackSize(ItemStack stack, int amount) {
         return ItemHelper.decrInvStackSize(stack, amount);
     }
 
-    /**
-     * Compares two ItemStacks if they are equal. If one of the ItemStacks has
-     * the metadata wildcard as damage value, only the item instances will be
-     * compared.
-     *
-     * @param stack1 The first ItemStack
-     * @param stack2 the second ItemStack
-     * @return true, if stacks are equal, false otherwise.
-     */
     @Deprecated
     public static boolean areStacksEqualWithWCV(ItemStack stack1, ItemStack stack2) {
-        return ItemHelper.areStacksEqual(stack1, stack2, false);
+        return ItemUtils.areStacksEqual(stack1, stack2, false);
     }
 
+    @Deprecated
     public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2, boolean checkNbt) {
-        return ItemHelper.areStacksEqual(stack1, stack2, checkNbt);
+        return ItemUtils.areStacksEqual(stack1, stack2, checkNbt);
     }
 
-    /**
-     * Splits the ItemStack into multiple ("good") ones if stackSize >
-     * getMaxStackSize().
-     *
-     * @param stack The ItemStack which shall be splitted into "good" ItemStacks
-     * @return An Array of "good" ItemStacks. If stackSize was smaller than the
-     *         maxStackSize, the original ItemStack is in Field 0 inside the
-     *         Array.
-     */
+    @Deprecated
     public static ItemStack[] getGoodItemStacks(ItemStack stack) {
-        return ItemHelper.getGoodItemStacks(stack);
+        return ItemUtils.getGoodItemStacks(stack);
     }
 
     /**
@@ -105,12 +85,11 @@ public final class SAPUtils
     }
 
     /**
-     * public reflection getter for {@link net.minecraft.block.Block#createStackedBlock(int)}. Look at it's javadoc for more info.
+     * public reflection getter for {@link net.minecraft.block.Block#createStackedBlock(int)}.
      * @param block The block which will invoke the method
      * @param meta the metadata of the invoking block
      * @return the return value from the invoked method
      */
-    @SuppressWarnings("unused")
     public static ItemStack getSilkBlock(Block block, int meta) {
         return SAPReflectionHelper.invokeCachedMethod(Block.class, block, "createStackedBlock", "func_71880_c_", new Class[]{int.class}, new Object[]{meta});
     }
@@ -120,40 +99,50 @@ public final class SAPUtils
         dropBlockAsItem(world, x, y, z, stack);
     }
 
+    @Deprecated
     public static void dropBlockAsItem(World world, int x, int y, int z, ItemStack stack) {
         EntityItem item = new EntityItem(world, x + 0.5D, y + 0.5D, z + 0.5D, stack);
         world.spawnEntityInWorld(item);
     }
 
+    @Deprecated
     public static void dropBlockXP(Block block, World world, int x, int y, int z, int meta, int fortune) {
         block.dropXpOnBlockBreak(world, x, y, z, block.getExpDrop(world, meta, fortune));
     }
 
     @Deprecated
     public static boolean isItemInStackArray(ItemStack base, ItemStack... stackArray) {
-        return ItemHelper.isItemInStackArray(base, false, stackArray);
+        return ItemUtils.isItemStackInArray(base, false, stackArray);
     }
 
     @Deprecated
     public static boolean isItemInStackArray(ItemStack base, List<ItemStack> stackArray) {
-        return ItemHelper.isItemInStackArray(base, false, stackArray.toArray(new ItemStack[stackArray.size()]));
+        return ItemUtils.isItemStackInArray(base, false, stackArray.toArray(new ItemStack[stackArray.size()]));
     }
 
+    @Deprecated
     public static boolean isItemInStackArray(ItemStack base, boolean checkSize, ItemStack... stackArray) {
-        return ItemHelper.isItemInStackArray(base, checkSize, stackArray);
+        return ItemUtils.isItemStackInArray(base, checkSize, stackArray);
     }
 
+    @Deprecated
     public static boolean isItemInStackArray(ItemStack base, boolean checkSize, List<ItemStack> stackArray) {
-        return ItemHelper.isItemInStackArray(base, checkSize, stackArray.toArray(new ItemStack[stackArray.size()]));
+        return ItemUtils.isItemStackInArray(base, checkSize, stackArray.toArray(new ItemStack[stackArray.size()]));
     }
 
+    /**
+     * Gets the effective blocks array from the ItemTool.
+     * @param tool The ItemTool instance whose array should be grabbed
+     * @return the effective blocks array
+     */
     @SuppressWarnings("unchecked")
     public static Block[] getToolBlocks(ItemTool tool) {
         Set set = SAPReflectionHelper.getCachedFieldValue(ItemTool.class, tool, "field_150914_c", "field_150914_c");
         Set<Block> blockSet = (Set<Block>) set;
-        return getArrayFromCollection(blockSet, Block.class);
+        return blockSet.toArray(new Block[blockSet.size()]);
     }
 
+    @Deprecated
     public static boolean isToolEffective(Block[] effectives, Block block) {
         for( Block currBlock : effectives ) {
             if( block == currBlock ) {
@@ -163,10 +152,12 @@ public final class SAPUtils
         return false;
     }
 
+    @Deprecated
     public static boolean areItemInstEqual(Object instance1, Object instance2) {
         return ItemHelper.areItemInstEqual(instance1, instance2);
     }
 
+    @Deprecated
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <T> T[] getArrayFromCollection(Collection<T> collection, Class clazz) {
         if( collection.size() == 0 ) {
@@ -177,6 +168,11 @@ public final class SAPUtils
         return myArray;
     }
 
+    /**
+     * Registers all blocks with their unlocalized name to the GameRegistry.
+     * @param blocks The blocks to be registered
+     * @see GameRegistry#registerBlock(Block, String)
+     */
     public static void registerBlocks(Block... blocks) {
         for( Block block : blocks ) {
             String blockName = block.getUnlocalizedName();
@@ -185,12 +181,23 @@ public final class SAPUtils
         }
     }
 
+    /**
+     * Registers a block with their unlocalized name to the GameRegistry. It binds the supplied itemClass as its ItemBlock to this block.
+     * @param block The block to be registered
+     * @param itemClass the ItemBlock class to be bound to the block
+     * @see GameRegistry#registerBlock(Block, Class, String)
+     */
     public static void registerBlockWithItem(Block block, Class<? extends ItemBlock> itemClass) {
         String blockName = block.getUnlocalizedName();
         blockName = blockName.substring(blockName.lastIndexOf(':') + 1);
         GameRegistry.registerBlock(block, itemClass, blockName.toLowerCase());
     }
 
+    /**
+     * Registers all items with their unlocalized name to the GameRegistry.
+     * @param items The blocks to be registered
+     * @see GameRegistry#registerItem(Item, String)
+     */
     public static void registerItems(Item... items) {
         for( Item item : items ) {
             String itemName = item.getUnlocalizedName();
@@ -199,16 +206,23 @@ public final class SAPUtils
         }
     }
 
+    @Deprecated
     public static ItemStack addItemStackToInventory(ItemStack is, IInventory inv) {
-        return ItemHelper.addItemStackToInventory(is, inv);
+        return InventoryUtils.addStackToInventory(is, inv);
     }
 
+    /**
+     * Gets an {@link de.sanandrew.core.manpack.util.helpers.SAPUtils.RGBAValues} instance from a color integer (0xAARRGGBB).
+     * @param rgba The RGBA value as int
+     * @return an RGBAValues instance
+     */
     public static RGBAValues getRgbaFromColorInt(int rgba) {
         return new RGBAValues(((rgba) >> 16) & 255, ((rgba) >> 8) & 255, rgba & 255, ((rgba) >> 24) & 255);
     }
 
+    @Deprecated
     public static File getMcDir(String path) {
-        return AppHelper.getMcDir(path);
+        return new File(".", path);
     }
 
     public static void restartApp() {
@@ -219,6 +233,12 @@ public final class SAPUtils
         AppHelper.shutdownApp();
     }
 
+    /**
+     * Checks if the index is within the range of the array.
+     * @param array The array to check against
+     * @param index The index to be checked
+     * @return true, if the index is within range, false otherwise
+     */
     public static boolean isIndexInRange(Object[] array, int index) {
         return index >= 0 && index < array.length;
     }
@@ -240,12 +260,24 @@ public final class SAPUtils
         return SAPReflectionHelper.getCachedFieldValue(ItemArmor.ArmorMaterial.class, aMaterial, "maxDamageFactor", "field_78048_f");
     }
 
+    /**
+     * Registers a new IRecipe instance into the RecipeSorter and the CraftingManager
+     * @param recipe The recipe to be registered
+     * @param name the recipe name
+     * @param category the recipe category it will be sorted in
+     * @param dependencies a string representing the dependencies for this recipe
+     */
     @SuppressWarnings("unchecked")
     public static void registerSortedRecipe(IRecipe recipe, String name, Category category, String dependencies) {
         RecipeSorter.register(name, recipe.getClass(), category, dependencies);
         CraftingManager.getInstance().getRecipeList().add(recipe);
     }
 
+    /**
+     * translates a key via {@link StatCollector#translateToLocal(String)}
+     * @param key The key to be translated
+     * @return The translated key
+     */
     public static String translate(String key) {
         return StatCollector.translateToLocal(key);
     }

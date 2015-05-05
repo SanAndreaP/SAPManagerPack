@@ -10,10 +10,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 public final class GuiUtils
 {
+    private static RenderItem itemRenderer = new RenderItem();
+
     public static void drawGradientRect(int x1, int y1, int x2, int y2, int color1, int color2, float zLevel) {
         float a1 = (color1 >> 24 & 255) / 255.0F;
         float r1 = (color1 >> 16 & 255) / 255.0F;
@@ -80,5 +86,34 @@ public final class GuiUtils
         }
 
         GL11.glScissor(x * scaleFactor, mc.displayHeight - (y + height) * scaleFactor, width * scaleFactor, height * scaleFactor);
+    }
+
+    public static void drawGuiIcon(IIcon icon, int posX, int posY) {
+        GL11.glPushMatrix();
+        GL11.glTranslatef(0.0F, 0.0F, 32.0F);
+        itemRenderer.zLevel = 200.0F;
+
+        GL11.glEnable(GL11.GL_BLEND);
+        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+
+        ResourceLocation resourcelocation = Minecraft.getMinecraft().getTextureManager().getResourceLocation(1);
+        Minecraft.getMinecraft().getTextureManager().bindTexture(resourcelocation);
+
+        if( icon == null ) {
+            icon = ((TextureMap) Minecraft.getMinecraft().getTextureManager().getTexture(resourcelocation)).getAtlasSprite("missingno");
+        }
+
+        itemRenderer.renderIcon(posX, posY, icon, 16, 16);
+
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        GL11.glDisable(GL11.GL_BLEND);
+
+        itemRenderer.zLevel = 0.0F;
+        GL11.glPopMatrix();
+    }
+
+    public static boolean isMouseInRect(int mouseX, int mouseY, int rectX, int rectY, int width, int height) {
+        return mouseX >= rectX && mouseX < rectX + width && mouseY >= rectY && mouseY < rectY + height;
     }
 }

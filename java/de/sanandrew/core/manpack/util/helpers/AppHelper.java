@@ -35,8 +35,9 @@ final class AppHelper
             }
 
             final List<String> cmd = new ArrayList<>();
+
+
             cmd.add('"' + java + '"');                      // init the command to execute
-            cmd.addAll(vmArguments);                        // add the vm args
 
             String[] mainCommand = System.getProperty("sun.java.command").split(" ");       // program main and program arguments
             if( mainCommand[0].endsWith(".jar") ) {                                         // program main is a jar, add -jar mainJar
@@ -47,8 +48,8 @@ final class AppHelper
                 cmd.add('"' + System.getProperty("java.class.path") + '"');
                 cmd.add(mainCommand[0]);
             }
-
             cmd.addAll(Arrays.asList(mainCommand).subList(1, mainCommand.length));          // finally add program arguments
+            cmd.addAll(vmArguments);                        // add the vm args
 
             OutputStream os = System.out;
             Runtime.getRuntime().addShutdownHook(new Thread()               // execute the command in a shutdown hook, to be sure that all the
@@ -80,9 +81,5 @@ final class AppHelper
         System.out.println();
         ModCntManPack.MOD_LOG.log(Level.INFO, "---=== Shutting down Minecraft! ===---");
         FMLCommonHandler.instance().exitJava(0, false);                                                 // try to exit Minecraft
-    }
-
-    static File getMcDir(String path) {
-        return new File(".", path);
     }
 }

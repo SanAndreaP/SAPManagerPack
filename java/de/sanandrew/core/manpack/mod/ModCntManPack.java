@@ -43,7 +43,7 @@ public class ModCntManPack
     public static final Logger MOD_LOG = LogManager.getLogger(MOD_ID);
     public static final Logger UPD_LOG = LogManager.getLogger("SAPUpdateMgr");
 
-    public static final String MOD_VERSION = "2.4.2";
+    public static final String MOD_VERSION = "2.5.0";
 
     public static final int FORGE_BULD_MIN = 1291;
 
