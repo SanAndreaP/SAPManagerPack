@@ -25,10 +25,11 @@ public final class ItemUtils
     private static final Comparator<NBTTagCompound> STD_NBT_COMPARATOR = new Comparator<NBTTagCompound>() {
         @Override
         public int compare(NBTTagCompound o1, NBTTagCompound o2) {
-            if( o1 != null && !o1.equals(o2) ) {
-                return 1;
-            }
-            if( o2 != null ) {
+            if( o1 != null ) {
+                if( !o1.equals(o2) ) {
+                    return 1;
+                }
+            } else if( o2 != null ) {
                 return -1;
             }
             return 0;
