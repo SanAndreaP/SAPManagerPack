@@ -137,7 +137,7 @@ public final class ItemUtils
 
             isNew = is.copy();
 
-            if( (isNew.stackSize -= isNew.getMaxStackSize() * isNew.getMaxStackSize()) > 0 ) {
+            if( (isNew.stackSize -= maxStackSize * maxFullStackCnt) > 0 ) {
                 isMap.add(isNew);
             }
 
