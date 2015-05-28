@@ -282,6 +282,11 @@ public final class SAPUtils
         return StatCollector.translateToLocal(key);
     }
 
+    @SuppressWarnings("unchecked")
+    private static <T> T getCasted(Object obj) {
+        return (T)obj;
+    }
+
     /**
      * translates a key and then formats the translated string with the data afterwards.
      * @param key The key to be translated

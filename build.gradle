@@ -22,8 +22,8 @@ group = "de.sanandrew.core"
 archivesBaseName = 'SAPManPack'
 
 minecraft {
-	version = "1.7.10-10.13.2.1291"
-    runDir = "eclipse"
+	version = "1.7.10-10.13.3.1401-1710ls"
+    runDir = "minecraft"
 }
 
 processResources {
