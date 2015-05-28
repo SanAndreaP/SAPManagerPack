@@ -283,7 +283,7 @@ public final class SAPUtils
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> T getCasted(Object obj) {
+    public static <T> T getCasted(Object obj) {
         return (T)obj;
     }
 
