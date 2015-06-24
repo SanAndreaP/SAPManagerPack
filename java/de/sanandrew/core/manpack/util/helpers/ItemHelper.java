@@ -11,6 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
+//FIXME: REMOVE WHEN UPDATING TO NEW MC VERSION!
 @Deprecated
 final class ItemHelper
 {

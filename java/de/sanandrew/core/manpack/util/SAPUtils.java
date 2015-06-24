@@ -14,11 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
-/**
- * A dummy class for compatibility!
- *
- * @author SanAndreasP
- */
+//FIXME: REMOVE WHEN UPDATING TO NEW MC VERSION!
 @Deprecated
 public final class SAPUtils
 {

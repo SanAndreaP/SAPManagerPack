@@ -8,6 +8,7 @@
  */
 package de.sanandrew.core.manpack.util.helpers;
 
+import cpw.mods.fml.common.eventhandler.EventBus;
 import cpw.mods.fml.common.registry.GameRegistry;
 import de.sanandrew.core.manpack.util.SAPReflectionHelper;
 import de.sanandrew.core.manpack.util.javatuples.Quartet;
@@ -40,6 +41,8 @@ public final class SAPUtils
 {
     /** My personal RNG Deity, to be used whenever a global RNG is needed */
     public static final Random RNG = new Random();
+
+    public static final EventBus EVENT_BUS = new EventBus();
 
     @Deprecated
     public static ItemStack decrStackSize(ItemStack stack) {
