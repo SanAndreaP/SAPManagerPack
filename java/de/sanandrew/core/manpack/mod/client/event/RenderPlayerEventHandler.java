@@ -14,6 +14,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.resources.IResourceManagerReloadListener;
+import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -30,6 +32,10 @@ public class RenderPlayerEventHandler
         if( this.sanPlayerModel == null ) {
             this.sanPlayerModel = new RenderSanPlayer();
             this.sanPlayerModel.setRenderManager(RenderManager.instance);
+
+            if( Minecraft.getMinecraft().getResourceManager() instanceof SimpleReloadableResourceManager ) {
+                ((SimpleReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(this.sanPlayerModel);
+            }
         }
     }
 
