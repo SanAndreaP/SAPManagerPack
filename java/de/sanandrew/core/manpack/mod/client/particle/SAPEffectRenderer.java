@@ -8,9 +8,13 @@ package de.sanandrew.core.manpack.mod.client.particle;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.*;
+import de.sanandrew.core.manpack.util.client.EntityParticle;
+import de.sanandrew.core.manpack.util.client.event.SAPFxLayerRenderEvent;
+import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.core.manpack.util.javatuples.Pair;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.Entity;
@@ -25,7 +29,7 @@ public class SAPEffectRenderer
 {
     private static final ResourceLocation PARTICLE_TEXTURES = new ResourceLocation("textures/particle/particles.png");
     private int defaultFxLayer = 0;
-    private Map<Integer, Pair<ResourceLocation, Boolean>> fxLayers = Maps.newHashMap();
+    private Map<Integer, Pair<ResourceLocation, Boolean>> fxLayers = new HashMap<>();
     private Multimap<Integer, EntityParticle> particles = ArrayListMultimap.create();
     private TextureManager textureManager;
 
@@ -81,17 +85,6 @@ public class SAPEffectRenderer
             Pair<ResourceLocation, Boolean> layerData = layer.getValue();
             Collection<EntityParticle> particles = this.particles.get(layer.getKey());
             if( !particles.isEmpty() ) {
-                this.textureManager.bindTexture(layerData.getValue0());
-
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                if( layerData.getValue1() ) {
-                    GL11.glEnable(GL11.GL_BLEND);
-                    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                }
-//                GL11.glDepthMask(false);
-//                GL11.glEnable(GL11.GL_BLEND);
-//                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-//                GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569F);
                 Tessellator tessellator = Tessellator.instance;
                 tessellator.startDrawingQuads();
 
@@ -105,25 +98,30 @@ public class SAPEffectRenderer
                     try {
                         particle.renderParticle(tessellator, partTicks, rotX, rotXZ, rotZ, rotYZ, rotXY);
                     } catch( Throwable throwable ) {
-                        throw new RuntimeException("Couldn't render particle!");
+                        throw new RuntimeException("Couldn't render particle!", throwable);
                     }
                 }
 
+                this.textureManager.bindTexture(layerData.getValue0());
+                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                if( layerData.getValue1() ) {
+                    GL11.glEnable(GL11.GL_BLEND);
+                    OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+                }
+
+                SAPUtils.EVENT_BUS.post(new SAPFxLayerRenderEvent.Pre(layer.getKey(), tessellator));
                 tessellator.draw();
+                SAPUtils.EVENT_BUS.post(new SAPFxLayerRenderEvent.Post(layer.getKey()));
+
                 if( layerData.getValue1() ) {
                     GL11.glDisable(GL11.GL_BLEND);
-//                    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                 }
-//                GL11.glDisable(GL11.GL_BLEND);
-//                GL11.glDepthMask(true);
-//                GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
             }
         }
     }
 
     public static void initialize(TextureManager texManager) {
         if( isInitialized ) {
-//            FMLLog.log(ModCntManPack.MOD_LOG, Level.ERROR, "Cannot reinitialize SAP-EffectRenderer!");
             return;
         }
 

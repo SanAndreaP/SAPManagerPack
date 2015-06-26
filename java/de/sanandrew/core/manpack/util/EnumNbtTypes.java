@@ -8,6 +8,7 @@
  */
 package de.sanandrew.core.manpack.util;
 
+//FIXME: REMOVE WHEN UPDATING TO NEW MC VERSION!
 /**
  * A helper enum for the NBT Types.<br>
  * <b>It's deprecated, though, so use {@link net.minecraftforge.common.util.Constants.NBT} instead! Thanks.</b>
