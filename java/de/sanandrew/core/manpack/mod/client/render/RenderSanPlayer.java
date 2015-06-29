@@ -20,10 +20,14 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.opengl.GL11;
@@ -37,6 +41,7 @@ import java.util.Map;
 
 public class RenderSanPlayer
         extends RenderPlayer
+        implements IResourceManagerReloadListener
 {
     public static final ResourceLocation TEXTURE = new ResourceLocation("sapmanpack", "textures/entity/player/SanPlayer.png");
     public static final ResourceLocation TEXTURE_SLEEP = new ResourceLocation("sapmanpack", "textures/entity/player/SanPlayer_sleeping.png");
@@ -81,7 +86,7 @@ public class RenderSanPlayer
                     case 0:
                         this.bindTexture(tryLoadArmorPiece("Hat", unlocName, player, stack, renderPass));
                         if( !this.hatRenderList.containsKey(unlocName) ) {
-                            CubeLoader cubes = CubeLoader.loadFromResource(new ResourceLocation("sapmanpack", "model/hats/" + unlocName + ".json"));
+                            CubeLoader cubes = CubeLoader.loadFromResource(unlocName);
                             cubes.initCubeInstances(this.myModelArmor);
                             hatRenderList.put(unlocName, cubes);
                         }
@@ -237,6 +242,7 @@ public class RenderSanPlayer
                 Minecraft.getMinecraft().getResourceManager().getResource(resLoc);
             } catch( IOException ex ) {
                 ModCntManPack.MOD_LOG.printf(Level.WARN, "Can't load armor texture for item %s!", unlocName);
+                Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(String.format("Can't load armor texture for item %s!", unlocName)));
                 resLoc = RenderBiped.getArmorResource(player, stack, pass, null);
                 try( InputStream textureStream = Minecraft.getMinecraft().getResourceManager().getResource(resLoc).getInputStream() ) {
                     this.unknownTextureColorMap.put(unlocName, AverageColorHelper.getAverageColor(textureStream));
@@ -253,16 +259,25 @@ public class RenderSanPlayer
         return resLoc;
     }
 
+    @Override
+    public void onResourceManagerReload(IResourceManager resManager) {
+        this.unknownTextureColorMap.clear();
+        this.hatRenderList.clear();
+    }
+
     public static class CubeLoader {
         public CubeLoaderCube[] cubes = new CubeLoaderCube[0];
         public boolean hideTails;
         private ModelRenderer[] cubeInsts = new ModelRenderer[1];
 
-        public static CubeLoader loadFromResource(ResourceLocation loc) {
-            try( BufferedReader in = new BufferedReader(new InputStreamReader(Minecraft.getMinecraft().getResourceManager().getResource(loc).getInputStream())) ) {
+        public static CubeLoader loadFromResource(String unlocName) {
+            try( BufferedReader in = new BufferedReader(new InputStreamReader(Minecraft.getMinecraft().getResourceManager()
+                                            .getResource(new ResourceLocation("sapmanpack", "model/hats/" + unlocName + ".json")).getInputStream())) )
+            {
                 return new Gson().fromJson(in, CubeLoader.class);
             } catch( IOException ex ) {
-                ex.printStackTrace();
+                ModCntManPack.MOD_LOG.printf(Level.WARN, "Can't load hat model for item %s!", unlocName);
+                Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(String.format("Can't load hat model for item %s!", unlocName)));
                 return new CubeLoader();
             }
         }
