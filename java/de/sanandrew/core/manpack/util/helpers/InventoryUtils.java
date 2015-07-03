@@ -57,13 +57,17 @@ public final class InventoryUtils
      * @return the remaining stack if the inventory is full / fills out or null if it added the complete stack
      */
     public static ItemStack addStackToInventory(ItemStack is, IInventory inv) {
+        return addStackToInventory(is, inv, true);
+    }
+
+    public static ItemStack addStackToInventory(ItemStack is, IInventory inv, boolean checkNBT) {
         int invSize = inv.getSizeInventory() - (inv instanceof InventoryPlayer ? 4 : 0);
 
         ItemStack invIS;
         int rest;
         for( int i = 0; i < invSize && is != null; ++i ) {
             invIS = inv.getStackInSlot(i);
-            if( invIS != null && ItemStack.areItemStacksEqual(is, invIS) ) {
+            if( invIS != null && ItemUtils.areStacksEqual(is, invIS, checkNBT) ) {
                 rest = is.stackSize + invIS.stackSize;
                 int maxStack = Math.min(invIS.getMaxStackSize(), inv.getInventoryStackLimit());
                 if(rest <= maxStack) {
