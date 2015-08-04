@@ -64,6 +64,7 @@ public class TransformEntityThrowable
 
             needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/world/World", ASMNames.M_rayTraceBlocks, "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;)Lnet/minecraft/util/MovingObjectPosition;", false));
 
+            //TODO: find a way to not remove instructions...
             methodNode.instructions.remove(ASMHelper.findLastNodeFromNeedle(methodNode.instructions, needle));
 
             InsnList injectList = new InsnList();

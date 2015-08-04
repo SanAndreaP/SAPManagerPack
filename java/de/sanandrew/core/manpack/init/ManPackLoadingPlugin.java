@@ -40,7 +40,8 @@ public class ManPackLoadingPlugin
                          TransformELBAttackingPlayer.class.getName(),
                          TransformPlayerDismountCtrl.class.getName(),
                          TransformHorseArmor.class.getName(),
-                         TransformEnderman.class.getName()
+                         TransformEnderman.class.getName(),
+                         TransformEntityCollision.class.getName()
                };
     }
 

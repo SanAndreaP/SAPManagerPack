@@ -6,6 +6,7 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.transformer;
 
+//TODO: get the SRG name from the mcp_srg.srg provided by the manager pack!
 public final class ASMNames
 {
     private static boolean isInitialized = false;
@@ -66,6 +67,8 @@ public final class ASMNames
     public static String M_getEntityRenderObj;
     public static String M_getEntityClsRenderObj;
     public static String M_renderHand;
+    public static String M_getBoundingBox;
+    public static String M_getCollidingBBoxes;
 
     public static void initialize() {
         if( isInitialized ) {
@@ -128,6 +131,8 @@ public final class ASMNames
         M_getEntityRenderObj =    ASMHelper.getRemappedMF("getEntityRenderObject",       "func_78713_a");
         M_getEntityClsRenderObj = ASMHelper.getRemappedMF("getEntityClassRenderObject",  "func_78715_a");
         M_renderHand =            ASMHelper.getRemappedMF("renderHand",                  "func_78476_b");
+        M_getBoundingBox =        ASMHelper.getRemappedMF("getBoundingBox",              "func_70046_E");
+        M_getCollidingBBoxes =    ASMHelper.getRemappedMF("getCollidingBoundingBoxes",   "func_72945_a");
 
         isInitialized = true;
     }
