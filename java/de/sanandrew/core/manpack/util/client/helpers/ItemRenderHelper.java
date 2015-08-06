@@ -22,6 +22,10 @@ import net.minecraft.item.ItemCloth;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.IItemRenderer;
+import net.minecraftforge.client.IItemRenderer.ItemRenderType;
+import net.minecraftforge.client.MinecraftForgeClient;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -153,9 +157,18 @@ public final class ItemRenderHelper
             GL11.glPushMatrix();
 
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            IItemRenderer customRenderer = MinecraftForgeClient.getItemRenderer(stack, ItemRenderType.EQUIPPED);
+            if( customRenderer != null ) {
+                Minecraft.getMinecraft().renderEngine.bindTexture(Minecraft.getMinecraft().renderEngine.getResourceLocation(stack.getItemSpriteNumber()));
 
-            if( stack.getItemSpriteNumber() == 0 && stack.getItem() instanceof ItemBlock
-                    && RenderBlocks.renderItemIn3d(Block.getBlockFromItem(stack.getItem()).getRenderType()) )
+                GL11.glPushMatrix();
+                GL11.glTranslatef(0.5F, 0.5F, 0.0F);
+                float blockScale = 0.5F;
+                GL11.glScalef(blockScale, blockScale, blockScale);
+                ForgeHooksClient.renderEquippedItem(ItemRenderType.EQUIPPED, customRenderer, renderBlocksRi, Minecraft.getMinecraft().thePlayer, stack);
+                GL11.glPopMatrix();
+            } else if( stack.getItemSpriteNumber() == 0 && stack.getItem() instanceof ItemBlock
+                       && RenderBlocks.renderItemIn3d(Block.getBlockFromItem(stack.getItem()).getRenderType()) )
             {
                 Minecraft.getMinecraft().renderEngine.bindTexture(Minecraft.getMinecraft().renderEngine.getResourceLocation(stack.getItemSpriteNumber()));
 

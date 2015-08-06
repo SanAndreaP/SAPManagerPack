@@ -12,6 +12,8 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -111,6 +113,32 @@ public final class GuiUtils
 
         itemRenderer.zLevel = 0.0F;
         GL11.glPopMatrix();
+    }
+
+    public static void drawGuiStack(ItemStack stack, int posX, int posY) {
+        Item itm = stack.getItem();
+        float red;
+        float green;
+        float blue;
+        if( itm.requiresMultipleRenderPasses() ) {
+            for( int i = 0, max = itm.getRenderPasses(stack.getItemDamage()); i < max; i++ ) {
+                int k1 = itm.getColorFromItemStack(stack, i);
+                red = (k1 >> 16 & 255) / 255.0F;
+                green = (k1 >> 8 & 255) / 255.0F;
+                blue = (k1 & 255) / 255.0F;
+                GL11.glColor4f(1.0F * red, 1.0F * green, 1.0F * blue, 1.0F);
+                drawGuiIcon(itm.getIcon(stack, i), posX, posY);
+            }
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        } else {
+            int k1 = itm.getColorFromItemStack(stack, 0);
+            red = (k1 >> 16 & 255) / 255.0F;
+            green = (k1 >> 8 & 255) / 255.0F;
+            blue = (k1 & 255) / 255.0F;
+            GL11.glColor4f(1.0F * red, 1.0F * green, 1.0F * blue, 1.0F);
+            drawGuiIcon(stack.getIconIndex(), posX, posY);
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        }
     }
 
     public static boolean isMouseInRect(int mouseX, int mouseY, int rectX, int rectY, int width, int height) {
