@@ -69,6 +69,8 @@ public final class ASMNames
     public static String M_renderHand;
     public static String M_getBoundingBox;
     public static String M_getCollidingBBoxes;
+    public static String M_aabbExpand;
+    public static String M_getEntitiesExclude;
 
     public static void initialize() {
         if( isInitialized ) {
@@ -133,6 +135,8 @@ public final class ASMNames
         M_renderHand =            ASMHelper.getRemappedMF("renderHand",                  "func_78476_b");
         M_getBoundingBox =        ASMHelper.getRemappedMF("getBoundingBox",              "func_70046_E");
         M_getCollidingBBoxes =    ASMHelper.getRemappedMF("getCollidingBoundingBoxes",   "func_72945_a");
+        M_aabbExpand =            ASMHelper.getRemappedMF("expand",                      "func_72314_b");
+        M_getEntitiesExclude =    ASMHelper.getRemappedMF("getEntitiesWithinAABBExcludingEntity", "func_94576_a");
 
         isInitialized = true;
     }

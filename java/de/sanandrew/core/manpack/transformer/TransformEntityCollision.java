@@ -59,17 +59,49 @@ public class TransformEntityCollision
         LabelNode ln = new LabelNode();
         needle.add(ln);
         needle.add(new LineNumberNode(-1, ln));
+        needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        needle.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        needle.add(new VarInsnNode(Opcodes.ALOAD, 2));
+        needle.add(new VarInsnNode(Opcodes.DLOAD, -1));
+        needle.add(new VarInsnNode(Opcodes.DLOAD, -1));
+        needle.add(new VarInsnNode(Opcodes.DLOAD, -1));
+        needle.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/util/AxisAlignedBB", ASMNames.M_aabbExpand, "(DDD)Lnet/minecraft/util/AxisAlignedBB;", false));
+        needle.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/world/World", ASMNames.M_getEntitiesExclude, "(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Ljava/util/List;", false));
+        needle.add(new VarInsnNode(Opcodes.ASTORE, -1));
+
+        VarInsnNode insertPoint = (VarInsnNode) ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
+
+        InsnList injectList = new InsnList();
+        injectList.add(new LabelNode());
+        injectList.add(new FieldInsnNode(Opcodes.GETSTATIC, "de/sanandrew/core/manpack/util/helpers/SAPUtils", "EVENT_BUS", "Lcpw/mods/fml/common/eventhandler/EventBus;"));
+        injectList.add(new TypeInsnNode(Opcodes.NEW, "de/sanandrew/core/manpack/util/event/entity/CollidingEntityCheckEvent"));
+        injectList.add(new InsnNode(Opcodes.DUP));
+        injectList.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        injectList.add(new VarInsnNode(Opcodes.ALOAD, insertPoint.var));
+        injectList.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        injectList.add(new VarInsnNode(Opcodes.ALOAD, 2));
+        injectList.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "de/sanandrew/core/manpack/util/event/entity/CollidingEntityCheckEvent", "<init>", "(Lnet/minecraft/world/World;Ljava/util/List;Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)V", false));
+        injectList.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "cpw/mods/fml/common/eventhandler/EventBus", "post", "(Lcpw/mods/fml/common/eventhandler/Event;)Z", false));
+        injectList.add(new InsnNode(Opcodes.POP));
+
+        method.instructions.insert(insertPoint, injectList);
+
+        // insert entity-sensitive bounding box method
+
+        needle = new InsnList();
+        ln = new LabelNode();
+        needle.add(ln);
+        needle.add(new LineNumberNode(-1, ln));
         needle.add(new VarInsnNode(Opcodes.ALOAD, 11));
         needle.add(new VarInsnNode(Opcodes.ILOAD, 12));
         needle.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "get", "(I)Ljava/lang/Object;", true));
         needle.add(new TypeInsnNode(Opcodes.CHECKCAST, "net/minecraft/entity/Entity"));
         needle.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/Entity", ASMNames.M_getBoundingBox, "()Lnet/minecraft/util/AxisAlignedBB;", false));
-        needle.add(new VarInsnNode(Opcodes.ASTORE, -1)); // can't be sure if it's 13, since both IntelliJ and the ASM Bytecode Overlay plugin tell me
-                                                         // it's 13, but it really seems to be 15...
+        needle.add(new VarInsnNode(Opcodes.ASTORE, -1));
 
-        VarInsnNode insertPoint = (VarInsnNode) ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
+        insertPoint = (VarInsnNode) ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
 
-        InsnList injectList = new InsnList();
+        injectList = new InsnList();
         injectList.add(new LabelNode());
         injectList.add(new VarInsnNode(Opcodes.ALOAD, 11));
         injectList.add(new VarInsnNode(Opcodes.ILOAD, 12));
