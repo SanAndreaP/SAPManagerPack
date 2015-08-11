@@ -42,14 +42,19 @@ public class RenderPlayerEventHandler
     public void onPlayerRender(RenderPlayerEvent.Pre event) {
         this.lazyLoad();
 
-        if( event.entityPlayer.getCommandSenderName().equals("sanandreasMC") ) {
+        if( event.entityPlayer.getCommandSenderName().equals("sanandreasMC") || event.entityPlayer.getCommandSenderName().equals("SanAndreasP") ) {
             playerPartTicks = event.partialRenderTick;
         }
     }
 
     @SubscribeEvent
     public void onLivingRender(RenderLivingEvent.Pre event) {
-        if( event.entity instanceof EntityPlayer && event.renderer != this.sanPlayerModel && event.entity.getCommandSenderName().equals("sanandreasMC") ) {
+        this.lazyLoad();
+
+        String name = event.entity.getCommandSenderName();
+        if( event.entity instanceof EntityPlayer && event.renderer != this.sanPlayerModel && name != null
+            && (name.equals("sanandreasMC") || name.equals("SanAndreasP")) )
+        {
             this.sanPlayerModel.doRender(event.entity, event.x, event.y + event.entity.yOffset, event.z, 0.0F, this.playerPartTicks);
             event.setCanceled(true);
         }
@@ -62,7 +67,7 @@ public class RenderPlayerEventHandler
 
         GL11.glPushMatrix();
         Minecraft mc = Minecraft.getMinecraft();
-        if( mc.thePlayer.getCommandSenderName().equals("sanandreasMC") ) {
+        if( mc.thePlayer.getCommandSenderName().equals("sanandreasMC") || mc.thePlayer.getCommandSenderName().equals("SanAndreasP") ) {
             event.setCanceled(true);
             GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
             RenderPlayer rend = (RenderPlayer)RenderManager.instance.getEntityRenderObject(mc.thePlayer);

@@ -19,13 +19,16 @@ import java.net.URISyntaxException;
 import java.util.Map;
 
 @SortingIndex(1001)
-@MCVersion("1.7.10")
+@MCVersion(ManPackLoadingPlugin.MC_VERSION)
 @DependsOn("forge")
 @TransformerExclusions({ "de.sanandrew.core.manpack.transformer", "de.sanandrew.core.manpack.init" })
 public class ManPackLoadingPlugin
         implements IFMLLoadingPlugin
 {
+    public static final String MC_VERSION = "1.7.10";
+
     public static File source;
+    public static File mcLoc;
 
     @Override
     public String getAccessTransformerClass() {
@@ -63,15 +66,14 @@ public class ManPackLoadingPlugin
     public void injectData(Map<String, Object> data) {
         ASMHelper.isMCP = !(Boolean) data.get("runtimeDeobfuscationEnabled");
         source = (File) data.get("coremodLocation");
-        if (source == null) { // this is usually in a dev env
+        if( source == null ) { // this is usually in a dev env
             try {
                 source = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
-            } catch (URISyntaxException e) {
+            } catch( URISyntaxException e ) {
                 throw new RuntimeException("Failed to acquire source location for SAPManPack!", e);
             }
         }
-        ASMNames.initialize();
 
-        ASMNameHelper.getInstance().readMcpSrgFile();
+        mcLoc = (File) data.get("mcLocation");
     }
 }
