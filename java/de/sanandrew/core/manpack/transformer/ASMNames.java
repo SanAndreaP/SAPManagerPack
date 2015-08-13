@@ -16,20 +16,50 @@ import java.util.regex.Pattern;
 
 public final class ASMNames
 {
-    public static final String MDO_ENDERMAN_SHOULD_ATTACK_PLAYER = "net/minecraft/entity/monster/EntityEnderman/shouldAttackPlayer (Lnet/minecraft/entity/player/EntityPlayer;)Z";
+    /*
+     * OBFUSCATED NAMES
+     */
+    public static final String MDO_ENDERMAN_SHOULD_ATK_PLAYER = "net/minecraft/entity/monster/EntityEnderman/shouldAttackPlayer (Lnet/minecraft/entity/player/EntityPlayer;)Z";
+    public static final String MDO_GET_COLLIDING_BB = "net/minecraft/world/World/getCollidingBoundingBoxes (Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Ljava/util/List;";
+    public static final String MDO_AABB_EXPAND = "net/minecraft/util/AxisAlignedBB/expand (DDD)Lnet/minecraft/util/AxisAlignedBB;";
+    public static final String MDO_GET_ENTITIES_AABB_EXCLUDE = "net/minecraft/world/World/getEntitiesWithinAABBExcludingEntity (Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Ljava/util/List;";
+    public static final String MDO_GET_ENTITY_BOUNDING_BOX = "net/minecraft/entity/Entity/getBoundingBox ()Lnet/minecraft/util/AxisAlignedBB;";
 
     public static final String FDO_ENTPLAYER_INVENTORY = "net/minecraft/entity/player/EntityPlayer/inventory Lnet/minecraft/entity/player/InventoryPlayer;";
     public static final String FDO_INVPLAYER_ARMORINVENTORY = "net/minecraft/entity/player/InventoryPlayer/armorInventory [Lnet/minecraft/item/ItemStack;";
 
+    /*
+     * NON-OBFUSCATED NAMES
+     */
     public static final String CL_ENDER_FACING_EVENT = "de/sanandrew/core/manpack/util/event/entity/EnderFacingEvent";
+    public static final String CL_COLLIDING_ENTITY_CHECK_EVENT = "de/sanandrew/core/manpack/util/event/entity/CollidingEntityCheckEvent";
+
+    public static final String CL_T_ENTITY = "Lnet/minecraft/entity/Entity;";
+    public static final String CL_T_AXIS_ALIGNED_BB = "Lnet/minecraft/util/AxisAlignedBB;";
 
     public static final String MD_ENDER_FACING_EVENT_CTOR = "de/sanandrew/core/manpack/util/event/entity/EnderFacingEvent/<init> (Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/entity/monster/EntityEnderman;)V";
     public static final String MD_EVENT_BUS_POST = "cpw/mods/fml/common/eventhandler/EventBus/post (Lcpw/mods/fml/common/eventhandler/Event;)Z";
+    public static final String MD_SAP_GET_BOUNDIN_GBOX = "_SAP_getBoundingBox (Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Lnet/minecraft/util/AxisAlignedBB;";
+    public static final String MD_SAP_COLLENTITY_CHKEVT_CTOR = "de/sanandrew/core/manpack/util/event/entity/CollidingEntityCheckEvent/<init> (Lnet/minecraft/world/World;Ljava/util/List;Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)V";
+    public static final String MD_LIST_GET = "java/util/List/get (I)Ljava/lang/Object;";
+    public static final String MD_SAP_GET_BOUNDING_BOX = "net/minecraft/entity/Entity/_SAP_getBoundingBox (Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Lnet/minecraft/util/AxisAlignedBB;";
 
     public static final String FD_FORGE_EVENT_BUS = "net/minecraftforge/common/MinecraftForge/EVENT_BUS Lcpw/mods/fml/common/eventhandler/EventBus;";
+    public static final String FD_SAPUTILS_EVENT_BUS = "de/sanandrew/core/manpack/util/helpers/SAPUtils/EVENT_BUS Lcpw/mods/fml/common/eventhandler/EventBus;";
 
 
     private static final Pattern OWNER_NAME_DESC_PATTERN = Pattern.compile("(.*)/(.*?) (.*)");
+
+    public static MethodNode getNewMethod(int access, String method) {
+        String[] methodSplit = method.split(" ");
+
+        String name = methodSplit[0];
+        String desc = methodSplit[1];
+        String signature = methodSplit.length > 2 ? methodSplit[2] : null;
+        String[] throwing = methodSplit.length > 3 ? methodSplit[3].split(";") : null;
+
+        return new MethodNode(access, name, desc, signature, throwing);
+    }
 
     public static MethodNode findObfMethod(ClassNode cn, String mcpMapping) {
         return ASMObfuscationHelper.getInstance().findMethod(cn, mcpMapping);

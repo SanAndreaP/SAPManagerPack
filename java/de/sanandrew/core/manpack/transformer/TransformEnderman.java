@@ -15,19 +15,18 @@ public class TransformEnderman
         implements IClassTransformer
 {
     @Override
-    public byte[] transform(String name, String transformedName, byte[] basicClass) {
+    public byte[] transform(String name, String transformedName, byte[] bytes) {
         if( "net.minecraft.entity.monster.EntityEnderman".equals(transformedName) ) {
-            ClassNode cn = ASMHelper.createClassNode(basicClass);
-
-            transformShouldAttackPlayer(ASMNames.findObfMethod(cn, ASMNames.MDO_ENDERMAN_SHOULD_ATTACK_PLAYER));
-
-            basicClass = ASMHelper.createBytes(cn, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+            return transformShouldAttackPlayer(bytes);
         }
 
-        return basicClass;
+        return bytes;
     }
 
-    private static void transformShouldAttackPlayer(MethodNode method) {
+    private static byte[] transformShouldAttackPlayer(byte[] bytes) {
+        ClassNode clazz = ASMHelper.createClassNode(bytes);
+        MethodNode method = ASMNames.findObfMethod(clazz, ASMNames.MDO_ENDERMAN_SHOULD_ATK_PLAYER);
+
         InsnList needle = new InsnList();
         needle.add(new VarInsnNode(Opcodes.ALOAD, 1));
         needle.add(ASMNames.getObfFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_ENTPLAYER_INVENTORY));
@@ -53,5 +52,7 @@ public class TransformEnderman
         newInstr.add(l1);
 
         method.instructions.insertBefore(insertPt, newInstr);
+
+        return ASMHelper.createBytes(clazz, /*ClassWriter.COMPUTE_FRAMES |*/ ClassWriter.COMPUTE_MAXS);
     }
 }
