@@ -30,62 +30,71 @@ public class TransformHorseArmor
     private static byte[] transformHorse(byte[] bytes) {
 		ClassNode clazz = ASMHelper.createClassNode(bytes);
 
-		MethodNode method = injectMethodSCAI();
+		MethodNode method = injectMethodSetCustomArmorItem();
 		clazz.methods.add(method);
 
-		method = injectMethodGCAI();
+		method = injectMethodGetCustomArmorItem();
 		clazz.methods.add(method);
 
-		transformInteract(ASMHelper.findMethod(clazz, ASMNames.M_interact, "(Lnet/minecraft/entity/player/EntityPlayer;)Z"));
-        transformIsValidArmor(ASMHelper.findMethod(clazz, ASMNames.M_func146085a, "(Lnet/minecraft/item/Item;)Z"));
-        transformEntityInit(ASMHelper.findMethod(clazz, ASMNames.M_entityInit, "()V"));
-        transformUpdateHorseSlots(ASMHelper.findMethod(clazz, ASMNames.M_func110232cE, "()V"));
-        transformOnInvChanged(ASMHelper.findMethod(clazz, ASMNames.M_onInventoryChanged, "(Lnet/minecraft/inventory/InventoryBasic;)V"));
-        transformGetTotalArmorValue(ASMHelper.findMethod(clazz, ASMNames.M_getTotalArmorValue, "()I"));
+//		transformInteract(ASMHelper.findMethod(clazz, ASMNames.M_interact, "(Lnet/minecraft/entity/player/EntityPlayer;)Z"));
+        transformInteract(ASMNames.findObfMethod(clazz, ASMNames.MDO_HORSE_INTERACT));
+//        transformIsValidArmor(ASMHelper.findMethod(clazz, ASMNames.M_func146085a, "(Lnet/minecraft/item/Item;)Z"));
+        transformIsValidArmor(ASMNames.findObfMethod(clazz, ASMNames.MDO_HORSE_FUNC146085A));
+//        transformEntityInit(ASMHelper.findMethod(clazz, ASMNames.M_entityInit, "()V"));
+        transformEntityInit(ASMNames.findObfMethod(clazz, ASMNames.MDO_HORSE_ENTITY_INIT));
+//        transformUpdateHorseSlots(ASMHelper.findMethod(clazz, ASMNames.M_func110232cE, "()V"));
+        transformUpdateHorseSlots(ASMNames.findObfMethod(clazz, ASMNames.MDO_HORSE_FUNC110232CE));
+//        transformOnInvChanged(ASMHelper.findMethod(clazz, ASMNames.M_onInventoryChanged, "(Lnet/minecraft/inventory/InventoryBasic;)V"));
+        transformOnInvChanged(ASMNames.findObfMethod(clazz, ASMNames.MDO_HORSE_ON_INV_CHANGED));
+//        transformGetTotalArmorValue(ASMHelper.findMethod(clazz, ASMNames.M_getTotalArmorValue, "()I"));
+        transformGetTotalArmorValue(ASMNames.findObfMethod(clazz, ASMNames.MDO_HORSE_GET_TOTAL_ARMOR_VAL));
 
         try {
-            transformArmorTexture(ASMHelper.findMethod(clazz, ASMNames.M_setHorseTexturePaths, "()V"));
+//            transformArmorTexture(ASMHelper.findMethod(clazz, ASMNames.M_setHorseTexturePaths, "()V"));
+            transformArmorTexture(ASMNames.findObfMethod(clazz, ASMNames.MDO_HORSE_SET_TEXTURE_PATH));
         } catch( ASMHelper.MethodNotFoundException e ) {
-            ModCntManPack.MOD_LOG.log(Level.INFO, "Running on dedicated server, no need to transform Method %s!", ASMNames.M_setHorseTexturePaths);
+            ModCntManPack.MOD_LOG.log(Level.INFO, "Running on dedicated server, no need to transform Method setHorseTexturePaths!");
         }
 
-	    bytes = ASMHelper.createBytes(clazz, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+	    bytes = ASMHelper.createBytes(clazz, /*ClassWriter.COMPUTE_FRAMES |*/ ClassWriter.COMPUTE_MAXS);
 
 		return bytes;
 	}
 
-    private static MethodNode injectMethodGCAI() {
-        MethodNode method = new MethodNode(Opcodes.ACC_PRIVATE, "_SAP_getCustomArmorItem", "()Lnet/minecraft/item/ItemStack;", null, null);
+    private static MethodNode injectMethodGetCustomArmorItem() {
+        MethodNode method = ASMNames.getNewMethod(Opcodes.ACC_PRIVATE, ASMNames.MD_SAP_GET_CUSTOM_ARMOR_ITEM_NEW);
         method.visitCode();
         Label l0 = new Label();
         method.visitLabel(l0);
         method.visitVarInsn(Opcodes.ALOAD, 0);
-        method.visitFieldInsn(Opcodes.GETFIELD, "net/minecraft/entity/passive/EntityHorse", ASMNames.F_dataWatcher, "Lnet/minecraft/entity/DataWatcher;");
+        ASMNames.visitObfFieldInsn(method, Opcodes.GETFIELD, ASMNames.FDO_ENTITY_DATAWATCHER, ASMNames.CL_ENTITY_HORSE);
         method.visitIntInsn(Opcodes.BIPUSH, 23);
-        method.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/DataWatcher", ASMNames.M_getWatchableObjectIS, "(I)Lnet/minecraft/item/ItemStack;", false);
+        ASMNames.visitObfMethodInsn(method, Opcodes.INVOKEVIRTUAL, ASMNames.MDO_DATAWATCHER_GET_OBJ_STACK, false);
         method.visitInsn(Opcodes.ARETURN);
         Label l1 = new Label();
         method.visitLabel(l1);
-        method.visitLocalVariable("this", "Lnet/minecraft/entity/passive/EntityHorse;", null, l0, l1, 0);
+        method.visitLocalVariable("this", ASMNames.CL_T_ENTITY, null, l0, l1, 0);
         method.visitMaxs(2, 1);
         method.visitEnd();
 
         return method;
     }
 
-    private static MethodNode injectMethodSCAI() {
-        MethodNode method = new MethodNode(Opcodes.ACC_PRIVATE, "_SAP_setCustomArmorItem", "(Lnet/minecraft/item/ItemStack;)V", null, null);
+    private static MethodNode injectMethodSetCustomArmorItem() {
+        MethodNode method = ASMNames.getNewMethod(Opcodes.ACC_PRIVATE, ASMNames.MD_SAP_SET_CUSTOM_ARMOR_ITEM_NEW);
         method.visitCode();
         Label l0 = new Label();
         method.visitLabel(l0);
         method.visitVarInsn(Opcodes.ALOAD, 1);
         Label l1 = new Label();
         method.visitJumpInsn(Opcodes.IFNONNULL, l1);
-        method.visitTypeInsn(Opcodes.NEW, "net/minecraft/item/ItemStack");
+        method.visitTypeInsn(Opcodes.NEW, ASMNames.CL_ITEM_STACK);
         method.visitInsn(Opcodes.DUP);
-        method.visitFieldInsn(Opcodes.GETSTATIC, "net/minecraft/init/Items", ASMNames.F_ironShovel, "Lnet/minecraft/item/Item;");
+//        method.visitFieldInsn(Opcodes.GETSTATIC, "net/minecraft/init/Items", ASMNames.F_ironShovel, "Lnet/minecraft/item/Item;");
+        ASMNames.visitObfFieldInsn(method, Opcodes.GETSTATIC, ASMNames.FDO_ITEMS_IRON_SHOVEL);
         method.visitInsn(Opcodes.ICONST_0);
-        method.visitMethodInsn(Opcodes.INVOKESPECIAL, "net/minecraft/item/ItemStack", "<init>", "(Lnet/minecraft/item/Item;I)V", false);
+//        method.visitMethodInsn(Opcodes.INVOKESPECIAL, "net/minecraft/item/ItemStack", "<init>", "(Lnet/minecraft/item/Item;I)V", false);
+        ASMNames.visitMethodInsn(method, Opcodes.INVOKESPECIAL, ASMNames.);
         method.visitVarInsn(Opcodes.ASTORE, 1);
         method.visitLabel(l1);
         method.visitFrame(Opcodes.F_SAME, 0, null, 0, null);

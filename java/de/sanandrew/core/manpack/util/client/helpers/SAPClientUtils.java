@@ -6,10 +6,8 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.util.client.helpers;
 
-import de.sanandrew.core.manpack.util.client.EntityParticle;
 import de.sanandrew.core.manpack.mod.client.particle.SAPEffectRenderer;
-import de.sanandrew.core.manpack.transformer.ASMNames;
-import de.sanandrew.core.manpack.util.SAPReflectionHelper;
+import de.sanandrew.core.manpack.util.client.EntityParticle;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.model.ModelBase;
@@ -171,7 +169,7 @@ public final class SAPClientUtils
      */
     @Deprecated
     public static void setSelectedBtn(GuiScreen inst, GuiButton btn) {
-        SAPReflectionHelper.setCachedFieldValue(GuiScreen.class, inst, "selectedButton", ASMNames.F_selectedButton, btn);
+//        SAPReflectionHelper.setCachedFieldValue(GuiScreen.class, inst, "selectedButton", ASMNames.F_selectedButton, btn);
     }
 
     /**
@@ -179,7 +177,7 @@ public final class SAPClientUtils
      */
     @Deprecated
     public static GuiButton getSelectedBtn(GuiScreen inst) {
-        return SAPReflectionHelper.getCachedFieldValue(GuiScreen.class, inst, "selectedButton", ASMNames.F_selectedButton);
+        return null;//SAPReflectionHelper.getCachedFieldValue(GuiScreen.class, inst, "selectedButton", ASMNames.F_selectedButton);
     }
 
     /**

@@ -7,8 +7,8 @@
 package de.sanandrew.core.manpack.mod.client.event;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import de.sanandrew.core.manpack.mod.ReflectionNames;
 import de.sanandrew.core.manpack.mod.client.render.RenderSanPlayer;
-import de.sanandrew.core.manpack.transformer.ASMNames;
 import de.sanandrew.core.manpack.util.SAPReflectionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
@@ -72,8 +72,8 @@ public class RenderPlayerEventHandler
             GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
             RenderPlayer rend = (RenderPlayer)RenderManager.instance.getEntityRenderObject(mc.thePlayer);
             RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), this.sanPlayerModel);
-            SAPReflectionHelper.invokeCachedMethod(EntityRenderer.class, mc.entityRenderer, "renderHand", ASMNames.M_renderHand, new Class[] {float.class, int.class},
-                                                   new Object[] {event.partialTicks, event.renderPass});
+            SAPReflectionHelper.invokeCachedMethod(EntityRenderer.class, mc.entityRenderer, ReflectionNames.MD_RENDER_HAND[0], ReflectionNames.MD_RENDER_HAND[1],
+                                                   new Class[] {float.class, int.class}, new Object[] {event.partialTicks, event.renderPass});
             RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), rend);
         }
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

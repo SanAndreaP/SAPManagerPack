@@ -31,7 +31,7 @@ public class TransformEntityCollision
     private static byte[] transformEntity(byte[] bytes) {
         ClassNode clazz = ASMHelper.createClassNode(bytes);
 
-        MethodNode method = ASMNames.getNewMethod(Opcodes.ACC_PUBLIC, ASMNames.MD_SAP_GET_BOUNDIN_GBOX);
+        MethodNode method = ASMNames.getNewMethod(Opcodes.ACC_PUBLIC, ASMNames.MD_SAP_GET_BOUNDING_BOX_NEW);
         method.visitCode();
         Label l0 = new Label();
         method.visitLabel(l0);

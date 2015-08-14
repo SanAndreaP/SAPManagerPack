@@ -13,11 +13,11 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
 public class TransformEntityThrowable
-        implements IClassTransformer, Opcodes
+        implements IClassTransformer
 {
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
-        if( transformedName.equals("net.minecraft.entity.projectile.EntityThrowable") ) {
+        if( "net.minecraft.entity.projectile.EntityThrowable".equals(transformedName) ) {
             return transformLqThrowable(bytes);
         }
 
@@ -25,57 +25,58 @@ public class TransformEntityThrowable
     }
 
     private static byte[] transformLqThrowable(byte[] bytes) {
-        ClassNode classNode = ASMHelper.createClassNode(bytes);
+        ClassNode clazz = ASMHelper.createClassNode(bytes);
 
         {
-            MethodNode methodNode = new MethodNode(ACC_PUBLIC, "_SAP_canImpactOnLiquid", "()Z", null, null);
+            MethodNode method = ASMNames.getNewMethod(Opcodes.ACC_PUBLIC, ASMNames.MD_SAP_CAN_IMPACT_ON_LIQUID_NEW);
 
-            methodNode.visitCode();
+            method.visitCode();
             Label label1 = new Label();
-            methodNode.visitLabel(label1);
-            methodNode.visitInsn(ICONST_0);
-            methodNode.visitInsn(IRETURN);
+            method.visitLabel(label1);
+            method.visitInsn(Opcodes.ICONST_0);
+            method.visitInsn(Opcodes.IRETURN);
             Label label2 = new Label();
-            methodNode.visitLabel(label2);
-            methodNode.visitLocalVariable("this", "Lnet/minecraft/entity/projectile/EntityThrowable;", null, label1,
-                                      label2, 0
-            );
-            methodNode.visitMaxs(0, 0);
-            methodNode.visitEnd();
-            classNode.methods.add(methodNode);
+            method.visitLabel(label2);
+            method.visitLocalVariable("this", ASMNames.CL_T_ENTITY_THROWABLE, null, label1, label2, 0);
+            method.visitMaxs(0, 0);
+            method.visitEnd();
+            clazz.methods.add(method);
         }
 
         {
-            MethodNode methodNode = ASMHelper.findMethod(classNode, ASMNames.M_onUpdate, "()V");
+            MethodNode method = ASMNames.findObfMethod(clazz, ASMNames.MDO_THROWABLE_ON_UPDATE);
 
             InsnList needle = new InsnList();
-            needle.add(new FieldInsnNode(GETFIELD, "net/minecraft/entity/projectile/EntityThrowable", ASMNames.F_motionZ, "D"));
-            needle.add(new InsnNode(DADD));
-            needle.add(new MethodInsnNode(INVOKESTATIC, "net/minecraft/util/Vec3", ASMNames.M_createVectorHelper, "(DDD)Lnet/minecraft/util/Vec3;", false));
-            needle.add(new VarInsnNode(ASTORE, 2));
+            needle.add(ASMNames.getObfFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_ENTITY_MOTIONZ, ASMNames.CL_ENTITY_THROWABLE));
+            needle.add(new InsnNode(Opcodes.DADD));
+            needle.add(ASMNames.getObfMethodInsnNode(Opcodes.INVOKESTATIC, ASMNames.MDO_VEC3_CREATE_VECTOR_HELPER, false));
+            needle.add(new VarInsnNode(Opcodes.ASTORE, 2));
             needle.add(new LabelNode());
             needle.add(new LineNumberNode(-1, new LabelNode()));
-            needle.add(new VarInsnNode(ALOAD, 0));
-            needle.add(new FieldInsnNode(GETFIELD, "net/minecraft/entity/projectile/EntityThrowable", ASMNames.F_worldObj, "Lnet/minecraft/world/World;"));
-            needle.add(new VarInsnNode(ALOAD, 1));
-            needle.add(new VarInsnNode(ALOAD, 2));
+            needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
+            needle.add(ASMNames.getObfFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_ENTITY_WORLDOBJ, ASMNames.CL_ENTITY_THROWABLE));
+            needle.add(new VarInsnNode(Opcodes.ALOAD, 1));
+            needle.add(new VarInsnNode(Opcodes.ALOAD, 2));
+            needle.add(ASMNames.getObfMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MDO_WORLD_RAY_TRACE_BLOCKS, false));
+            needle.add(new VarInsnNode(Opcodes.ASTORE, -1));
 
-            AbstractInsnNode insertPoint = ASMHelper.findLastNodeFromNeedle(methodNode.instructions, needle);
-
-            needle.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/world/World", ASMNames.M_rayTraceBlocks, "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;)Lnet/minecraft/util/MovingObjectPosition;", false));
-
-            //TODO: find a way to not remove instructions...
-            methodNode.instructions.remove(ASMHelper.findLastNodeFromNeedle(methodNode.instructions, needle));
+            VarInsnNode insertPoint = (VarInsnNode) ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
 
             InsnList injectList = new InsnList();
-            injectList.add(new VarInsnNode(ALOAD, 0));
-            injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/entity/projectile/EntityThrowable", "_SAP_canImpactOnLiquid", "()Z", false));
-            injectList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/world/World", ASMNames.M_rayTraceBlocksB, "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;Z)Lnet/minecraft/util/MovingObjectPosition;", false));
+            injectList.add(new LabelNode());
+            injectList.add(new VarInsnNode(Opcodes.ALOAD, 0));
+            injectList.add(ASMNames.getObfFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_ENTITY_WORLDOBJ, ASMNames.CL_ENTITY_THROWABLE));
+            injectList.add(new VarInsnNode(Opcodes.ALOAD, 1));
+            injectList.add(new VarInsnNode(Opcodes.ALOAD, 2));
+            injectList.add(new VarInsnNode(Opcodes.ALOAD, 0));
+            injectList.add(ASMNames.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_SAP_CAN_IMPACT_ON_LIQUID, false));
+            injectList.add(ASMNames.getObfMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MDO_WORLD_RAY_TRACE_BLOCKS_Z, false));
+            needle.add(new VarInsnNode(Opcodes.ASTORE, insertPoint.var));
 
-            methodNode.instructions.insert(insertPoint, injectList);
+            method.instructions.insert(insertPoint, injectList);
         }
 
-        bytes = ASMHelper.createBytes(classNode, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+        bytes = ASMHelper.createBytes(clazz, /*ClassWriter.COMPUTE_FRAMES |*/ ClassWriter.COMPUTE_MAXS);
         return bytes;
     }
 
