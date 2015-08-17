@@ -53,7 +53,7 @@ public class TransformEntityCollision
 
     private static byte[] transformWorld(byte[] bytes) {
         ClassNode clazz = ASMHelper.createClassNode(bytes);
-        MethodNode method = ASMNames.findObfMethod(clazz, ASMNames.MDO_GET_COLLIDING_BB);
+        MethodNode method = ASMNames.findObfMethod(clazz, ASMNames.MDO_WORLD_GET_COLLIDING_BB);
 
         InsnList needle = new InsnList();
         LabelNode ln = new LabelNode();
@@ -66,7 +66,7 @@ public class TransformEntityCollision
         needle.add(new VarInsnNode(Opcodes.DLOAD, -1));
         needle.add(new VarInsnNode(Opcodes.DLOAD, -1));
         needle.add(ASMNames.getObfMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MDO_AABB_EXPAND, false));
-        needle.add(ASMNames.getObfMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MDO_GET_ENTITIES_AABB_EXCLUDE, false));
+        needle.add(ASMNames.getObfMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MDO_WORLD_GET_ENTITIES_EXCLUDE, false));
         needle.add(new VarInsnNode(Opcodes.ASTORE, -1));
 
         VarInsnNode insertPoint = (VarInsnNode) ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
@@ -96,7 +96,7 @@ public class TransformEntityCollision
         needle.add(new VarInsnNode(Opcodes.ILOAD, 12));
         needle.add(ASMNames.getMethodInsnNode(Opcodes.INVOKEINTERFACE, ASMNames.MD_LIST_GET, true));
         needle.add(new TypeInsnNode(Opcodes.CHECKCAST, ASMNames.CL_T_ENTITY));
-        needle.add(ASMNames.getObfMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MDO_GET_ENTITY_BOUNDING_BOX, false));
+        needle.add(ASMNames.getObfMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MDO_ENTITY_GET_BOUNDING_BOX, false));
         needle.add(new VarInsnNode(Opcodes.ASTORE, -1));
 
         insertPoint = (VarInsnNode) ASMHelper.findLastNodeFromNeedle(method.instructions, needle);

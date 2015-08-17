@@ -139,15 +139,15 @@ public class ASMObfuscationHelper
             Matcher matcher;
             if( (matcher = MD_PATTERN.matcher(line)).matches() ) {
                 this.type = Type.METHOD;
-                this.owner = matcher.group(1);
-                this.mcpName = matcher.group(2);
-                this.srgName = matcher.group(4);
-                this.desc = matcher.group(3);
+                this.owner = matcher.group(1).trim();
+                this.mcpName = matcher.group(2).trim();
+                this.srgName = matcher.group(4).trim();
+                this.desc = matcher.group(3).trim();
             } else if( (matcher = FD_CL_PATTERN.matcher(line)).matches() ) {
                 this.type = matcher.group(1).equals("FD") ? Type.FIELD : Type.CLASS;
-                this.owner = matcher.group(2);
-                this.mcpName = matcher.group(3);
-                this.srgName = matcher.group(4);
+                this.owner = matcher.group(2).trim();
+                this.mcpName = matcher.group(3).trim();
+                this.srgName = matcher.group(4).trim();
                 this.desc = "";
             } else {
                 throw new RuntimeException("Cannot read line!");
