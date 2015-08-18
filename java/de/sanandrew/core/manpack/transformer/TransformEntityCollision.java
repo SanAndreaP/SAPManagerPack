@@ -31,7 +31,7 @@ public class TransformEntityCollision
     private static byte[] transformEntity(byte[] bytes) {
         ClassNode clazz = ASMHelper.createClassNode(bytes);
 
-        MethodNode method = new MethodNode(Opcodes.ACC_PUBLIC, "_SAP_getBoundingBox", "(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Lnet/minecraft/util/AxisAlignedBB;", null, null);
+        MethodNode method = ASMHelper.getMethodNode(Opcodes.ACC_PUBLIC, ASMNames.MD_SAP_ENTITY_GET_BOUNDING_BOX);
         method.visitCode();
         Label l0 = new Label();
         method.visitLabel(l0);
@@ -39,9 +39,9 @@ public class TransformEntityCollision
         method.visitInsn(Opcodes.ARETURN);
         Label l1 = new Label();
         method.visitLabel(l1);
-        method.visitLocalVariable("this", "Lnet/minecraft/entity/Entity;", null, l0, l1, 0);
-        method.visitLocalVariable("entity", "Lnet/minecraft/entity/Entity;", null, l0, l1, 1);
-        method.visitLocalVariable("oldAABB", "Lnet/minecraft/util/AxisAlignedBB;", null, l0, l1, 2);
+        method.visitLocalVariable("this", ASMNames.CL_T_ENTITY, null, l0, l1, 0);
+        method.visitLocalVariable("entity", ASMNames.CL_T_ENTITY, null, l0, l1, 1);
+        method.visitLocalVariable("oldAABB", ASMNames.CL_T_AXIS_ALIGNED_BB, null, l0, l1, 2);
         method.visitMaxs(1, 2);
         method.visitEnd();
 

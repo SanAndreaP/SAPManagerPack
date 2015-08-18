@@ -35,9 +35,7 @@ public class ManPackLoadingPlugin
     @Override
     public String[] getASMTransformerClass() {
         return new String[] {
-                         TransformBadPotionsATN.class.getName(),
                          TransformEntityThrowable.class.getName(),
-                         TransformELBAttackingPlayer.class.getName(),
                          TransformPlayerDismountCtrl.class.getName(),
                          TransformHorseArmor.class.getName(),
                          TransformEnderman.class.getName(),
