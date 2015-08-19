@@ -9,11 +9,8 @@ package de.sanandrew.core.manpack.transformer;
 import com.google.common.io.Files;
 import de.sanandrew.core.manpack.init.ManPackLoadingPlugin;
 import de.sanandrew.core.manpack.mod.ModCntManPack;
+import de.sanandrew.core.manpack.transformer.ASMObfuscationHelper.NameMapping.Type;
 import org.apache.logging.log4j.Level;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
 
 import java.io.*;
 import java.util.HashMap;
@@ -37,32 +34,44 @@ public class ASMObfuscationHelper
     private ASMObfuscationHelper() {
     }
 
-    public MethodInsnNode getMethodInsnNode(int opcode, String mcpMapping, boolean intf) {
-        NameMapping mapping = this.getMapping(mcpMapping);
-        return new MethodInsnNode(opcode, mapping.owner, ASMHelper.isMCP ? mapping.mcpName : mapping.srgName, mapping.desc, intf);
-    }
+//    public MethodInsnNode getMethodInsnNode(int opcode, String mcpMapping, boolean intf) {
+//        NameMapping mapping = this.getMapping(mcpMapping);
+//        return new MethodInsnNode(opcode, mapping.owner, ASMHelper.isMCP ? mapping.mcpName : mapping.srgName, mapping.desc, intf);
+//    }
+//
+//    public FieldInsnNode getFieldInsnNode(int opcode, String mcpMapping) {
+//        String[] mapNameDesc = mcpMapping.split(" ");
+//        NameMapping mapping = this.getMapping(mapNameDesc[0]);
+//        return new FieldInsnNode(opcode, mapping.owner, ASMHelper.isMCP ? mapping.mcpName : mapping.srgName, mapNameDesc[1]);
+//    }
+//
+//    public MethodNode findMethod(ClassNode cn, String mcpMapping) {
+//        NameMapping mapping = this.getMapping(mcpMapping);
+//        return ASMHelper.findMethod(cn, ASMHelper.isMCP ? mapping.mcpName : mapping.srgName, mapping.desc);
+//    }
 
-    public FieldInsnNode getFieldInsnNode(int opcode, String mcpMapping) {
-        String[] mapNameDesc = mcpMapping.split(" ");
-        NameMapping mapping = this.getMapping(mapNameDesc[0]);
-        return new FieldInsnNode(opcode, mapping.owner, ASMHelper.isMCP ? mapping.mcpName : mapping.srgName, mapNameDesc[1]);
-    }
-
-    public MethodNode findMethod(ClassNode cn, String mcpMapping) {
-        NameMapping mapping = this.getMapping(mcpMapping);
-        return ASMHelper.findMethod(cn, ASMHelper.isMCP ? mapping.mcpName : mapping.srgName, mapping.desc);
-    }
-
-    private NameMapping getMapping(String mcpMapping) {
+    static final Pattern OWNERNAME = Pattern.compile("(\\S*)/(.*)");
+    public NameMapping getMapping(String mcpMapping, Type type) {
         if( this.srgMappingsCached.isEmpty() ) {
             this.readCachedMcpSrgFile();
         }
 
         if( !this.srgMappingsCached.containsKey(mcpMapping) ) {
-            this.readMcpSrgFile();
+            if( this.srgMappings.isEmpty() ) {
+                this.readMcpSrgFile();
+            }
+
             if( !this.srgMappings.containsKey(mcpMapping) ) {
-                ModCntManPack.MOD_LOG.log(Level.FATAL, String.format("Cannot procede with transforming classes! Mapping \"%s\" was not found!", mcpMapping));
-                throw new RuntimeException("Mapping not found!");
+                String[] mcpSplit = mcpMapping.split(" ");
+                Matcher ownerName = OWNERNAME.matcher(mcpSplit[0]);
+                if( ownerName.find() ) {
+                    String owner = ownerName.group(1);
+                    String name = ownerName.group(2);
+                    this.srgMappings.put(mcpMapping, new NameMapping(type, owner, name, name, mcpSplit.length > 1 ? mcpSplit[1] : null));
+                } else {
+                    ModCntManPack.MOD_LOG.log(Level.FATAL, String.format("Mapping for %s not found", mcpMapping));
+                    throw new RuntimeException("Mapping not found!");
+                }
             }
             this.srgMappingsCached.put(mcpMapping, this.srgMappings.get(mcpMapping));
             updateCacheMcpSrgFile(this.srgMappings.get(mcpMapping));
@@ -87,7 +96,11 @@ public class ASMObfuscationHelper
     private void readMcpSrgFile(BufferedReader brd) throws IOException {
         while( brd.ready() ) {
             NameMapping mapping = new NameMapping(brd.readLine());
-            this.srgMappings.put(String.format("%s/%s %s", mapping.owner, mapping.mcpName, mapping.desc), mapping);
+            if( mapping.type == Type.METHOD ) {
+                this.srgMappings.put(String.format("%s/%s %s", mapping.owner, mapping.mcpName, mapping.desc), mapping);
+            } else {
+                this.srgMappings.put(String.format("%s/%s", mapping.owner, mapping.mcpName), mapping);
+            }
         }
     }
 
@@ -96,7 +109,11 @@ public class ASMObfuscationHelper
         try( BufferedReader brd = new BufferedReader(new FileReader(cachedSrg)) ) {
             while( brd.ready() ) {
                 NameMapping mapping = new NameMapping(brd.readLine());
-                this.srgMappingsCached.put(String.format("%s/%s %s", mapping.owner, mapping.mcpName, mapping.desc), mapping);
+                if( mapping.type == Type.METHOD ) {
+                    this.srgMappingsCached.put(String.format("%s/%s %s", mapping.owner, mapping.mcpName, mapping.desc), mapping);
+                } else {
+                    this.srgMappingsCached.put(String.format("%s/%s", mapping.owner, mapping.mcpName), mapping);
+                }
             }
         } catch( IOException e ) {
             ModCntManPack.MOD_LOG.log(Level.INFO, "Can't read mcp-srg.srg from cache, using full mappings now now.");
@@ -116,7 +133,7 @@ public class ASMObfuscationHelper
         }
     }
 
-    private static class NameMapping
+    protected static class NameMapping
     {
         private static final Pattern MD_PATTERN = Pattern.compile("MD: (.*)/(.*?) (.*?) .*/(.*?) .*");
         private static final Pattern FD_CL_PATTERN = Pattern.compile("(FD|CL): (.*)/(.*?) .*/(.*)");
@@ -139,15 +156,15 @@ public class ASMObfuscationHelper
             Matcher matcher;
             if( (matcher = MD_PATTERN.matcher(line)).matches() ) {
                 this.type = Type.METHOD;
-                this.owner = matcher.group(1).trim();
-                this.mcpName = matcher.group(2).trim();
-                this.srgName = matcher.group(4).trim();
-                this.desc = matcher.group(3).trim();
+                this.owner = matcher.group(1);
+                this.mcpName = matcher.group(2);
+                this.srgName = matcher.group(4);
+                this.desc = matcher.group(3);
             } else if( (matcher = FD_CL_PATTERN.matcher(line)).matches() ) {
                 this.type = matcher.group(1).equals("FD") ? Type.FIELD : Type.CLASS;
-                this.owner = matcher.group(2).trim();
-                this.mcpName = matcher.group(3).trim();
-                this.srgName = matcher.group(4).trim();
+                this.owner = matcher.group(2);
+                this.mcpName = matcher.group(3);
+                this.srgName = matcher.group(4);
                 this.desc = "";
             } else {
                 throw new RuntimeException("Cannot read line!");

@@ -1,13 +1,11 @@
 package de.sanandrew.core.manpack.transformer;
 
 import cpw.mods.fml.common.FMLLog;
+import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.*;
 
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -191,6 +189,64 @@ public final class ASMHelper
         } catch( Throwable e ) {
             e.printStackTrace();
         }
+    }
+
+    public static MethodNode getMethodNode(int access, String method) {
+        Triplet<String, String, String[]> methodDesc = ASMNames.getSrgNameMd(method);
+        String sig = methodDesc.getValue2().length > 1 ? methodDesc.getValue2()[1] : null;
+        String throwing[] = methodDesc.getValue2().length > 2 ? methodDesc.getValue2()[2].split(";") : null;
+
+        return new MethodNode(access, methodDesc.getValue1(), methodDesc.getValue2()[0], sig, throwing);
+    }
+
+    public static MethodInsnNode getMethodInsnNode(int opcode, String method, String owner, boolean intf) {
+        MethodInsnNode node = getMethodInsnNode(opcode, method, intf);
+        node.owner = owner;
+        return node;
+    }
+
+    public static MethodInsnNode getMethodInsnNode(int opcode, String method, boolean intf) {
+        Triplet<String, String, String[]> methodDesc = ASMNames.getSrgNameMd(method);
+
+        return new MethodInsnNode(opcode, methodDesc.getValue0(), methodDesc.getValue1(), methodDesc.getValue2()[0], intf);
+    }
+
+    public static MethodNode findMethod(ClassNode clazz, String method) {
+        Triplet<String, String, String[]> methodDesc = ASMNames.getSrgNameMd(method);
+
+        return findMethod(clazz, methodDesc.getValue1(), methodDesc.getValue2()[0]);
+    }
+
+    public static FieldInsnNode getFieldInsnNode(int opcode, String field, String owner) {
+        FieldInsnNode node = getFieldInsnNode(opcode, field);
+        node.owner = owner;
+        return node;
+    }
+
+    public static FieldInsnNode getFieldInsnNode(int opcode, String field) {
+        Triplet<String, String, String> fieldDesc = ASMNames.getSrgNameFd(field);
+
+        return new FieldInsnNode(opcode, fieldDesc.getValue0(), fieldDesc.getValue1(), fieldDesc.getValue2());
+    }
+
+    public static void visitFieldInsn(MethodNode node, int opcode, String field) {
+        FieldInsnNode fieldNode = getFieldInsnNode(opcode, field);
+        node.visitFieldInsn(opcode, fieldNode.owner, fieldNode.name, fieldNode.desc);
+    }
+
+    public static void visitFieldInsn(MethodNode node, int opcode, String field, String owner) {
+        FieldInsnNode fieldNode = getFieldInsnNode(opcode, field, owner);
+        node.visitFieldInsn(opcode, fieldNode.owner, fieldNode.name, fieldNode.desc);
+    }
+
+    public static void visitMethodInsn(MethodNode node, int opcode, String method, boolean intf) {
+        MethodInsnNode methodNode = getMethodInsnNode(opcode, method, intf);
+        node.visitMethodInsn(opcode, methodNode.owner, methodNode.name, methodNode.desc, methodNode.itf);
+    }
+
+    public static void visitMethodInsn(MethodNode node, int opcode, String method, String owner, boolean intf) {
+        MethodInsnNode methodNode = getMethodInsnNode(opcode, method, owner, intf);
+        node.visitMethodInsn(opcode, methodNode.owner, methodNode.name, methodNode.desc, methodNode.itf);
     }
 
     public static class InvalidNeedleException

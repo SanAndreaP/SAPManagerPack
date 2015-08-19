@@ -6,11 +6,13 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.transformer;
 
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
+import de.sanandrew.core.manpack.mod.ModCntManPack;
+import de.sanandrew.core.manpack.transformer.ASMObfuscationHelper.NameMapping;
+import de.sanandrew.core.manpack.transformer.ASMObfuscationHelper.NameMapping.Type;
+import de.sanandrew.core.manpack.util.javatuples.Triplet;
+import org.apache.logging.log4j.Level;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,6 +68,7 @@ public final class ASMNames
     /*
      * NON-OBFUSCATED NAMES
      */
+    public static final String CL_ENTITY = "net/minecraft/entity/Entity";
     public static final String CL_ENDER_FACING_EVENT = "de/sanandrew/core/manpack/util/event/entity/EnderFacingEvent";
     public static final String CL_COLLIDING_ENTITY_CHECK_EVENT = "de/sanandrew/core/manpack/util/event/entity/CollidingEntityCheckEvent";
     public static final String CL_ENTITY_THROWABLE = "net/minecraft/entity/projectile/EntityThrowable";
@@ -86,17 +89,12 @@ public final class ASMNames
     public static final String MD_ENDER_FACING_EVENT_CTOR = "de/sanandrew/core/manpack/util/event/entity/EnderFacingEvent/<init> (Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/entity/monster/EntityEnderman;)V";
     public static final String MD_EVENT_BUS_POST = "cpw/mods/fml/common/eventhandler/EventBus/post (Lcpw/mods/fml/common/eventhandler/Event;)Z";
     public static final String MD_LIST_GET = "java/util/List/get (I)Ljava/lang/Object;";
-    public static final String MD_SAP_GET_BOUNDING_BOX_NEW = "_SAP_getBoundingBox (Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Lnet/minecraft/util/AxisAlignedBB;";
-    public static final String MD_SAP_GET_BOUNDING_BOX = "net/minecraft/entity/Entity/" + MD_SAP_GET_BOUNDING_BOX_NEW;
+    public static final String MD_SAP_GET_BOUNDING_BOX = "net/minecraft/entity/Entity/_SAP_getBoundingBox (Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Lnet/minecraft/util/AxisAlignedBB;";
     public static final String MD_SAP_COLLENTITY_CHKEVT_CTOR = "de/sanandrew/core/manpack/util/event/entity/CollidingEntityCheckEvent/<init> (Lnet/minecraft/world/World;Ljava/util/List;Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)V";
-    public static final String MD_SAP_CAN_IMPACT_ON_LIQUID_NEW = "_SAP_canImpactOnLiquid ()Z";
-    public static final String MD_SAP_CAN_IMPACT_ON_LIQUID = "net/minecraft/entity/projectile/EntityThrowable/" + MD_SAP_CAN_IMPACT_ON_LIQUID_NEW;
-    public static final String MD_SAP_CAN_DISMOUNT_ON_INPUT_NEW = "_SAP_canDismountOnInput (Lnet/minecraft/entity/player/EntityPlayer;)Z";
-    public static final String MD_SAP_CAN_DISMOUNT_ON_INPUT = "net/minecraft/entity/Entity/" + MD_SAP_CAN_DISMOUNT_ON_INPUT_NEW;
-    public static final String MD_SAP_GET_CUSTOM_ARMOR_ITEM_NEW = "_SAP_getCustomArmorItem ()Lnet/minecraft/item/ItemStack;";
-    public static final String MD_SAP_GET_CUSTOM_ARMOR_ITEM = "net/minecraft/entity/passive/EntityHorse" + MD_SAP_GET_CUSTOM_ARMOR_ITEM_NEW;
-    public static final String MD_SAP_SET_CUSTOM_ARMOR_ITEM_NEW = "_SAP_setCustomArmorItem (Lnet/minecraft/item/ItemStack;)V";
-    public static final String MD_SAP_SET_CUSTOM_ARMOR_ITEM = "net/minecraft/entity/passive/EntityHorse" + MD_SAP_SET_CUSTOM_ARMOR_ITEM_NEW;
+    public static final String MD_SAP_CAN_IMPACT_ON_LIQUID = "net/minecraft/entity/projectile/EntityThrowable/_SAP_canImpactOnLiquid ()Z";
+    public static final String MD_SAP_CAN_DISMOUNT_ON_INPUT = "net/minecraft/entity/Entity/_SAP_canDismountOnInput (Lnet/minecraft/entity/player/EntityPlayer;)Z";
+    public static final String MD_SAP_GET_CUSTOM_ARMOR_ITEM = "net/minecraft/entity/passive/EntityHorse/_SAP_getCustomArmorItem ()Lnet/minecraft/item/ItemStack;";
+    public static final String MD_SAP_SET_CUSTOM_ARMOR_ITEM = "net/minecraft/entity/passive/EntityHorse/_SAP_setCustomArmorItem (Lnet/minecraft/item/ItemStack;)V";
     public static final String MD_ITEMSTACK_INIT = "net/minecraft/item/ItemStack/<init> (Lnet/minecraft/item/Item;I)V";
     public static final String MD_SAP_GET_ARMOR_VALUE = "de/sanandrew/core/manpack/item/AItemHorseArmor/getArmorValue (Lnet/minecraft/entity/passive/EntityHorse;Lnet/minecraft/item/ItemStack;)I";
     public static final String MD_SAP_GET_ARMOR_TEXTURE = "de/sanandrew/core/manpack/item/AItemHorseArmor/getArmorTexture (Lnet/minecraft/entity/passive/EntityHorse;Lnet/minecraft/item/ItemStack;)Ljava/lang/String;";
@@ -109,82 +107,121 @@ public final class ASMNames
     public static final String FD_FORGE_EVENT_BUS = "net/minecraftforge/common/MinecraftForge/EVENT_BUS Lcpw/mods/fml/common/eventhandler/EventBus;";
     public static final String FD_SAPUTILS_EVENT_BUS = "de/sanandrew/core/manpack/util/helpers/SAPUtils/EVENT_BUS Lcpw/mods/fml/common/eventhandler/EventBus;";
 
+    static final Pattern OWNERNAME = Pattern.compile("(\\S*)/(.*)");
+    public static Triplet<String, String, String[]> getSrgNameMd(String method) {
+        Matcher mtch = OWNERNAME.matcher(method);
+        if( !mtch.find() ) {
+            ModCntManPack.MOD_LOG.log(Level.FATAL, "Method string does not match pattern!");
+            throw new RuntimeException("SRG-Name not found!");
+        }
 
-    private static final Pattern OWNER_NAME_DESC_PATTERN = Pattern.compile("(.*)\\/(.*?) (.*)");
+        NameMapping map = ASMObfuscationHelper.getInstance().getMapping(method, Type.METHOD);
 
-    public static MethodNode getNewMethod(int access, String method) {
-        String[] methodSplit = method.split(" ");
+        String owner = mtch.group(1);
+        String[] splitMd = mtch.group(2).split(" ");
 
-        String name = methodSplit[0];
-        String desc = methodSplit[1];
-        String signature = methodSplit.length > 2 ? methodSplit[2] : null;
-        String[] throwing = methodSplit.length > 3 ? methodSplit[3].split(";") : null;
+        String name = ASMHelper.isMCP ? map.mcpName : map.srgName;
+        String[] additData = Arrays.copyOfRange(splitMd, 1, splitMd.length);
 
-        return new MethodNode(access, name, desc, signature, throwing);
+        return Triplet.with(owner, name, additData);
     }
 
-    public static MethodNode findObfMethod(ClassNode cn, String mcpMapping) {
-        return ASMObfuscationHelper.getInstance().findMethod(cn, mcpMapping);
+    public static Triplet<String, String, String> getSrgNameFd(String field) {
+        Matcher mtch = OWNERNAME.matcher(field);
+        if( !mtch.find() ) {
+            ModCntManPack.MOD_LOG.log(Level.FATAL, "Field string does not match pattern!");
+            throw new RuntimeException("SRG-Name not found!");
+        }
+
+        NameMapping map = ASMObfuscationHelper.getInstance().getMapping(field.split(" ")[0], Type.FIELD);
+
+        String owner = mtch.group(1);
+        String[] splitFd = mtch.group(2).split(" ");
+
+        String name = ASMHelper.isMCP ? map.mcpName : map.srgName;
+        String desc = splitFd[1];
+
+        return Triplet.with(owner, name, desc);
     }
 
-    public static MethodInsnNode getObfMethodInsnNode(int opcode, String method, boolean intf) {
-        return ASMObfuscationHelper.getInstance().getMethodInsnNode(opcode, method, intf);
-    }
 
-    public static MethodInsnNode getObfMethodInsnNode(int opcode, String method, String owner, boolean intf) {
-        MethodInsnNode node = ASMObfuscationHelper.getInstance().getMethodInsnNode(opcode, method, intf);
-        node.owner = owner;
-        return node;
-    }
+//    private static final Pattern OWNER_NAME_DESC_PATTERN = Pattern.compile("(\\S*)\\/(\\S*?) (.*)");
 
-    public static MethodInsnNode getMethodInsnNode(int opcode, String method, boolean intf) {
-        Matcher matcher = OWNER_NAME_DESC_PATTERN.matcher(method);
-        return new MethodInsnNode(opcode, matcher.group(1), matcher.group(2), matcher.group(3), intf);
-    }
-
-    public static void visitObfMethodInsn(MethodNode node, int opcode, String method, boolean intf) {
-        MethodInsnNode methodNode = getObfMethodInsnNode(opcode, method, intf);
-        node.visitMethodInsn(opcode, methodNode.owner, methodNode.name, methodNode.desc, methodNode.itf);
-    }
-
-    public static void visitObfMethodInsn(MethodNode node, int opcode, String method, String owner, boolean intf) {
-        MethodInsnNode methodNode = getObfMethodInsnNode(opcode, method, owner, intf);
-        node.visitMethodInsn(opcode, methodNode.owner, methodNode.name, methodNode.desc, methodNode.itf);
-    }
-
-    public static void visitMethodInsn(MethodNode node, int opcode, String method, boolean intf) {
-        MethodInsnNode methodNode = getMethodInsnNode(opcode, method, intf);
-        node.visitMethodInsn(opcode, methodNode.owner, methodNode.name, methodNode.desc, methodNode.itf);
-    }
-
-    public static FieldInsnNode getObfFieldInsnNode(int opcode, String field) {
-        return ASMObfuscationHelper.getInstance().getFieldInsnNode(opcode, field);
-    }
-
-    public static FieldInsnNode getObfFieldInsnNode(int opcode, String field, String owner) {
-        FieldInsnNode node = ASMObfuscationHelper.getInstance().getFieldInsnNode(opcode, field);
-        node.owner = owner;
-        return node;
-    }
-
-    public static FieldInsnNode getFieldInsnNode(int opcode, String field) {
-        Matcher matcher = OWNER_NAME_DESC_PATTERN.matcher(field);
-        matcher.find();
-        return new FieldInsnNode(opcode, matcher.group(1), matcher.group(2), matcher.group(3));
-    }
-
-    public static FieldInsnNode getFieldInsnNode(int opcode, String field, String owner) {
-        Matcher matcher = OWNER_NAME_DESC_PATTERN.matcher(field);
-        return new FieldInsnNode(opcode, owner, matcher.group(2), matcher.group(3));
-    }
-
-    public static void visitObfFieldInsn(MethodNode node, int opcode, String field) {
-        FieldInsnNode fieldNode = getObfFieldInsnNode(opcode, field);
-        node.visitFieldInsn(opcode, fieldNode.owner, fieldNode.name, fieldNode.desc);
-    }
-
-    public static void visitObfFieldInsn(MethodNode node, int opcode, String field, String owner) {
-        FieldInsnNode fieldNode = getObfFieldInsnNode(opcode, field, owner);
-        node.visitFieldInsn(opcode, fieldNode.owner, fieldNode.name, fieldNode.desc);
-    }
+//    public static MethodNode getNewMethod(int access, String method) {
+//        String[] methodSplit = method.split(" ");
+//
+//        String name = methodSplit[0];
+//        String desc = methodSplit[1];
+//        String signature = methodSplit.length > 2 ? methodSplit[2] : null;
+//        String[] throwing = methodSplit.length > 3 ? methodSplit[3].split(";") : null;
+//
+//        return new MethodNode(access, name, desc, signature, throwing);
+//    }
+//
+//    public static MethodNode findObfMethod(ClassNode cn, String mcpMapping) {
+//        return ASMObfuscationHelper.getInstance().findMethod(cn, mcpMapping);
+//    }
+//
+//    public static MethodInsnNode getObfMethodInsnNode(int opcode, String method, boolean intf) {
+//        return ASMObfuscationHelper.getInstance().getMethodInsnNode(opcode, method, intf);
+//    }
+//
+//    public static MethodInsnNode getObfMethodInsnNode(int opcode, String method, String owner, boolean intf) {
+//        MethodInsnNode node = ASMObfuscationHelper.getInstance().getMethodInsnNode(opcode, method, intf);
+//        node.owner = owner;
+//        return node;
+//    }
+//
+//    public static MethodInsnNode getMethodInsnNode(int opcode, String method, boolean intf) {
+//        Matcher matcher = OWNER_NAME_DESC_PATTERN.matcher(method);
+//        matcher.find();
+//        return new MethodInsnNode(opcode, matcher.group(1), matcher.group(2), matcher.group(3), intf);
+//    }
+//
+//    public static void visitObfMethodInsn(MethodNode node, int opcode, String method, boolean intf) {
+//        MethodInsnNode methodNode = getObfMethodInsnNode(opcode, method, intf);
+//        node.visitMethodInsn(opcode, methodNode.owner, methodNode.name, methodNode.desc, methodNode.itf);
+//    }
+//
+//    public static void visitObfMethodInsn(MethodNode node, int opcode, String method, String owner, boolean intf) {
+//        MethodInsnNode methodNode = getObfMethodInsnNode(opcode, method, owner, intf);
+//        node.visitMethodInsn(opcode, methodNode.owner, methodNode.name, methodNode.desc, methodNode.itf);
+//    }
+//
+//    public static void visitMethodInsn(MethodNode node, int opcode, String method, boolean intf) {
+//        MethodInsnNode methodNode = getMethodInsnNode(opcode, method, intf);
+//        node.visitMethodInsn(opcode, methodNode.owner, methodNode.name, methodNode.desc, methodNode.itf);
+//    }
+//
+//    public static FieldInsnNode getObfFieldInsnNode(int opcode, String field) {
+//        return ASMObfuscationHelper.getInstance().getFieldInsnNode(opcode, field);
+//    }
+//
+//    public static FieldInsnNode getObfFieldInsnNode(int opcode, String field, String owner) {
+//        FieldInsnNode node = ASMObfuscationHelper.getInstance().getFieldInsnNode(opcode, field);
+//        node.owner = owner;
+//        return node;
+//    }
+//
+//    public static FieldInsnNode getFieldInsnNode(int opcode, String field) {
+//        Matcher matcher = OWNER_NAME_DESC_PATTERN.matcher(field);
+//        matcher.find();
+//        return new FieldInsnNode(opcode, matcher.group(1), matcher.group(2), matcher.group(3));
+//    }
+//
+//    public static FieldInsnNode getFieldInsnNode(int opcode, String field, String owner) {
+//        Matcher matcher = OWNER_NAME_DESC_PATTERN.matcher(field);
+//        matcher.find();
+//        return new FieldInsnNode(opcode, owner, matcher.group(2), matcher.group(3));
+//    }
+//
+//    public static void visitObfFieldInsn(MethodNode node, int opcode, String field) {
+//        FieldInsnNode fieldNode = getObfFieldInsnNode(opcode, field);
+//        node.visitFieldInsn(opcode, fieldNode.owner, fieldNode.name, fieldNode.desc);
+//    }
+//
+//    public static void visitObfFieldInsn(MethodNode node, int opcode, String field, String owner) {
+//        FieldInsnNode fieldNode = getObfFieldInsnNode(opcode, field, owner);
+//        node.visitFieldInsn(opcode, fieldNode.owner, fieldNode.name, fieldNode.desc);
+//    }
 }

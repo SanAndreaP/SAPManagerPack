@@ -31,7 +31,7 @@ public class TransformPlayerDismountCtrl
     private static byte[] transformEntity(byte[] bytes) {
         ClassNode clazz = ASMHelper.createClassNode(bytes);
 
-        MethodNode method = ASMNames.getNewMethod(Opcodes.ACC_PUBLIC, ASMNames.MD_SAP_CAN_DISMOUNT_ON_INPUT_NEW);
+        MethodNode method = ASMHelper.getMethodNode(Opcodes.ACC_PUBLIC, ASMNames.MD_SAP_CAN_DISMOUNT_ON_INPUT);
         method.visitCode();
         Label l0 = new Label();
         method.visitLabel(l0);
@@ -52,25 +52,25 @@ public class TransformPlayerDismountCtrl
 
     private static byte[] transformPlayer(byte[] bytes) {
         ClassNode clazz = ASMHelper.createClassNode(bytes);
-        MethodNode method = ASMNames.findObfMethod(clazz, ASMNames.MDO_PLAYER_UPDATE_RIDDEN);
+        MethodNode method = ASMHelper.findMethod(clazz, ASMNames.MDO_PLAYER_UPDATE_RIDDEN);
 
         InsnList needle = new InsnList();
         needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        needle.add(ASMNames.getObfFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_ENTITY_WORLDOBJ, ASMNames.CL_ENTITY_PLAYER));
-        needle.add(ASMNames.getObfFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_WORLD_ISREMOTE));
+        needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_ENTITY_WORLDOBJ, ASMNames.CL_ENTITY_PLAYER));
+        needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_WORLD_ISREMOTE));
         LabelNode ln1 = new LabelNode();
         needle.add(new JumpInsnNode(Opcodes.IFNE, ln1));
         needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        needle.add(ASMNames.getObfMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MDO_ENTITY_IS_SNEAKING, ASMNames.CL_ENTITY_PLAYER, false));
+        needle.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MDO_ENTITY_IS_SNEAKING, ASMNames.CL_ENTITY_PLAYER, false));
         needle.add(new JumpInsnNode(Opcodes.IFEQ, ln1));
 
         AbstractInsnNode insertPoint = ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
 
         InsnList injectList = new InsnList();
         injectList.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        injectList.add(ASMNames.getObfFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_ENTITY_RIDING_ENTITY, ASMNames.CL_ENTITY_PLAYER));
+        injectList.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_ENTITY_RIDING_ENTITY, ASMNames.CL_ENTITY_PLAYER));
         injectList.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        injectList.add(ASMNames.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_SAP_CAN_DISMOUNT_ON_INPUT, false));
+        injectList.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_SAP_CAN_DISMOUNT_ON_INPUT, false));
         injectList.add(new JumpInsnNode(Opcodes.IFEQ, ((JumpInsnNode) insertPoint).label));
 
         method.instructions.insert(insertPoint, injectList);

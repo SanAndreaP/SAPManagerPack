@@ -28,7 +28,7 @@ public class TransformEntityThrowable
         ClassNode clazz = ASMHelper.createClassNode(bytes);
 
         {
-            MethodNode method = ASMNames.getNewMethod(Opcodes.ACC_PUBLIC, ASMNames.MD_SAP_CAN_IMPACT_ON_LIQUID_NEW);
+            MethodNode method = ASMHelper.getMethodNode(Opcodes.ACC_PUBLIC, ASMNames.MD_SAP_CAN_IMPACT_ON_LIQUID);
 
             method.visitCode();
             Label label1 = new Label();
@@ -44,20 +44,20 @@ public class TransformEntityThrowable
         }
 
         {
-            MethodNode method = ASMNames.findObfMethod(clazz, ASMNames.MDO_THROWABLE_ON_UPDATE);
+            MethodNode method = ASMHelper.findMethod(clazz, ASMNames.MDO_THROWABLE_ON_UPDATE);
 
             InsnList needle = new InsnList();
-            needle.add(ASMNames.getObfFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_ENTITY_MOTIONZ, ASMNames.CL_ENTITY_THROWABLE));
+            needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_ENTITY_MOTIONZ, ASMNames.CL_ENTITY_THROWABLE));
             needle.add(new InsnNode(Opcodes.DADD));
-            needle.add(ASMNames.getObfMethodInsnNode(Opcodes.INVOKESTATIC, ASMNames.MDO_VEC3_CREATE_VECTOR_HELPER, false));
+            needle.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKESTATIC, ASMNames.MDO_VEC3_CREATE_VECTOR_HELPER, false));
             needle.add(new VarInsnNode(Opcodes.ASTORE, 2));
             needle.add(new LabelNode());
             needle.add(new LineNumberNode(-1, new LabelNode()));
             needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
-            needle.add(ASMNames.getObfFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_ENTITY_WORLDOBJ, ASMNames.CL_ENTITY_THROWABLE));
+            needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_ENTITY_WORLDOBJ, ASMNames.CL_ENTITY_THROWABLE));
             needle.add(new VarInsnNode(Opcodes.ALOAD, 1));
             needle.add(new VarInsnNode(Opcodes.ALOAD, 2));
-            needle.add(ASMNames.getObfMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MDO_WORLD_RAY_TRACE_BLOCKS, false));
+            needle.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MDO_WORLD_RAY_TRACE_BLOCKS, false));
             needle.add(new VarInsnNode(Opcodes.ASTORE, -1));
 
             VarInsnNode insertPoint = (VarInsnNode) ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
@@ -65,12 +65,12 @@ public class TransformEntityThrowable
             InsnList injectList = new InsnList();
             injectList.add(new LabelNode());
             injectList.add(new VarInsnNode(Opcodes.ALOAD, 0));
-            injectList.add(ASMNames.getObfFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_ENTITY_WORLDOBJ, ASMNames.CL_ENTITY_THROWABLE));
+            injectList.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_ENTITY_WORLDOBJ, ASMNames.CL_ENTITY_THROWABLE));
             injectList.add(new VarInsnNode(Opcodes.ALOAD, 1));
             injectList.add(new VarInsnNode(Opcodes.ALOAD, 2));
             injectList.add(new VarInsnNode(Opcodes.ALOAD, 0));
-            injectList.add(ASMNames.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_SAP_CAN_IMPACT_ON_LIQUID, false));
-            injectList.add(ASMNames.getObfMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MDO_WORLD_RAY_TRACE_BLOCKS_Z, false));
+            injectList.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_SAP_CAN_IMPACT_ON_LIQUID, false));
+            injectList.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MDO_WORLD_RAY_TRACE_BLOCKS_Z, false));
             needle.add(new VarInsnNode(Opcodes.ASTORE, insertPoint.var));
 
             method.instructions.insert(insertPoint, injectList);

@@ -25,12 +25,12 @@ public class TransformEnderman
 
     private static byte[] transformShouldAttackPlayer(byte[] bytes) {
         ClassNode clazz = ASMHelper.createClassNode(bytes);
-        MethodNode method = ASMNames.findObfMethod(clazz, ASMNames.MDO_ENDERMAN_SHOULD_ATK_PLAYER);
+        MethodNode method = ASMHelper.findMethod(clazz, ASMNames.MDO_ENDERMAN_SHOULD_ATK_PLAYER);
 
         InsnList needle = new InsnList();
         needle.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        needle.add(ASMNames.getObfFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_ENTPLAYER_INVENTORY));
-        needle.add(ASMNames.getObfFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_INVPLAYER_ARMORINVENTORY));
+        needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_ENTPLAYER_INVENTORY));
+        needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_INVPLAYER_ARMORINVENTORY));
         needle.add(new InsnNode(Opcodes.ICONST_3));
         needle.add(new InsnNode(Opcodes.AALOAD));
         needle.add(new VarInsnNode(Opcodes.ASTORE, 2));
@@ -38,13 +38,13 @@ public class TransformEnderman
         AbstractInsnNode insertPt = ASMHelper.findFirstNodeFromNeedle(method.instructions, needle);
 
         InsnList newInstr = new InsnList();
-        newInstr.add(ASMNames.getFieldInsnNode(Opcodes.GETSTATIC, ASMNames.FD_FORGE_EVENT_BUS));
+        newInstr.add(ASMHelper.getFieldInsnNode(Opcodes.GETSTATIC, ASMNames.FD_FORGE_EVENT_BUS));
         newInstr.add(new TypeInsnNode(Opcodes.NEW, ASMNames.CL_ENDER_FACING_EVENT));
         newInstr.add(new InsnNode(Opcodes.DUP));
         newInstr.add(new VarInsnNode(Opcodes.ALOAD, 1));
         newInstr.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        newInstr.add(ASMNames.getMethodInsnNode(Opcodes.INVOKESPECIAL, ASMNames.MD_ENDER_FACING_EVENT_CTOR, false));
-        newInstr.add(ASMNames.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_EVENT_BUS_POST, false));
+        newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKESPECIAL, ASMNames.MD_ENDER_FACING_EVENT_CTOR, false));
+        newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_EVENT_BUS_POST, false));
         LabelNode l1 = new LabelNode();
         newInstr.add(new JumpInsnNode(Opcodes.IFEQ, l1));
         newInstr.add(new InsnNode(Opcodes.ICONST_0));
