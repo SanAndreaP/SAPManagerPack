@@ -25,6 +25,8 @@ import de.sanandrew.core.manpack.managers.SAPUpdateManager.Version;
 import de.sanandrew.core.manpack.mod.client.ClientProxy;
 import de.sanandrew.core.manpack.network.NetworkManager;
 import de.sanandrew.core.manpack.util.MutableString;
+import de.sanandrew.core.manpack.util.SAPReflectionHelper;
+import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import net.minecraft.nbt.NBTTagCompound;
 import org.apache.commons.lang3.mutable.MutableBoolean;
@@ -33,7 +35,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class ModCntManPack
         extends DummyModContainer
@@ -48,6 +52,15 @@ public class ModCntManPack
     public static final int FORGE_BULD_MIN = 1448;
 
     public static CommonProxy proxy;
+
+    private static final List<String> TITLES = new ArrayList<>();
+    static {
+        TITLES.add("May contain nuts!");
+        TITLES.add("Creepers gonna creep.");
+        TITLES.add("Super Minecraft Miner Turbo X Diamond 2015 Deluxe GOTY Edition, Episode 2 Act 5.");
+        TITLES.add("I can swing my sword!!!");
+        TITLES.add("Herobrine isn't real! Get over it.");
+    }
 
     public ModCntManPack() {
         super(new ModMetadata());
@@ -72,7 +85,8 @@ public class ModCntManPack
     public void modConstruction(FMLConstructionEvent event) {
         if( Integer.parseInt(FMLInjectionData.data()[3].toString()) < FORGE_BULD_MIN ) {
             MOD_LOG.log(Level.FATAL, "The installed version of Forge is outdated! Minimum build required is %d, installed is build %s. " +
-                           "Either update Forge or remove this mod, it will cause problems otherwise!", FORGE_BULD_MIN, FMLInjectionData.data()[3]);
+                                "Either update Forge or remove this mod, it will cause problems otherwise!", FORGE_BULD_MIN, FMLInjectionData.data()[3]
+                       );
         }
 
         NetworkRegistry.INSTANCE.register(this, this.getClass(), null, event.getASMHarvestedData());
@@ -82,18 +96,25 @@ public class ModCntManPack
     @SideOnly(Side.CLIENT)
     public void injectClientProxy(FMLPreInitializationEvent evt) {
         proxy = new ClientProxy();
-        this.commonPreInit(evt);
+        this.preInit(evt);
     }
 
     @Subscribe
     @SideOnly(Side.SERVER)
     public void injectServerProxy(FMLPreInitializationEvent evt) {
         proxy = new CommonProxy();
-        this.commonPreInit(evt);
+        this.preInit(evt);
     }
 
-    public void commonPreInit(FMLPreInitializationEvent event) {
+    public void preInit(FMLPreInitializationEvent event) {
         ConfigurationManager.load(event.getSuggestedConfigurationFile());
+
+        Class<Object> dspCls = SAPReflectionHelper.getClass("org.lwjgl.opengl.Display");
+        if( dspCls != null ) {
+            String currTitle = SAPReflectionHelper.invokeCachedMethod(dspCls, null, null, "getTitle", null, null);
+            currTitle = String.format("%s: %s", currTitle, TITLES.get(SAPUtils.RNG.nextInt(TITLES.size())));
+            SAPReflectionHelper.invokeCachedMethod(dspCls, null, null, "setTitle", new Class[]{String.class}, new Object[]{currTitle});
+        }
 
         SAPUpdateManager.createUpdateManager("SAP Manager Pack", new Version(MOD_VERSION),
                                              "https://raw.githubusercontent.com/SanAndreasP/SAPManagerPack/master/update.json",

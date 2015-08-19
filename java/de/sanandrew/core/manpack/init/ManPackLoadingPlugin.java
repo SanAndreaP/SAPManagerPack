@@ -60,16 +60,22 @@ public class ManPackLoadingPlugin
     @Override
     public void injectData(Map<String, Object> data) {
         ASMHelper.isMCP = !(Boolean) data.get("runtimeDeobfuscationEnabled");
+
         source = (File) data.get("coremodLocation");
-        if (source == null) { // this is usually in a dev env
+        if( source == null ) {          // this is usually in a dev env
             try {
                 source = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
-            } catch (URISyntaxException e) {
+
+                if( !(new File(source, "assets")).exists() ) {          // fix for IntelliJ
+                    source = new File(source.getParentFile().getParentFile(), "resources/main");
+                }
+            } catch( URISyntaxException e ) {
                 throw new RuntimeException("Failed to acquire source location for SAPManPack!", e);
             }
         }
+
         ASMNames.initialize();
 
-        ASMNameHelper.getInstance().readMcpSrgFile();
+//        ASMNameHelper.getInstance().readMcpSrgFile();
     }
 }

@@ -53,7 +53,7 @@ public class TransformEntityCollision
 
     private static byte[] transformWorld(byte[] bytes) {
         ClassNode clazz = ASMHelper.createClassNode(bytes);
-        MethodNode method = ASMHelper.findMethod(clazz, ASMNames.M_getCollidingBBoxes, "(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Ljava/util/List;");
+        MethodNode method = ASMHelper.findMethod(clazz, ASMNames.MD_WORLD_GET_COLLIDING_BB);
 
         InsnList needle = new InsnList();
         LabelNode ln = new LabelNode();
@@ -65,23 +65,23 @@ public class TransformEntityCollision
         needle.add(new VarInsnNode(Opcodes.DLOAD, -1));
         needle.add(new VarInsnNode(Opcodes.DLOAD, -1));
         needle.add(new VarInsnNode(Opcodes.DLOAD, -1));
-        needle.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/util/AxisAlignedBB", ASMNames.M_aabbExpand, "(DDD)Lnet/minecraft/util/AxisAlignedBB;", false));
-        needle.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/world/World", ASMNames.M_getEntitiesExclude, "(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Ljava/util/List;", false));
+        needle.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_AABB_EXPAND, false));
+        needle.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_WORLD_GET_ENTITIES_EXCLUDE, false));
         needle.add(new VarInsnNode(Opcodes.ASTORE, -1));
 
         VarInsnNode insertPoint = (VarInsnNode) ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
 
         InsnList injectList = new InsnList();
         injectList.add(new LabelNode());
-        injectList.add(new FieldInsnNode(Opcodes.GETSTATIC, "de/sanandrew/core/manpack/util/helpers/SAPUtils", "EVENT_BUS", "Lcpw/mods/fml/common/eventhandler/EventBus;"));
-        injectList.add(new TypeInsnNode(Opcodes.NEW, "de/sanandrew/core/manpack/util/event/entity/CollidingEntityCheckEvent"));
+        injectList.add(ASMHelper.getFieldInsnNode(Opcodes.GETSTATIC, ASMNames.FD_SAPUTILS_EVENT_BUS));
+        injectList.add(new TypeInsnNode(Opcodes.NEW, ASMNames.CL_COLLIDING_ENTITY_CHECK_EVENT));
         injectList.add(new InsnNode(Opcodes.DUP));
         injectList.add(new VarInsnNode(Opcodes.ALOAD, 0));
         injectList.add(new VarInsnNode(Opcodes.ALOAD, insertPoint.var));
         injectList.add(new VarInsnNode(Opcodes.ALOAD, 1));
         injectList.add(new VarInsnNode(Opcodes.ALOAD, 2));
-        injectList.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "de/sanandrew/core/manpack/util/event/entity/CollidingEntityCheckEvent", "<init>", "(Lnet/minecraft/world/World;Ljava/util/List;Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)V", false));
-        injectList.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "cpw/mods/fml/common/eventhandler/EventBus", "post", "(Lcpw/mods/fml/common/eventhandler/Event;)Z", false));
+        injectList.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKESPECIAL, ASMNames.MD_SAP_COLLENTITY_CHKEVT_CTOR, false));
+        injectList.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_EVENT_BUS_POST, false));
         injectList.add(new InsnNode(Opcodes.POP));
 
         method.instructions.insert(insertPoint, injectList);
@@ -94,9 +94,9 @@ public class TransformEntityCollision
         needle.add(new LineNumberNode(-1, ln));
         needle.add(new VarInsnNode(Opcodes.ALOAD, 11));
         needle.add(new VarInsnNode(Opcodes.ILOAD, 12));
-        needle.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "get", "(I)Ljava/lang/Object;", true));
-        needle.add(new TypeInsnNode(Opcodes.CHECKCAST, "net/minecraft/entity/Entity"));
-        needle.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/Entity", ASMNames.M_getBoundingBox, "()Lnet/minecraft/util/AxisAlignedBB;", false));
+        needle.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEINTERFACE, ASMNames.MD_LIST_GET, true));
+        needle.add(new TypeInsnNode(Opcodes.CHECKCAST, ASMNames.CL_ENTITY));
+        needle.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_ENTITY_GET_BOUNDING_BOX, false));
         needle.add(new VarInsnNode(Opcodes.ASTORE, -1));
 
         insertPoint = (VarInsnNode) ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
@@ -105,11 +105,11 @@ public class TransformEntityCollision
         injectList.add(new LabelNode());
         injectList.add(new VarInsnNode(Opcodes.ALOAD, 11));
         injectList.add(new VarInsnNode(Opcodes.ILOAD, 12));
-        injectList.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "get", "(I)Ljava/lang/Object;", true));
-        injectList.add(new TypeInsnNode(Opcodes.CHECKCAST, "net/minecraft/entity/Entity"));
+        injectList.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEINTERFACE, ASMNames.MD_LIST_GET, true));
+        injectList.add(new TypeInsnNode(Opcodes.CHECKCAST, ASMNames.CL_ENTITY));
         injectList.add(new VarInsnNode(Opcodes.ALOAD, 1));
         injectList.add(new VarInsnNode(Opcodes.ALOAD, insertPoint.var));
-        injectList.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/Entity", "_SAP_getBoundingBox", "(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Lnet/minecraft/util/AxisAlignedBB;", false));
+        injectList.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_SAP_ENTITY_GET_BOUNDING_BOX, false));
         injectList.add(new VarInsnNode(Opcodes.ASTORE, insertPoint.var));
 
         method.instructions.insert(insertPoint, injectList);

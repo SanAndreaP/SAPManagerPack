@@ -1,6 +1,7 @@
 package de.sanandrew.core.manpack.util;
 
 import com.google.common.collect.Maps;
+import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -11,6 +12,23 @@ public final class SAPReflectionHelper
 {
     private static Map<String, Method> cachedMethods = Maps.newHashMap();
     private static Map<String, Field> cachedFields = Maps.newHashMap();
+
+    public static boolean doesClassExist(String className) {
+        try {
+            Class.forName(className, false, null);
+            return true;
+        } catch( ClassNotFoundException ex ) {
+            return false;
+        }
+    }
+
+    public static <T> Class<T> getClass(String className) {
+        try {
+            return SAPUtils.getCasted(Class.forName(className));
+        } catch( ClassNotFoundException | UnsatisfiedLinkError ex ) {
+            return null;
+        }
+    }
 
     public static <T, E> void setCachedFieldValue(Class<? super E> classToAccess, E instance, String mcpName, String srgName, T value) {
         Field field = getCachedField(classToAccess, mcpName, srgName);

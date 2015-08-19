@@ -43,9 +43,7 @@ public class TransformEnderman
         newInstr.add(new InsnNode(Opcodes.DUP));
         newInstr.add(new VarInsnNode(Opcodes.ALOAD, 1));
         newInstr.add(new VarInsnNode(Opcodes.ALOAD, 0));
-//        newInstr.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "de/sanandrew/core/manpack/util/event/entity/EnderFacingEvent", "<init>", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/entity/monster/EntityEnderman;)V", false));
         newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKESPECIAL, ASMNames.MD_ENDER_FACING_EVENT_CTOR, false));
-//        newInstr.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "cpw/mods/fml/common/eventhandler/EventBus", "post", "(Lcpw/mods/fml/common/eventhandler/Event;)Z", false));
         newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_EVENT_BUS_POST, false));
         LabelNode l1 = new LabelNode();
         newInstr.add(new JumpInsnNode(Opcodes.IFEQ, l1));

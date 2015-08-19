@@ -6,20 +6,11 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.transformer;
 
+import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.VarInsnNode;
-
-import net.minecraft.launchwrapper.IClassTransformer;
+import org.objectweb.asm.tree.*;
 
 public class TransformPlayerDismountCtrl
         implements IClassTransformer
@@ -40,7 +31,8 @@ public class TransformPlayerDismountCtrl
     private static byte[] transformEntity(byte[] bytes) {
         ClassNode clazz = ASMHelper.createClassNode(bytes);
 
-        MethodNode method = new MethodNode(Opcodes.ACC_PUBLIC, "_SAP_canDismountWithLSHIFT", "(Lnet/minecraft/entity/player/EntityPlayer;)Z", null, null);
+//        MethodNode method = new MethodNode(Opcodes.ACC_PUBLIC, "_SAP_canDismountWithLSHIFT", "(Lnet/minecraft/entity/player/EntityPlayer;)Z", null, null);
+        MethodNode method = ASMHelper.getMethodNode(Opcodes.ACC_PUBLIC, ASMNames.MD_SAP_CAN_DISMOUNT_ON_INPUT);
         method.visitCode();
         Label l0 = new Label();
         method.visitLabel(l0);
@@ -48,8 +40,8 @@ public class TransformPlayerDismountCtrl
         method.visitInsn(Opcodes.IRETURN);
         Label l1 = new Label();
         method.visitLabel(l1);
-        method.visitLocalVariable("this", "Lnet/minecraft/entity/Entity;", null, l0, l1, 0);
-        method.visitLocalVariable("player", "Lnet/minecraft/entity/player/EntityPlayer;", null, l0, l1, 1);
+        method.visitLocalVariable("this", ASMNames.CL_T_ENTITY, null, l0, l1, 0);
+        method.visitLocalVariable("player", ASMNames.CL_T_ENTITY_PLAYER, null, l0, l1, 1);
         method.visitMaxs(1, 2);
         method.visitEnd();
 
@@ -65,19 +57,23 @@ public class TransformPlayerDismountCtrl
 
         InsnList needle = new InsnList();
         needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        needle.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/player/EntityPlayer", ASMNames.F_worldObj, "Lnet/minecraft/world/World;"));
-        needle.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/world/World", ASMNames.F_isRemote, "Z"));
+//        needle.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/player/EntityPlayer", ASMNames.F_worldObj, "Lnet/minecraft/world/World;"));
+        needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FD_PLAYER_WORLD_OBJ));
+//        needle.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/world/World", ASMNames.F_isRemote, "Z"));
+        needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FD_WORLD_IS_REMOTE));
         LabelNode ln1 = new LabelNode();
         needle.add(new JumpInsnNode(Opcodes.IFNE, ln1));
         needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        needle.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/player/EntityPlayer", ASMNames.M_isSneaking, "()Z", false));
+//        needle.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/player/EntityPlayer", ASMNames.M_isSneaking, "()Z", false));
+        needle.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_PLAYER_IS_SNEAKING, false));
         needle.add(new JumpInsnNode(Opcodes.IFEQ, ln1));
 
         AbstractInsnNode insertPoint = ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
 
         InsnList injectList = new InsnList();
         injectList.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        injectList.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/player/EntityPlayer", ASMNames.F_ridingEntity, "Lnet/minecraft/entity/Entity;"));
+//        injectList.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/player/EntityPlayer", ASMNames.F_ridingEntity, "Lnet/minecraft/entity/Entity;"));
+        injectList.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FD_PLAYER_RIDING_ENTITY));
         injectList.add(new VarInsnNode(Opcodes.ALOAD, 0));
         injectList.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/Entity", "_SAP_canDismountWithLSHIFT", "(Lnet/minecraft/entity/player/EntityPlayer;)Z", false));
         injectList.add(new JumpInsnNode(Opcodes.IFEQ, ((JumpInsnNode) insertPoint).label));
