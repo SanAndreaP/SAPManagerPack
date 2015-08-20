@@ -27,7 +27,7 @@ public class TransformEntityThrowable
     private static byte[] transformLqThrowable(byte[] bytes) {
         ClassNode classNode = ASMHelper.createClassNode(bytes);
 
-        MethodNode method = ASMHelper.getMethodNode(Opcodes.ACC_PUBLIC, ASMNames.MD_SAP_THROWABLE_CAN_IMPACT_LQ);
+        MethodNode method = ASMHelper.getMethodNode(Opcodes.ACC_PUBLIC, ASMNames.MD_SAP_CAN_IMPACT_ON_LIQUID);
 
         method.visitCode();
         Label label1 = new Label();
@@ -66,7 +66,7 @@ public class TransformEntityThrowable
         injectList.add(new VarInsnNode(Opcodes.ALOAD, 1));
         injectList.add(new VarInsnNode(Opcodes.ALOAD, 2));
         injectList.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        injectList.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_SAP_THROWABLE_CAN_IMPACT_LQ, false));
+        injectList.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_SAP_CAN_IMPACT_ON_LIQUID, false));
         injectList.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_WORLD_RAY_TRACE_BLOCKS_Z, false));
         injectList.add(new VarInsnNode(Opcodes.ASTORE, insertPoint.var));
 

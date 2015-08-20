@@ -12,6 +12,10 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
+/**
+ * This transformer adds a hook for entities to control whether or not the rider of the entity can dismount it via sneaking.
+ * The entity needs to override _SAP_canDismountOnInput() and should return true, if the rider can dismount, otherwise false.
+ */
 public class TransformPlayerDismountCtrl
         implements IClassTransformer
 {
@@ -28,10 +32,15 @@ public class TransformPlayerDismountCtrl
         return bytes;
     }
 
+    /**
+     * Transforms the Entity.class by adding a new method called _SAP_canDismountOnInput.<br>
+     * This method can be overridden by any entity to control wether or not the rider can dismount via sneaking (usually by pressing LSHIFT for the player).
+     * @param bytes the class bytes to be transformed
+     * @return the transformed class bytes
+     */
     private static byte[] transformEntity(byte[] bytes) {
         ClassNode clazz = ASMHelper.createClassNode(bytes);
 
-//        MethodNode method = new MethodNode(Opcodes.ACC_PUBLIC, "_SAP_canDismountWithLSHIFT", "(Lnet/minecraft/entity/player/EntityPlayer;)Z", null, null);
         MethodNode method = ASMHelper.getMethodNode(Opcodes.ACC_PUBLIC, ASMNames.MD_SAP_CAN_DISMOUNT_ON_INPUT);
         method.visitCode();
         Label l0 = new Label();
@@ -51,20 +60,23 @@ public class TransformPlayerDismountCtrl
         return bytes;
     }
 
+    /**
+     * Transforms the EntityPlayer.class by hooking into the updateRidden method and adding a call to _SAP_canDismountOnInput
+     * in order for the ridden entity to control whether or not the rider can dismount via sneaking.
+     * @param bytes the class bytes to be transformed
+     * @return the transformed class bytes
+     */
     private static byte[] transformPlayer(byte[] bytes) {
         ClassNode clazz = ASMHelper.createClassNode(bytes);
-        MethodNode method = ASMHelper.findMethod(clazz, ASMNames.M_updateRidden, "()V");
+        MethodNode method = ASMHelper.findMethod(clazz, ASMNames.MD_PLAYER_UPDATE_RIDDEN);
 
         InsnList needle = new InsnList();
         needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
-//        needle.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/player/EntityPlayer", ASMNames.F_worldObj, "Lnet/minecraft/world/World;"));
         needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FD_PLAYER_WORLD_OBJ));
-//        needle.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/world/World", ASMNames.F_isRemote, "Z"));
         needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FD_WORLD_IS_REMOTE));
         LabelNode ln1 = new LabelNode();
         needle.add(new JumpInsnNode(Opcodes.IFNE, ln1));
         needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
-//        needle.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/player/EntityPlayer", ASMNames.M_isSneaking, "()Z", false));
         needle.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_PLAYER_IS_SNEAKING, false));
         needle.add(new JumpInsnNode(Opcodes.IFEQ, ln1));
 
@@ -72,10 +84,9 @@ public class TransformPlayerDismountCtrl
 
         InsnList injectList = new InsnList();
         injectList.add(new VarInsnNode(Opcodes.ALOAD, 0));
-//        injectList.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/player/EntityPlayer", ASMNames.F_ridingEntity, "Lnet/minecraft/entity/Entity;"));
         injectList.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FD_PLAYER_RIDING_ENTITY));
         injectList.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        injectList.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/Entity", "_SAP_canDismountWithLSHIFT", "(Lnet/minecraft/entity/player/EntityPlayer;)Z", false));
+        injectList.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_SAP_CAN_DISMOUNT_ON_INPUT, false));
         injectList.add(new JumpInsnNode(Opcodes.IFEQ, ((JumpInsnNode) insertPoint).label));
 
         method.instructions.insert(insertPoint, injectList);

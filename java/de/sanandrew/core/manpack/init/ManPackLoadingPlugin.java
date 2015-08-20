@@ -35,12 +35,13 @@ public class ManPackLoadingPlugin
     @Override
     public String[] getASMTransformerClass() {
         return new String[] {
-                         TransformEntityThrowable.class.getName(),
-                         TransformPlayerDismountCtrl.class.getName(),
-                         TransformHorseArmor.class.getName(),
-                         TransformEnderman.class.getName(),
-                         TransformEntityCollision.class.getName()
-               };
+                TransformEntityThrowable.class.getName(),
+                TransformPlayerDismountCtrl.class.getName(),
+                TransformHorseArmor.class.getName(),
+                TransformEnderman.class.getName(),
+                TransformEntityCollision.class.getName(),
+                AnnotationChecker.class.getName() // KEEP THIS AS LAST
+        };
     }
 
     @Override

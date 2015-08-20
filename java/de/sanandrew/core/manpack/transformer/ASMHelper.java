@@ -97,7 +97,15 @@ public final class ASMHelper
      */
     @Deprecated
     public static MethodNode findMethod(String name, String desc, ClassNode cnode) {
-        return findMethod(cnode, name, desc);
+        return findMethodNode(cnode, name, desc);
+    }
+
+    /**
+     * @see de.sanandrew.core.manpack.transformer.ASMHelper#findMethod(ClassNode cnode, String name, String desc)
+     */
+    @Deprecated
+    public static MethodNode findMethod(ClassNode cnode, String name, String desc) {
+        return findMethodNode(cnode, name, desc);
     }
 
     /**
@@ -108,7 +116,7 @@ public final class ASMHelper
      * @return true, if the name was found, or else false
      * @throws de.sanandrew.core.manpack.transformer.ASMHelper.MethodNotFoundException when the method name and descriptor couldn't be found
      */
-    public static MethodNode findMethod(ClassNode cnode, String name, String desc) {
+    private static MethodNode findMethodNode(ClassNode cnode, String name, String desc) {
         for( MethodNode mnode : cnode.methods ) {
             if( name.equals(mnode.name) && desc.equals(mnode.desc) ) {
                 return mnode;
@@ -208,7 +216,7 @@ public final class ASMHelper
     public static MethodNode findMethod(ClassNode clazz, String method) {
         Triplet<String, String, String[]> methodDesc = ASMNames.getSrgNameMd(method);
 
-        return findMethod(clazz, methodDesc.getValue1(), methodDesc.getValue2()[0]);
+        return findMethodNode(clazz, methodDesc.getValue1(), methodDesc.getValue2()[0]);
     }
 
     public static FieldInsnNode getFieldInsnNode(int opcode, String field) {
