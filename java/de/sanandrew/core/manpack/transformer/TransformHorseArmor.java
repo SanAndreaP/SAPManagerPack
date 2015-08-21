@@ -36,20 +36,20 @@ public class TransformHorseArmor
 		method = injectMethodGCAI();
 		clazz.methods.add(method);
 
-		transformInteract(ASMHelper.findMethod(clazz, ASMNames.M_interact, "(Lnet/minecraft/entity/player/EntityPlayer;)Z"));
-        transformIsValidArmor(ASMHelper.findMethod(clazz, ASMNames.M_func146085a, "(Lnet/minecraft/item/Item;)Z"));
-        transformEntityInit(ASMHelper.findMethod(clazz, ASMNames.M_entityInit, "()V"));
-        transformUpdateHorseSlots(ASMHelper.findMethod(clazz, ASMNames.M_func110232cE, "()V"));
-        transformOnInvChanged(ASMHelper.findMethod(clazz, ASMNames.M_onInventoryChanged, "(Lnet/minecraft/inventory/InventoryBasic;)V"));
-        transformGetTotalArmorValue(ASMHelper.findMethod(clazz, ASMNames.M_getTotalArmorValue, "()I"));
+        transformInteract(ASMHelper.findMethod(clazz, ASMNames.MD_HORSE_INTERACT));
+        transformIsValidArmor(ASMHelper.findMethod(clazz, ASMNames.MD_HORSE_FUNC146085A));
+        transformEntityInit(ASMHelper.findMethod(clazz, ASMNames.MD_HORSE_ENTITY_INIT));
+        transformUpdateHorseSlots(ASMHelper.findMethod(clazz, ASMNames.MD_HORSE_FUNC110232CE));
+        transformOnInvChanged(ASMHelper.findMethod(clazz, ASMNames.MD_HORSE_ON_INV_CHANGED));
+        transformGetTotalArmorValue(ASMHelper.findMethod(clazz, ASMNames.MD_HORSE_GET_TOTAL_ARMOR_VAL));
 
         try {
-            transformArmorTexture(ASMHelper.findMethod(clazz, ASMNames.M_setHorseTexturePaths, "()V"));
+            transformArmorTexture(ASMHelper.findMethod(clazz, ASMNames.MD_HORSE_SET_TEXTURE_PATH));
         } catch( ASMHelper.MethodNotFoundException e ) {
             ModCntManPack.MOD_LOG.log(Level.INFO, "Running on dedicated server, no need to transform Method %s!", ASMNames.M_setHorseTexturePaths);
         }
 
-	    bytes = ASMHelper.createBytes(clazz, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+	    bytes = ASMHelper.createBytes(clazz, /*ClassWriter.COMPUTE_FRAMES |*/ ClassWriter.COMPUTE_MAXS);
 
 		return bytes;
 	}
@@ -294,6 +294,8 @@ public class TransformHorseArmor
 
 	private static void transformIsValidArmor(MethodNode method) {
 	    InsnList needle = new InsnList();
+        needle.add(new LabelNode());
+        needle.add(new LineNumberNode(-1, new LabelNode()));
 	    needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
 	    needle.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraft/init/Items", ASMNames.F_iron_horse_armor, "Lnet/minecraft/item/Item;"));
 	    needle.add(new JumpInsnNode(Opcodes.IF_ACMPEQ, new LabelNode()));
@@ -301,6 +303,7 @@ public class TransformHorseArmor
 	    AbstractInsnNode node = ASMHelper.findFirstNodeFromNeedle(method.instructions, needle);
 
 	    InsnList newInstr = new InsnList();
+        newInstr.add(new LabelNode());
         newInstr.add(new VarInsnNode(Opcodes.ALOAD, 0));
         newInstr.add(new TypeInsnNode(Opcodes.INSTANCEOF, "de/sanandrew/core/manpack/item/AItemHorseArmor"));
         LabelNode ln = new LabelNode();
@@ -309,31 +312,33 @@ public class TransformHorseArmor
         newInstr.add(new InsnNode(Opcodes.ICONST_1));
         newInstr.add(new InsnNode(Opcodes.IRETURN));
         newInstr.add(ln);
-        newInstr.add(new FrameNode(Opcodes.F_SAME, 0, null, 0, null));
 
 	    method.instructions.insertBefore(node, newInstr);
 	}
 
 	private static void transformInteract(MethodNode method) {
+
 	    InsnList needle = new InsnList();
 	    needle.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraft/init/Items", ASMNames.F_diamondHorseArmor, "Lnet/minecraft/item/Item;"));
 	    needle.add(new JumpInsnNode(Opcodes.IF_ACMPNE, new LabelNode()));
 	    needle.add(new LabelNode());
-	    needle.add(new LineNumberNode(801, new LabelNode()));
+	    needle.add(new LineNumberNode(-1, new LabelNode()));
 	    needle.add(new InsnNode(Opcodes.ICONST_3));
 	    needle.add(new VarInsnNode(Opcodes.ISTORE, 4));
 	    needle.add(new LabelNode());
-	    needle.add(new LineNumberNode(804, new LabelNode()));
+	    needle.add(new LineNumberNode(-1, new LabelNode()));
 	    needle.add(new FrameNode(Opcodes.F_SAME, 0, null, 0, null));
 
 	    AbstractInsnNode node = ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
 
 	    InsnList newInstr = new InsnList();
+        newInstr.add(new LabelNode());
 	    newInstr.add(new VarInsnNode(Opcodes.ALOAD, 2));
         newInstr.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/item/ItemStack", ASMNames.M_getItem, "()Lnet/minecraft/item/Item;", false));
         newInstr.add(new TypeInsnNode(Opcodes.INSTANCEOF, "de/sanandrew/core/manpack/item/AItemHorseArmor"));
         LabelNode l8 = new LabelNode();
         newInstr.add(new JumpInsnNode(Opcodes.IFEQ, l8));
+        newInstr.add(new LabelNode());
         newInstr.add(new InsnNode(Opcodes.ICONST_4));
         newInstr.add(new VarInsnNode(Opcodes.ISTORE, 4));
         newInstr.add(l8);

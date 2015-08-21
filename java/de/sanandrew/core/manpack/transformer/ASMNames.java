@@ -33,13 +33,13 @@ public final class ASMNames
     public static final String MD_PLAYER_IS_SNEAKING = "net/minecraft/entity/player/EntityPlayer/isSneaking ()Z";
     public static final String MDO_DATAWATCHER_GET_OBJ_STACK = "net/minecraft/entity/DataWatcher/getWatchableObjectItemStack (I)Lnet/minecraft/item/ItemStack;";
     public static final String MDO_DATAWATCHER_UPDATE_OBJ = "net/minecraft/entity/DataWatcher/updateObject (ILjava/lang/Object;)V";
-    public static final String MDO_HORSE_INTERACT = "net/minecraft/entity/passive/EntityHorse/interact (Lnet/minecraft/entity/player/EntityPlayer;)Z";
-    public static final String MDO_HORSE_FUNC146085A = "net/minecraft/entity/passive/EntityHorse/func_146085_a (Lnet/minecraft/item/Item;)Z";
-    public static final String MDO_HORSE_ENTITY_INIT = "net/minecraft/entity/passive/EntityHorse/entityInit ()V";
-    public static final String MDO_HORSE_FUNC110232CE = "net/minecraft/entity/passive/EntityHorse/func_110232_cE ()V";
-    public static final String MDO_HORSE_ON_INV_CHANGED = "net/minecraft/entity/passive/EntityHorse/onInventoryChanged (Lnet/minecraft/inventory/InventoryBasic;)V";
-    public static final String MDO_HORSE_GET_TOTAL_ARMOR_VAL = "net/minecraft/entity/passive/EntityHorse/getTotalArmorValue ()I";
-    public static final String MDO_HORSE_SET_TEXTURE_PATH = "net/minecraft/entity/passive/EntityHorse/setHorseTexturePaths ()V";
+    public static final String MD_HORSE_INTERACT = "net/minecraft/entity/passive/EntityHorse/interact (Lnet/minecraft/entity/player/EntityPlayer;)Z";
+    public static final String MD_HORSE_FUNC146085A = "net/minecraft/entity/passive/EntityHorse/func_146085_a (Lnet/minecraft/item/Item;)Z";
+    public static final String MD_HORSE_ENTITY_INIT = "net/minecraft/entity/passive/EntityHorse/entityInit ()V";
+    public static final String MD_HORSE_FUNC110232CE = "net/minecraft/entity/passive/EntityHorse/func_110232_cE ()V";
+    public static final String MD_HORSE_ON_INV_CHANGED = "net/minecraft/entity/passive/EntityHorse/onInventoryChanged (Lnet/minecraft/inventory/InventoryBasic;)V";
+    public static final String MD_HORSE_GET_TOTAL_ARMOR_VAL = "net/minecraft/entity/passive/EntityHorse/getTotalArmorValue ()I";
+    public static final String MD_HORSE_SET_TEXTURE_PATH = "net/minecraft/entity/passive/EntityHorse/setHorseTexturePaths ()V";
     public static final String MDO_HORSE_FUNC110241CB = "net/minecraft/entity/passive/EntityHorse/func_110241_cb ()I";
     public static final String MDO_ITEMSTACK_GET_ITEM = "net/minecraft/item/ItemStack/getItem ()Lnet/minecraft/item/Item;";
     public static final String MDO_HORSE_IS_SADDLED = "net/minecraft/entity/passive/EntityHorse/isHorseSaddled ()Z";
@@ -121,6 +121,13 @@ public final class ASMNames
         MAPPINGS.put(MD_WORLD_RAY_TRACE_BLOCKS_Z, "func_72901_a");
         MAPPINGS.put(MD_PLAYER_IS_SNEAKING, "func_70093_af");
         MAPPINGS.put(MD_PLAYER_UPDATE_RIDDEN, "func_70098_U");
+        MAPPINGS.put(MD_HORSE_INTERACT, "func_70085_c");
+        MAPPINGS.put(MD_HORSE_FUNC146085A, "func_146085_a");
+        MAPPINGS.put(MD_HORSE_ENTITY_INIT, "func_70088_a");
+        MAPPINGS.put(MD_HORSE_FUNC110232CE, "func_110232_cE");
+        MAPPINGS.put(MD_HORSE_ON_INV_CHANGED, "func_76316_a");
+        MAPPINGS.put(MD_HORSE_GET_TOTAL_ARMOR_VAL, "func_70658_aO");
+        MAPPINGS.put(MD_HORSE_SET_TEXTURE_PATH, "func_110247_cG");
 
         MAPPINGS.put(FD_PLAYER_INVENTORY, "field_71071_by");
         MAPPINGS.put(FD_INVPLAYER_ARMOR_INVENTORY, "field_70460_b");
