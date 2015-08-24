@@ -31,8 +31,8 @@ public final class ASMNames
     public static final String MD_THROWABLE_ON_UPDATE = "net/minecraft/entity/projectile/EntityThrowable/onUpdate ()V";
     public static final String MD_PLAYER_UPDATE_RIDDEN = "net/minecraft/entity/player/EntityPlayer/updateRidden ()V";
     public static final String MD_PLAYER_IS_SNEAKING = "net/minecraft/entity/player/EntityPlayer/isSneaking ()Z";
-    public static final String MDO_DATAWATCHER_GET_OBJ_STACK = "net/minecraft/entity/DataWatcher/getWatchableObjectItemStack (I)Lnet/minecraft/item/ItemStack;";
-    public static final String MDO_DATAWATCHER_UPDATE_OBJ = "net/minecraft/entity/DataWatcher/updateObject (ILjava/lang/Object;)V";
+    public static final String MD_DATAWATCHER_GET_OBJ_STACK = "net/minecraft/entity/DataWatcher/getWatchableObjectItemStack (I)Lnet/minecraft/item/ItemStack;";
+    public static final String MD_DATAWATCHER_UPDATE_OBJ = "net/minecraft/entity/DataWatcher/updateObject (ILjava/lang/Object;)V";
     public static final String MD_HORSE_INTERACT = "net/minecraft/entity/passive/EntityHorse/interact (Lnet/minecraft/entity/player/EntityPlayer;)Z";
     public static final String MD_HORSE_FUNC146085A = "net/minecraft/entity/passive/EntityHorse/func_146085_a (Lnet/minecraft/item/Item;)Z";
     public static final String MD_HORSE_ENTITY_INIT = "net/minecraft/entity/passive/EntityHorse/entityInit ()V";
@@ -40,11 +40,11 @@ public final class ASMNames
     public static final String MD_HORSE_ON_INV_CHANGED = "net/minecraft/entity/passive/EntityHorse/onInventoryChanged (Lnet/minecraft/inventory/InventoryBasic;)V";
     public static final String MD_HORSE_GET_TOTAL_ARMOR_VAL = "net/minecraft/entity/passive/EntityHorse/getTotalArmorValue ()I";
     public static final String MD_HORSE_SET_TEXTURE_PATH = "net/minecraft/entity/passive/EntityHorse/setHorseTexturePaths ()V";
-    public static final String MDO_HORSE_FUNC110241CB = "net/minecraft/entity/passive/EntityHorse/func_110241_cb ()I";
-    public static final String MDO_ITEMSTACK_GET_ITEM = "net/minecraft/item/ItemStack/getItem ()Lnet/minecraft/item/Item;";
-    public static final String MDO_HORSE_IS_SADDLED = "net/minecraft/entity/passive/EntityHorse/isHorseSaddled ()Z";
-    public static final String MDO_ENTITY_PLAY_SOUND = "net/minecraft/entity/Entity/playSound (Ljava/lang/String;FF)V";
-    public static final String MDO_ITEMSTACK_IS_ITEM_EQUAL = "net/minecraft/item/ItemStack/isItemEqual (Lnet/minecraft/item/ItemStack;)Z";
+    public static final String MD_HORSE_FUNC110241CB = "net/minecraft/entity/passive/EntityHorse/func_110241_cb ()I";
+    public static final String MD_ITEMSTACK_GET_ITEM = "net/minecraft/item/ItemStack/getItem ()Lnet/minecraft/item/Item;";
+    public static final String MD_HORSE_IS_SADDLED = "net/minecraft/entity/passive/EntityHorse/isHorseSaddled ()Z";
+    public static final String MD_HORSE_PLAY_SOUND = "net/minecraft/entity/passive/EntityHorse/playSound (Ljava/lang/String;FF)V";
+    public static final String MD_ITEMSTACK_IS_ITEM_EQUAL = "net/minecraft/item/ItemStack/isItemEqual (Lnet/minecraft/item/ItemStack;)Z";
     public static final String MDO_ITEMSTACK_GET_UNLOC_NAME = "net/minecraft/item/ItemStack/getUnlocalizedName ()Ljava/lang/String;";
     public static final String MDO_INVBASIC_GET_STACK_IN_SLOT = "net/minecraft/inventory/InventoryBasic/getStackInSlot (I)Lnet/minecraft/item/ItemStack;";
     public static final String MDO_DATAWATCHER_ADD_OBJECT = "net/minecraft/entity/DataWatcher/addObject (ILjava/lang/Object;)V";
@@ -56,9 +56,9 @@ public final class ASMNames
     public static final String FD_PLAYER_WORLD_OBJ = "net/minecraft/entity/player/EntityPlayer/worldObj Lnet/minecraft/world/World;";
     public static final String FD_WORLD_IS_REMOTE = "net/minecraft/world/World/isRemote Z";
     public static final String FD_PLAYER_RIDING_ENTITY = "net/minecraft/entity/player/EntityPlayer/ridingEntity Lnet/minecraft/entity/Entity;";
-    public static final String FDO_ENTITY_DATAWATCHER = "net/minecraft/entity/Entity/dataWatcher Lnet/minecraft/entity/DataWatcher;";
-    public static final String FDO_ITEMS_IRON_SHOVEL = "net/minecraft/init/Items/iron_shovel Lnet/minecraft/item/Item;";
-    public static final String FDO_HORSE_ARMOR_VALUES = "net/minecraft/entity/passive/EntityHorse/armorValues [I";
+    public static final String FD_HORSE_DATAWATCHER = "net/minecraft/entity/passive/EntityHorse/dataWatcher Lnet/minecraft/entity/DataWatcher;";
+    public static final String FD_ITEMS_IRON_SHOVEL = "net/minecraft/init/Items/iron_shovel Lnet/minecraft/item/Item;";
+    public static final String FD_HORSE_ARMOR_VALUES = "net/minecraft/entity/passive/EntityHorse/armorValues [I";
     public static final String FDO_HORSE_FIELD110280BR = "net/minecraft/entity/passive/EntityHorse/field_110280_bR [Ljava/lang/String;";
     public static final String FDO_HORSE_FIELD110286BQ = "net/minecraft/entity/passive/EntityHorse/field_110286_bQ Ljava/lang/String;";
     public static final String FDO_HORSE_CHEST = "net/minecraft/entity/passive/EntityHorse/horseChest Lnet/minecraft/inventory/AnimalChest;";
@@ -128,6 +128,13 @@ public final class ASMNames
         MAPPINGS.put(MD_HORSE_ON_INV_CHANGED, "func_76316_a");
         MAPPINGS.put(MD_HORSE_GET_TOTAL_ARMOR_VAL, "func_70658_aO");
         MAPPINGS.put(MD_HORSE_SET_TEXTURE_PATH, "func_110247_cG");
+        MAPPINGS.put(MD_DATAWATCHER_GET_OBJ_STACK, "func_82710_f");
+        MAPPINGS.put(MD_DATAWATCHER_UPDATE_OBJ, "func_75692_b");
+        MAPPINGS.put(MD_HORSE_FUNC110241CB, "func_110241_cb");
+        MAPPINGS.put(MD_ITEMSTACK_GET_ITEM, "func_77973_b");
+        MAPPINGS.put(MD_HORSE_IS_SADDLED, "func_110257_ck");
+        MAPPINGS.put(MD_HORSE_PLAY_SOUND, "func_85030_a");
+        MAPPINGS.put(MD_ITEMSTACK_IS_ITEM_EQUAL, "func_77969_a");
 
         MAPPINGS.put(FD_PLAYER_INVENTORY, "field_71071_by");
         MAPPINGS.put(FD_INVPLAYER_ARMOR_INVENTORY, "field_70460_b");
@@ -136,6 +143,9 @@ public final class ASMNames
         MAPPINGS.put(FD_PLAYER_WORLD_OBJ, "field_70170_p");
         MAPPINGS.put(FD_WORLD_IS_REMOTE, "field_72995_K");
         MAPPINGS.put(FD_PLAYER_RIDING_ENTITY, "field_70154_o");
+        MAPPINGS.put(FD_HORSE_DATAWATCHER, "field_70180_af");
+        MAPPINGS.put(FD_ITEMS_IRON_SHOVEL, "field_151037_a");
+        MAPPINGS.put(FD_HORSE_ARMOR_VALUES, "field_110272_by");
     }
 
     static final Pattern OWNERNAME = Pattern.compile("(\\S*)/(.*)");
@@ -238,6 +248,8 @@ public final class ASMNames
     @Deprecated public static String M_aabbExpand;
     @Deprecated public static String M_getEntitiesExclude;
 
+    @Deprecated
+    @SuppressWarnings("deprecation")
     public static void initialize() {
         if( isInitialized ) {
             return;

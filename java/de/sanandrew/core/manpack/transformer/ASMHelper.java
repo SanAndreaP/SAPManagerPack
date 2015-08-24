@@ -1,6 +1,6 @@
 package de.sanandrew.core.manpack.transformer;
 
-import cpw.mods.fml.common.FMLLog;
+import de.sanandrew.core.manpack.mod.ModCntManPack;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.ClassReader;
@@ -26,7 +26,7 @@ public final class ASMHelper
         ClassWriter cw = new ClassWriter(cwFlags);
         cnode.accept(cw);
         byte[] bArr = cw.toByteArray();
-        FMLLog.log("SAPManPack", Level.INFO, "Class %s successfully transformed!", cnode.name);
+        ModCntManPack.MOD_LOG.log(Level.INFO, String.format("Class %s successfully transformed!", cnode.name));
         return bArr;
     }
 
@@ -213,6 +213,11 @@ public final class ASMHelper
         return new MethodInsnNode(opcode, methodDesc.getValue0(), methodDesc.getValue1(), methodDesc.getValue2()[0], intf);
     }
 
+    public static void visitMethodInsn(MethodNode node, int opcode, String method, boolean intf) {
+        MethodInsnNode mdiNode = getMethodInsnNode(opcode, method, intf);
+        node.visitMethodInsn(opcode, mdiNode.owner, mdiNode.name, mdiNode.desc, intf);
+    }
+
     public static MethodNode findMethod(ClassNode clazz, String method) {
         Triplet<String, String, String[]> methodDesc = ASMNames.getSrgNameMd(method);
 
@@ -223,6 +228,11 @@ public final class ASMHelper
         Triplet<String, String, String> fieldDesc = ASMNames.getSrgNameFd(field);
 
         return new FieldInsnNode(opcode, fieldDesc.getValue0(), fieldDesc.getValue1(), fieldDesc.getValue2());
+    }
+
+    public static void visitFieldInsn(MethodNode node, int opcode, String field) {
+        FieldInsnNode fdiNode = getFieldInsnNode(opcode, field);
+        node.visitFieldInsn(opcode, fdiNode.owner, fdiNode.name, fdiNode.desc);
     }
 
     public static class InvalidNeedleException
