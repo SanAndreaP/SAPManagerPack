@@ -8,12 +8,15 @@
  */
 package de.sanandrew.core.manpack.util.helpers;
 
+import com.mojang.authlib.GameProfile;
 import cpw.mods.fml.common.eventhandler.EventBus;
 import cpw.mods.fml.common.registry.GameRegistry;
+import de.sanandrew.core.manpack.util.ReflectionNames;
 import de.sanandrew.core.manpack.util.SAPReflectionHelper;
 import de.sanandrew.core.manpack.util.javatuples.Quartet;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.CraftingManager;
@@ -27,10 +30,8 @@ import net.minecraftforge.oredict.RecipeSorter.Category;
 import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * A helper class for common used stuff, which is not found somewhere else and
@@ -39,10 +40,20 @@ import java.util.Set;
  */
 public final class SAPUtils
 {
-    /** My personal RNG Deity, to be used whenever a global RNG is needed */
+    /**
+     * My personal RNG Deity, to be used whenever a global RNG is needed
+     */
     public static final Random RNG = new Random();
 
+    /**
+     * The EventBus for this coremod. It prevents cluttering the Forge event bus with the SAPMP events!
+     */
     public static final EventBus EVENT_BUS = new EventBus();
+
+    /**
+     * The pattern of a Version-4-UUID
+     */
+    private static final Pattern UUID_PTRN = Pattern.compile("[a-f0-9]{8}\\-[a-f0-9]{4}\\-4[a-f0-9]{3}\\-[89ab][a-f0-9]{3}\\-[a-f0-9]{12}", Pattern.CASE_INSENSITIVE);
 
     @Deprecated
     public static ItemStack decrStackSize(ItemStack stack) {
@@ -74,25 +85,12 @@ public final class SAPUtils
         return ItemUtils.getGoodItemStacks(stack);
     }
 
-    /**
-     * Gets a value in the middle of 2 values, for example val1 is 1 and val2 is 5, the value returned would be 3.
-     * Note: val1 doesn't have to be smaller than val2
-     * @param val1 the first value
-     * @param val2 the second value
-     * @return the value in between val1 and val2
-     */
+    @Deprecated
     public static int getInBetweenVal(int val1, int val2) {
-        int maxVal = Math.max(val1, val2);
-        int minVal = Math.min(val1, val2);
-        return Math.round((maxVal + minVal) / 2.0F);
+        return getAverage(val1, val2);
     }
 
-    /**
-     * public reflection getter for {@link net.minecraft.block.Block#createStackedBlock(int)}.
-     * @param block The block which will invoke the method
-     * @param meta the metadata of the invoking block
-     * @return the return value from the invoked method
-     */
+    @Deprecated
     public static ItemStack getSilkBlock(Block block, int meta) {
         return SAPReflectionHelper.invokeCachedMethod(Block.class, block, "createStackedBlock", "func_71880_c_", new Class[]{int.class}, new Object[]{meta});
     }
@@ -133,18 +131,6 @@ public final class SAPUtils
         return ItemUtils.isItemStackInArray(base, checkSize, stackArray.toArray(new ItemStack[stackArray.size()]));
     }
 
-    /**
-     * Gets the effective blocks array from the ItemTool.
-     * @param tool The ItemTool instance whose array should be grabbed
-     * @return the effective blocks array
-     */
-    @SuppressWarnings("unchecked")
-    public static Block[] getToolBlocks(ItemTool tool) {
-        Set set = SAPReflectionHelper.getCachedFieldValue(ItemTool.class, tool, "field_150914_c", "field_150914_c");
-        Set<Block> blockSet = (Set<Block>) set;
-        return blockSet.toArray(new Block[blockSet.size()]);
-    }
-
     @Deprecated
     public static boolean isToolEffective(Block[] effectives, Block block) {
         for( Block currBlock : effectives ) {
@@ -155,20 +141,40 @@ public final class SAPUtils
         return false;
     }
 
+    /**
+     * Gets a value in the middle of 2 values, for example val1 is 1 and val2 is 5, the value returned would be 3.
+     * Note: val1 doesn't have to be smaller than val2
+     * @param val1 the first value
+     * @param val2 the second value
+     * @return the value in between val1 and val2 (the average)
+     */
+    public static int getAverage(int val1, int val2) {
+        return Math.round((val1 + val2) / 2.0F);
+    }
+
+    /**
+     * Gets the effective blocks array from the ItemTool.
+     * @param tool The ItemTool instance whose array should be grabbed
+     * @return the effective blocks array
+     */
+    public static Block[] getToolBlocks(ItemTool tool) {
+        Set set = SAPReflectionHelper.getCachedFieldValue(ItemTool.class, tool, ReflectionNames.FIELD_150914_C.mcpName, ReflectionNames.FIELD_150914_C.srgName);
+        Set<Block> blockSet = SAPUtils.getCasted(set);
+        return blockSet.toArray(new Block[blockSet.size()]);
+    }
+
     @Deprecated
     public static boolean areItemInstEqual(Object instance1, Object instance2) {
         return ItemHelper.areItemInstEqual(instance1, instance2);
     }
 
     @Deprecated
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static <T> T[] getArrayFromCollection(Collection<T> collection, Class clazz) {
+    public static <T> T[] getArrayFromCollection(Collection<T> collection, Class<T> clazz) {
         if( collection.size() == 0 ) {
             return null;
         }
-        T[] myArray = (T[]) Array.newInstance(clazz, collection.size());
-        collection.toArray(myArray);
-        return myArray;
+
+        return collection.toArray(SAPUtils.<T[]>getCasted(Array.newInstance(clazz, collection.size())));
     }
 
     /**
@@ -308,6 +314,21 @@ public final class SAPUtils
      */
     public static String translatePreFormat(String key, Object... data) {
         return translate(String.format(key, data));
+    }
+
+    public static boolean isStringUuid(String uuid) {
+        return UUID_PTRN.matcher(uuid).matches();
+    }
+
+    public static boolean isPlayerNameOrUuidEqual(EntityPlayer e, String... namesUuids) {
+        for( String val : namesUuids ) {
+            GameProfile profile = e.getGameProfile();
+            if( (isStringUuid(val) && profile.getId().equals(UUID.fromString(val))) || profile.getName().equals(val) ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static class RGBAValues {
