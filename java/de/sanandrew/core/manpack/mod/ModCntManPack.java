@@ -60,6 +60,7 @@ public class ModCntManPack
         TITLES.add("Super Minecraft Miner Turbo X Diamond 2015 Deluxe GOTY Edition, Episode 2 Act 5.");
         TITLES.add("I can swing my sword!!!");
         TITLES.add("Herobrine isn't real! Get over it.");
+        TITLES.add("PULL THE LEVER!!!");
     }
 
     public ModCntManPack() {

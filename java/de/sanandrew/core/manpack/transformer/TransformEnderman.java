@@ -43,7 +43,7 @@ public class TransformEnderman
         newInstr.add(new InsnNode(Opcodes.DUP));
         newInstr.add(new VarInsnNode(Opcodes.ALOAD, 1));
         newInstr.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKESPECIAL, ASMNames.MD_ENDER_FACING_EVENT_CTOR, false));
+        newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKESPECIAL, ASMNames.MD_ENDERFACINGEVENT_INIT, false));
         newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_EVENT_BUS_POST, false));
         LabelNode l1 = new LabelNode();
         newInstr.add(new JumpInsnNode(Opcodes.IFEQ, l1));

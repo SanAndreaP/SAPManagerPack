@@ -75,8 +75,6 @@ public class ManPackLoadingPlugin
             }
         }
 
-        ASMNames.initialize();
-
 //        ASMNameHelper.getInstance().readMcpSrgFile();
     }
 }

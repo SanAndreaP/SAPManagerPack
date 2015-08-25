@@ -80,7 +80,7 @@ public class TransformEntityCollision
         injectList.add(new VarInsnNode(Opcodes.ALOAD, insertPoint.var));
         injectList.add(new VarInsnNode(Opcodes.ALOAD, 1));
         injectList.add(new VarInsnNode(Opcodes.ALOAD, 2));
-        injectList.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKESPECIAL, ASMNames.MD_SAP_COLLENTITY_CHKEVT_CTOR, false));
+        injectList.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKESPECIAL, ASMNames.MD_SAP_COLLENTITYCHKEVT_INIT, false));
         injectList.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_EVENT_BUS_POST, false));
         injectList.add(new InsnNode(Opcodes.POP));
 
