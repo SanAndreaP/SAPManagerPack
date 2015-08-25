@@ -38,12 +38,13 @@ public class ManPackLoadingPlugin
     @Override
     public String[] getASMTransformerClass() {
         return new String[] {
-                         TransformEntityThrowable.class.getName(),
-                         TransformPlayerDismountCtrl.class.getName(),
-                         TransformHorseArmor.class.getName(),
-                         TransformEnderman.class.getName(),
-                         TransformEntityCollision.class.getName()
-               };
+                TransformEntityThrowable.class.getName(),
+                TransformPlayerDismountCtrl.class.getName(),
+                TransformHorseArmor.class.getName(),
+                TransformEnderman.class.getName(),
+                TransformEntityCollision.class.getName(),
+                AnnotationChecker.class.getName() // KEEP THIS AS LAST
+        };
     }
 
     @Override
@@ -63,15 +64,20 @@ public class ManPackLoadingPlugin
     @Override
     public void injectData(Map<String, Object> data) {
         ASMHelper.isMCP = !(Boolean) data.get("runtimeDeobfuscationEnabled");
+
         source = (File) data.get("coremodLocation");
-        if( source == null ) { // this is usually in a dev env
+        if( source == null ) {          // this is usually in a dev env
             try {
                 source = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
+
+                if( !(new File(source, "assets")).exists() ) {          // fix for IntelliJ
+                    source = new File(source.getParentFile().getParentFile(), "resources/main");
+                }
             } catch( URISyntaxException e ) {
                 throw new RuntimeException("Failed to acquire source location for SAPManPack!", e);
             }
         }
 
-        mcLoc = (File) data.get("mcLocation");
+//        ASMNameHelper.getInstance().readMcpSrgFile();
     }
 }

@@ -1,6 +1,6 @@
 package de.sanandrew.core.manpack.transformer;
 
-import cpw.mods.fml.common.FMLLog;
+import de.sanandrew.core.manpack.mod.ModCntManPack;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.ClassReader;
@@ -26,7 +26,7 @@ public final class ASMHelper
         ClassWriter cw = new ClassWriter(cwFlags);
         cnode.accept(cw);
         byte[] bArr = cw.toByteArray();
-        FMLLog.log("SAPManPack", Level.INFO, "Class %s successfully transformed!", cnode.name);
+        ModCntManPack.MOD_LOG.log(Level.INFO, String.format("Class %s successfully transformed!", cnode.name));
         return bArr;
     }
 
@@ -97,7 +97,15 @@ public final class ASMHelper
      */
     @Deprecated
     public static MethodNode findMethod(String name, String desc, ClassNode cnode) {
-        return findMethod(cnode, name, desc);
+        return findMethodNode(cnode, name, desc);
+    }
+
+    /**
+     * @see de.sanandrew.core.manpack.transformer.ASMHelper#findMethod(ClassNode cnode, String name, String desc)
+     */
+    @Deprecated
+    public static MethodNode findMethod(ClassNode cnode, String name, String desc) {
+        return findMethodNode(cnode, name, desc);
     }
 
     /**
@@ -108,7 +116,7 @@ public final class ASMHelper
      * @return true, if the name was found, or else false
      * @throws de.sanandrew.core.manpack.transformer.ASMHelper.MethodNotFoundException when the method name and descriptor couldn't be found
      */
-    public static MethodNode findMethod(ClassNode cnode, String name, String desc) {
+    private static MethodNode findMethodNode(ClassNode cnode, String name, String desc) {
         for( MethodNode mnode : cnode.methods ) {
             if( name.equals(mnode.name) && desc.equals(mnode.desc) ) {
                 return mnode;
@@ -199,28 +207,21 @@ public final class ASMHelper
         return new MethodNode(access, methodDesc.getValue1(), methodDesc.getValue2()[0], sig, throwing);
     }
 
-    public static MethodInsnNode getMethodInsnNode(int opcode, String method, String owner, boolean intf) {
-        MethodInsnNode node = getMethodInsnNode(opcode, method, intf);
-        node.owner = owner;
-        return node;
-    }
-
     public static MethodInsnNode getMethodInsnNode(int opcode, String method, boolean intf) {
         Triplet<String, String, String[]> methodDesc = ASMNames.getSrgNameMd(method);
 
         return new MethodInsnNode(opcode, methodDesc.getValue0(), methodDesc.getValue1(), methodDesc.getValue2()[0], intf);
     }
 
+    public static void visitMethodInsn(MethodNode node, int opcode, String method, boolean intf) {
+        MethodInsnNode mdiNode = getMethodInsnNode(opcode, method, intf);
+        node.visitMethodInsn(opcode, mdiNode.owner, mdiNode.name, mdiNode.desc, intf);
+    }
+
     public static MethodNode findMethod(ClassNode clazz, String method) {
         Triplet<String, String, String[]> methodDesc = ASMNames.getSrgNameMd(method);
 
-        return findMethod(clazz, methodDesc.getValue1(), methodDesc.getValue2()[0]);
-    }
-
-    public static FieldInsnNode getFieldInsnNode(int opcode, String field, String owner) {
-        FieldInsnNode node = getFieldInsnNode(opcode, field);
-        node.owner = owner;
-        return node;
+        return findMethodNode(clazz, methodDesc.getValue1(), methodDesc.getValue2()[0]);
     }
 
     public static FieldInsnNode getFieldInsnNode(int opcode, String field) {
@@ -230,23 +231,8 @@ public final class ASMHelper
     }
 
     public static void visitFieldInsn(MethodNode node, int opcode, String field) {
-        FieldInsnNode fieldNode = getFieldInsnNode(opcode, field);
-        node.visitFieldInsn(opcode, fieldNode.owner, fieldNode.name, fieldNode.desc);
-    }
-
-    public static void visitFieldInsn(MethodNode node, int opcode, String field, String owner) {
-        FieldInsnNode fieldNode = getFieldInsnNode(opcode, field, owner);
-        node.visitFieldInsn(opcode, fieldNode.owner, fieldNode.name, fieldNode.desc);
-    }
-
-    public static void visitMethodInsn(MethodNode node, int opcode, String method, boolean intf) {
-        MethodInsnNode methodNode = getMethodInsnNode(opcode, method, intf);
-        node.visitMethodInsn(opcode, methodNode.owner, methodNode.name, methodNode.desc, methodNode.itf);
-    }
-
-    public static void visitMethodInsn(MethodNode node, int opcode, String method, String owner, boolean intf) {
-        MethodInsnNode methodNode = getMethodInsnNode(opcode, method, owner, intf);
-        node.visitMethodInsn(opcode, methodNode.owner, methodNode.name, methodNode.desc, methodNode.itf);
+        FieldInsnNode fdiNode = getFieldInsnNode(opcode, field);
+        node.visitFieldInsn(opcode, fdiNode.owner, fdiNode.name, fdiNode.desc);
     }
 
     public static class InvalidNeedleException

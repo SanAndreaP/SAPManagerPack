@@ -12,6 +12,10 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
+/**
+ * This transformer adds a hook for entities to control whether or not the rider of the entity can dismount it via sneaking.
+ * The entity needs to override _SAP_canDismountOnInput() and should return true, if the rider can dismount, otherwise false.
+ */
 public class TransformPlayerDismountCtrl
         implements IClassTransformer
 {
@@ -28,6 +32,12 @@ public class TransformPlayerDismountCtrl
         return bytes;
     }
 
+    /**
+     * Transforms the Entity.class by adding a new method called _SAP_canDismountOnInput.<br>
+     * This method can be overridden by any entity to control wether or not the rider can dismount via sneaking (usually by pressing LSHIFT for the player).
+     * @param bytes the class bytes to be transformed
+     * @return the transformed class bytes
+     */
     private static byte[] transformEntity(byte[] bytes) {
         ClassNode clazz = ASMHelper.createClassNode(bytes);
 
@@ -50,25 +60,31 @@ public class TransformPlayerDismountCtrl
         return bytes;
     }
 
+    /**
+     * Transforms the EntityPlayer.class by hooking into the updateRidden method and adding a call to _SAP_canDismountOnInput
+     * in order for the ridden entity to control whether or not the rider can dismount via sneaking.
+     * @param bytes the class bytes to be transformed
+     * @return the transformed class bytes
+     */
     private static byte[] transformPlayer(byte[] bytes) {
         ClassNode clazz = ASMHelper.createClassNode(bytes);
-        MethodNode method = ASMHelper.findMethod(clazz, ASMNames.MDO_PLAYER_UPDATE_RIDDEN);
+        MethodNode method = ASMHelper.findMethod(clazz, ASMNames.MD_PLAYER_UPDATE_RIDDEN);
 
         InsnList needle = new InsnList();
         needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_ENTITY_WORLDOBJ, ASMNames.CL_ENTITY_PLAYER));
-        needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_WORLD_ISREMOTE));
+        needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FD_PLAYER_WORLD_OBJ));
+        needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FD_WORLD_IS_REMOTE));
         LabelNode ln1 = new LabelNode();
         needle.add(new JumpInsnNode(Opcodes.IFNE, ln1));
         needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        needle.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MDO_ENTITY_IS_SNEAKING, ASMNames.CL_ENTITY_PLAYER, false));
+        needle.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_PLAYER_IS_SNEAKING, false));
         needle.add(new JumpInsnNode(Opcodes.IFEQ, ln1));
 
         AbstractInsnNode insertPoint = ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
 
         InsnList injectList = new InsnList();
         injectList.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        injectList.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_ENTITY_RIDING_ENTITY, ASMNames.CL_ENTITY_PLAYER));
+        injectList.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FD_PLAYER_RIDING_ENTITY));
         injectList.add(new VarInsnNode(Opcodes.ALOAD, 0));
         injectList.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_SAP_CAN_DISMOUNT_ON_INPUT, false));
         injectList.add(new JumpInsnNode(Opcodes.IFEQ, ((JumpInsnNode) insertPoint).label));

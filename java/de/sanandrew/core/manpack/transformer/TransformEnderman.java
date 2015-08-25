@@ -17,20 +17,20 @@ public class TransformEnderman
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
         if( "net.minecraft.entity.monster.EntityEnderman".equals(transformedName) ) {
-            return transformShouldAttackPlayer(bytes);
+            return transformEnderman(bytes);
         }
 
         return bytes;
     }
 
-    private static byte[] transformShouldAttackPlayer(byte[] bytes) {
+    private static byte[] transformEnderman(byte[] bytes) {
         ClassNode clazz = ASMHelper.createClassNode(bytes);
-        MethodNode method = ASMHelper.findMethod(clazz, ASMNames.MDO_ENDERMAN_SHOULD_ATK_PLAYER);
+        MethodNode method = ASMHelper.findMethod(clazz, ASMNames.MD_ENDERMAN_SHOULD_ATTACK_PLAYER);
 
         InsnList needle = new InsnList();
         needle.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_ENTPLAYER_INVENTORY));
-        needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FDO_INVPLAYER_ARMORINVENTORY));
+        needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FD_PLAYER_INVENTORY));
+        needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FD_INVPLAYER_ARMOR_INVENTORY));
         needle.add(new InsnNode(Opcodes.ICONST_3));
         needle.add(new InsnNode(Opcodes.AALOAD));
         needle.add(new VarInsnNode(Opcodes.ASTORE, 2));
@@ -43,7 +43,7 @@ public class TransformEnderman
         newInstr.add(new InsnNode(Opcodes.DUP));
         newInstr.add(new VarInsnNode(Opcodes.ALOAD, 1));
         newInstr.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKESPECIAL, ASMNames.MD_ENDER_FACING_EVENT_CTOR, false));
+        newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKESPECIAL, ASMNames.MD_ENDERFACINGEVENT_INIT, false));
         newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_EVENT_BUS_POST, false));
         LabelNode l1 = new LabelNode();
         newInstr.add(new JumpInsnNode(Opcodes.IFEQ, l1));
