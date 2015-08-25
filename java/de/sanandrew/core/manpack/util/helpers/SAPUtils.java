@@ -30,6 +30,8 @@ import net.minecraftforge.oredict.RecipeSorter.Category;
 import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -169,12 +171,35 @@ public final class SAPUtils
     }
 
     @Deprecated
+    public static <T> T[] getArrayFromCollection(Collection<T> collection) {
+        return SAPUtils.getArrayFromCollection(collection, SAPUtils.<T>getGenericType(collection, 0));
+    }
+
+    @Deprecated
     public static <T> T[] getArrayFromCollection(Collection<T> collection, Class<T> clazz) {
         if( collection.size() == 0 ) {
             return null;
         }
-
         return collection.toArray(SAPUtils.<T[]>getCasted(Array.newInstance(clazz, collection.size())));
+    }
+
+    /**
+     * Gets the n-th parameter of a parameterized type (for example ArrayList&lt;String&gt; or HashMap&lt;UUID, String&gt;)
+     * @param obj An object instance of that type
+     * @param pos the index of the desired parameter (an 1 on a HashMap&lt;UUID, String&gt; instance would return Class&lt;String&gt;
+     * @param <T> The returned parameter type
+     * @return A class representing the parameter
+     */
+    public static <T> Class<T> getGenericType(Object obj, int pos) {
+        Type genSuperCls = obj.getClass().getGenericSuperclass();
+        if( genSuperCls instanceof ParameterizedType ) {
+            Type[] paramTypes = ((ParameterizedType) genSuperCls).getActualTypeArguments();
+            if( paramTypes.length > 0 ) {
+                return SAPUtils.getCasted(paramTypes[0]);
+            }
+        }
+
+        return null;
     }
 
     /**
