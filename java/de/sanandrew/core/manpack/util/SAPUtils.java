@@ -93,7 +93,7 @@ public final class SAPUtils
     }
 
     public static <T> T[] getArrayFromCollection(Collection<T> collection, Class clazz) {
-        return de.sanandrew.core.manpack.util.helpers.SAPUtils.getArrayFromCollection(collection, clazz);
+        return de.sanandrew.core.manpack.util.helpers.SAPUtils.getArrayFromCollection(collection, de.sanandrew.core.manpack.util.helpers.SAPUtils.<Class<T>>getCasted(clazz));
     }
 
     public static void registerBlocks(Block... blocks) {

@@ -66,7 +66,7 @@ public final class ASMNames
     public static final String MD_WORLD_RAY_TRACE_BLOCKS        = "net/minecraft/world/World/rayTraceBlocks (Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;)Lnet/minecraft/util/MovingObjectPosition;";
     public static final String MD_WORLD_RAY_TRACE_BLOCKS_Z      = "net/minecraft/world/World/rayTraceBlocks (Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;Z)Lnet/minecraft/util/MovingObjectPosition;";
 
-    public static final String FD_FORGE_EVENT_BUS           = "net/minecraftforge/common/MinecraftForge/EVENT_BUS Lcpw/mods/fml/common/eventhandler/EventBus;";
+//    public static final String FD_FORGE_EVENT_BUS           = "net/minecraftforge/common/MinecraftForge/EVENT_BUS Lcpw/mods/fml/common/eventhandler/EventBus;";
     public static final String FD_HORSE_ARMOR_VALUES        = "net/minecraft/entity/passive/EntityHorse/armorValues [I";
     public static final String FD_HORSE_CHEST               = "net/minecraft/entity/passive/EntityHorse/horseChest Lnet/minecraft/inventory/AnimalChest;";
     public static final String FD_HORSE_DATAWATCHER         = "net/minecraft/entity/passive/EntityHorse/dataWatcher Lnet/minecraft/entity/DataWatcher;";

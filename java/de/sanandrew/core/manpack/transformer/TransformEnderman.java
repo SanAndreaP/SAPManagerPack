@@ -38,7 +38,7 @@ public class TransformEnderman
         AbstractInsnNode insertPt = ASMHelper.findFirstNodeFromNeedle(method.instructions, needle);
 
         InsnList newInstr = new InsnList();
-        newInstr.add(ASMHelper.getFieldInsnNode(Opcodes.GETSTATIC, ASMNames.FD_FORGE_EVENT_BUS));
+        newInstr.add(ASMHelper.getFieldInsnNode(Opcodes.GETSTATIC, ASMNames.FD_SAPUTILS_EVENT_BUS));
         newInstr.add(new TypeInsnNode(Opcodes.NEW, ASMNames.CL_ENDER_FACING_EVENT));
         newInstr.add(new InsnNode(Opcodes.DUP));
         newInstr.add(new VarInsnNode(Opcodes.ALOAD, 1));

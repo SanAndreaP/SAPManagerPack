@@ -17,7 +17,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.7.10-2.6.0"
+version = "1.7.10-2.6.0.2"
 group = "de.sanandrew.core"
 archivesBaseName = 'SAPManPack'
 
@@ -71,41 +71,37 @@ jar {
 
 task sourceJar(type: Jar) {
     from sourceSets.main.allSource
-    appendix = 'src'
+    classifier = 'source'
+    appendix = 'source'
     archiveName = "${baseName}-${version}-${appendix}.jar"
 }
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
-    appendix = 'deobf'
+    classifier = 'dev'
+    appendix = 'dev'
     archiveName = "${baseName}-${version}-${appendix}.jar"
     manifest {
         attributes 'FMLCorePlugin': 'de.sanandrew.core.manpack.init.ManPackLoadingPlugin'
-        attributes 'FMLCorePluginContainsFMLMod' : 'true'
+        attributes 'FMLCorePluginContainsFMLMod': 'true'
     }
-}
-
-configurations {
-    deployDev
 }
 
 artifacts {
     archives deobfJar
     archives sourceJar
-    archives jar
-    deployDev deobfJar
 }
 
 project.ext {
-    releaseRepoUrl = "file://${project(':').projectDir}/maven-repo/"
+    releaseRepoUrl = "file://${project(':').projectDir}/maven-repo-2/"
 }
 
-uploadDeployDev {
-    dependsOn("deobfJar")
-    configuration = configurations.deployDev
+uploadArchives {
+    dependsOn 'reobf'
+    configuration = configurations.archives
     repositories.mavenDeployer {
         pom.artifactId = project.name
-        pom.version = project.version + '-deobf'
+        pom.version = project.version
         repository(url: project.releaseRepoUrl)
     }
 }
