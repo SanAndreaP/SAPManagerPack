@@ -1,5 +1,6 @@
 package de.sanandrew.core.manpack.transformer;
 
+import de.sanandrew.core.manpack.init.ManPackLoadingPlugin;
 import de.sanandrew.core.manpack.mod.ModCntManPack;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import org.apache.logging.log4j.Level;
@@ -26,7 +27,7 @@ public final class ASMHelper
         ClassWriter cw = new ClassWriter(cwFlags);
         cnode.accept(cw);
         byte[] bArr = cw.toByteArray();
-        ModCntManPack.MOD_LOG.log(Level.INFO, String.format("Class %s successfully transformed!", cnode.name));
+        ManPackLoadingPlugin.MOD_LOG.log(Level.INFO, String.format("Class %s successfully transformed!", cnode.name));
         return bArr;
     }
 

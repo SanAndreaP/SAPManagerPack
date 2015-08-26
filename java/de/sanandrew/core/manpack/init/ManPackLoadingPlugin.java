@@ -13,6 +13,8 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin.SortingIndex;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 import de.sanandrew.core.manpack.mod.ModCntManPack;
 import de.sanandrew.core.manpack.transformer.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -26,6 +28,9 @@ public class ManPackLoadingPlugin
         implements IFMLLoadingPlugin
 {
     public static final String MC_VERSION = "1.7.10";
+    public static final String MOD_ID = "sapmanpack";
+    public static final Logger MOD_LOG = LogManager.getLogger(MOD_ID);
+    public static final String MOD_VERSION = "2.6.0";
 
     public static File source;
     public static File mcLoc;

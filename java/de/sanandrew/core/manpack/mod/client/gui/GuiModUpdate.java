@@ -6,9 +6,9 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.mod.client.gui;
 
+import de.sanandrew.core.manpack.init.ManPackLoadingPlugin;
 import de.sanandrew.core.manpack.managers.SAPUpdateManager;
 import de.sanandrew.core.manpack.managers.UpdateDownloader.EnumDlState;
-import de.sanandrew.core.manpack.mod.ModCntManPack;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.core.manpack.util.javatuples.Pair;
 import net.minecraft.client.Minecraft;
@@ -30,7 +30,7 @@ public class GuiModUpdate
 {
     private static final List<SAPUpdateManager> MANAGERS = new ArrayList<>(5);
     private static final List<Pair<GuiButtonUpdate, GuiButtonDetails>> SLOT_BUTTONS = new ArrayList<>(10);
-    private static final ResourceLocation TEXTURE = new ResourceLocation(ModCntManPack.MOD_ID, "textures/gui/updater/updater.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(ManPackLoadingPlugin.MOD_ID, "textures/gui/updater/updater.png");
 
     public static void addManager(SAPUpdateManager mgr) {
         MANAGERS.add(mgr);

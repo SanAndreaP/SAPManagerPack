@@ -6,7 +6,7 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.transformer;
 
-import de.sanandrew.core.manpack.mod.ModCntManPack;
+import de.sanandrew.core.manpack.init.ManPackLoadingPlugin;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.ClassWriter;
@@ -46,7 +46,7 @@ public class TransformHorseArmor
         try {
             transformArmorTexture(ASMHelper.findMethod(clazz, ASMNames.MD_HORSE_SET_TEXTURE_PATH));
         } catch( ASMHelper.MethodNotFoundException e ) {
-            ModCntManPack.MOD_LOG.log(Level.INFO, "Running on dedicated server, no need to transform Method >setHorseTexturePaths< in EntityHorse!");
+            ManPackLoadingPlugin.MOD_LOG.log(Level.INFO, "Running on dedicated server, no need to transform Method >setHorseTexturePaths< in EntityHorse!");
         }
 
 	    bytes = ASMHelper.createBytes(clazz, /*ClassWriter.COMPUTE_FRAMES |*/ ClassWriter.COMPUTE_MAXS);

@@ -19,15 +19,15 @@
  */
 package de.sanandrew.core.manpack.util.javatuples;
 
-import cpw.mods.fml.common.FMLLog;
-import de.sanandrew.core.manpack.mod.ModCntManPack;
+import de.sanandrew.core.manpack.init.ManPackLoadingPlugin;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.handler.codec.serialization.ObjectDecoderInputStream;
 import io.netty.handler.codec.serialization.ObjectEncoderOutputStream;
 import org.apache.logging.log4j.Level;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -221,7 +221,7 @@ public abstract class Tuple
         try( ObjectDecoderInputStream odis = new ObjectDecoderInputStream(stream) ) {
             return (Tuple) odis.readObject();
         } catch( IOException | ClassNotFoundException ex ) {
-            ModCntManPack.MOD_LOG.log(Level.ERROR, "Cannot deserialize Tuple!", ex);
+            ManPackLoadingPlugin.MOD_LOG.log(Level.ERROR, "Cannot deserialize Tuple!", ex);
         }
         return null;
     }
@@ -230,7 +230,7 @@ public abstract class Tuple
         try( ObjectEncoderOutputStream oeos = new ObjectEncoderOutputStream(stream) ) {
             oeos.writeObject(tuple);
         } catch( IOException ex ) {
-            ModCntManPack.MOD_LOG.log(Level.ERROR, "Cannot serialize Tuple!", ex);
+            ManPackLoadingPlugin.MOD_LOG.log(Level.ERROR, "Cannot serialize Tuple!", ex);
         }
     }
 

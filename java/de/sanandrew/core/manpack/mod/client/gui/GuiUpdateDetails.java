@@ -6,8 +6,8 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.mod.client.gui;
 
+import de.sanandrew.core.manpack.init.ManPackLoadingPlugin;
 import de.sanandrew.core.manpack.managers.SAPUpdateManager;
-import de.sanandrew.core.manpack.mod.ModCntManPack;
 import de.sanandrew.core.manpack.util.client.helpers.GuiUtils;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -20,7 +20,7 @@ import org.lwjgl.opengl.GL11;
 public class GuiUpdateDetails
         extends GuiScreen
 {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(ModCntManPack.MOD_ID, "textures/gui/updater/details_list.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(ManPackLoadingPlugin.MOD_ID, "textures/gui/updater/details_list.png");
 
     private final GuiScreen updateList;
     private final SAPUpdateManager manager;

@@ -10,6 +10,7 @@ import com.google.common.collect.Maps;
 import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
+import de.sanandrew.core.manpack.init.ManPackLoadingPlugin;
 import de.sanandrew.core.manpack.mod.ModCntManPack;
 import de.sanandrew.core.manpack.util.javatuples.Quintet;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
@@ -91,10 +92,10 @@ public final class NetworkManager
                     break;
             }
         } catch( IOException ioe ) {
-            ModCntManPack.MOD_LOG.log(Level.ERROR, "The packet ID %d from %s cannot be processed!", packet, modId);
+            ManPackLoadingPlugin.MOD_LOG.log(Level.ERROR, "The packet ID %d from %s cannot be processed!", packet, modId);
             ioe.printStackTrace();
         } catch( IllegalAccessException | InstantiationException rex ) {
-            ModCntManPack.MOD_LOG.log(Level.ERROR, "The packet ID %d from %s cannot be instantiated!", packet, modId);
+            ManPackLoadingPlugin.MOD_LOG.log(Level.ERROR, "The packet ID %d from %s cannot be instantiated!", packet, modId);
             rex.printStackTrace();
         } catch( NoSuchMethodException | InvocationTargetException e ) {
             e.printStackTrace();

@@ -26,6 +26,7 @@ import de.sanandrew.core.manpack.mod.client.ClientProxy;
 import de.sanandrew.core.manpack.network.NetworkManager;
 import de.sanandrew.core.manpack.util.MutableString;
 import de.sanandrew.core.manpack.util.SAPReflectionHelper;
+import de.sanandrew.core.manpack.util.annotation.ASMOverride;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import net.minecraft.nbt.NBTTagCompound;
@@ -43,11 +44,7 @@ public class ModCntManPack
         extends DummyModContainer
 {
     public static final String MOD_CHANNEL = "sapmanpack";
-    public static final String MOD_ID = "sapmanpack";
-    public static final Logger MOD_LOG = LogManager.getLogger(MOD_ID);
     public static final Logger UPD_LOG = LogManager.getLogger("SAPUpdateMgr");
-
-    public static final String MOD_VERSION = "2.6.0";
 
     public static final int FORGE_BULD_MIN = 1448;
 
@@ -66,9 +63,9 @@ public class ModCntManPack
     public ModCntManPack() {
         super(new ModMetadata());
         ModMetadata meta = super.getMetadata();
-        meta.modId = ModCntManPack.MOD_ID;
+        meta.modId = ManPackLoadingPlugin.MOD_ID;
         meta.name = "SanAndreasPs Manager Pack CORE edition";
-        meta.version = ModCntManPack.MOD_VERSION;
+        meta.version = ManPackLoadingPlugin.MOD_VERSION;
         meta.authorList = Collections.singletonList("SanAndreasP");
         meta.description = "A helper coremod which is needed for all my mods.";
         meta.url = "http://www.minecraftforge.net/forum/index.php/topic,2828.0.html";
@@ -85,9 +82,9 @@ public class ModCntManPack
     @Subscribe
     public void modConstruction(FMLConstructionEvent event) {
         if( Integer.parseInt(FMLInjectionData.data()[3].toString()) < FORGE_BULD_MIN ) {
-            MOD_LOG.log(Level.FATAL, "The installed version of Forge is outdated! Minimum build required is %d, installed is build %s. " +
-                                "Either update Forge or remove this mod, it will cause problems otherwise!", FORGE_BULD_MIN, FMLInjectionData.data()[3]
-                       );
+            ManPackLoadingPlugin.MOD_LOG.log(Level.FATAL, "The installed version of Forge is outdated! Minimum build required is %d, installed is build %s. " +
+                                                                "Either update Forge or remove this mod, it will cause problems otherwise!", FORGE_BULD_MIN,
+                                             FMLInjectionData.data()[3]);
         }
 
         NetworkRegistry.INSTANCE.register(this, this.getClass(), null, event.getASMHarvestedData());
@@ -117,7 +114,7 @@ public class ModCntManPack
             SAPReflectionHelper.invokeCachedMethod(dspCls, null, null, "setTitle", new Class[]{String.class}, new Object[]{currTitle});
         }
 
-        SAPUpdateManager.createUpdateManager("SAP Manager Pack", new Version(MOD_VERSION),
+        SAPUpdateManager.createUpdateManager("SAP Manager Pack", new Version(ManPackLoadingPlugin.MOD_VERSION),
                                              "https://raw.githubusercontent.com/SanAndreasP/SAPManagerPack/master/update.json",
                                              "http://www.curseforge.com/projects/226994/", this.getSource());
     }
@@ -148,6 +145,7 @@ public class ModCntManPack
     }
 
     @Subscribe
+    @ASMOverride("deprecated;private n/serverStarting (Lcpw/mods/fml/common/event/FMLServerStartingEvent;)V")
     public void serverStarting(FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandSAPManPack());
     }

@@ -6,7 +6,7 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.transformer;
 
-import de.sanandrew.core.manpack.mod.ModCntManPack;
+import de.sanandrew.core.manpack.init.ManPackLoadingPlugin;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import org.apache.logging.log4j.Level;
 
@@ -98,6 +98,8 @@ public final class ASMNames
     public static final String CL_T_ENTITY_THROWABLE = "Lnet/minecraft/entity/projectile/EntityThrowable;";
     public static final String CL_T_ITEM_STACK = "Lnet/minecraft/item/ItemStack;";
 
+    public static final String OR_SAP_ENTITY_GET_BOUNDING_BOX = "public " + MD_SAP_ENTITY_GET_BOUNDING_BOX;
+
     static {
         MAPPINGS.put(MD_ENDERMAN_SHOULD_ATTACK_PLAYER,  "func_70821_d");
         MAPPINGS.put(MD_WORLD_GET_COLLIDING_BB,         "func_72945_a");
@@ -149,7 +151,7 @@ public final class ASMNames
     public static Triplet<String, String, String[]> getSrgNameMd(String method) {
         Matcher mtch = OWNERNAME.matcher(method);
         if( !mtch.find() ) {
-            ModCntManPack.MOD_LOG.log(Level.FATAL, "Method string does not match pattern!");
+            ManPackLoadingPlugin.MOD_LOG.log(Level.FATAL, "Method string does not match pattern!");
             throw new RuntimeException("SRG-Name not found!");
         }
 
@@ -167,7 +169,7 @@ public final class ASMNames
     public static Triplet<String, String, String> getSrgNameFd(String field) {
         Matcher mtch = OWNERNAME.matcher(field);
         if( !mtch.find() ) {
-            ModCntManPack.MOD_LOG.log(Level.FATAL, "Field string does not match pattern!");
+            ManPackLoadingPlugin.MOD_LOG.log(Level.FATAL, "Field string does not match pattern!");
             throw new RuntimeException("SRG-Name not found!");
         }
 

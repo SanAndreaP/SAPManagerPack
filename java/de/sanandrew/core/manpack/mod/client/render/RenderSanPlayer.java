@@ -7,7 +7,7 @@
 package de.sanandrew.core.manpack.mod.client.render;
 
 import com.google.gson.Gson;
-import de.sanandrew.core.manpack.mod.ModCntManPack;
+import de.sanandrew.core.manpack.init.ManPackLoadingPlugin;
 import de.sanandrew.core.manpack.mod.client.model.ModelSanPlayer;
 import de.sanandrew.core.manpack.util.client.helpers.AverageColorHelper;
 import de.sanandrew.core.manpack.util.client.helpers.ItemRenderHelper;
@@ -240,14 +240,14 @@ public class RenderSanPlayer
             try {
                 Minecraft.getMinecraft().getResourceManager().getResource(resLoc);
             } catch( IOException ex ) {
-                ModCntManPack.MOD_LOG.printf(Level.WARN, "Can't load armor texture for item %s!", unlocName);
+                ManPackLoadingPlugin.MOD_LOG.printf(Level.WARN, "Can't load armor texture for item %s!", unlocName);
                 Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(String.format("Can't load armor texture for item %s!", unlocName)));
                 resLoc = RenderBiped.getArmorResource(player, stack, pass, null);
                 try( InputStream textureStream = Minecraft.getMinecraft().getResourceManager().getResource(resLoc).getInputStream() ) {
                     this.unknownTextureColorMap.put(unlocName, AverageColorHelper.getAverageColor(textureStream));
                 } catch( IOException ex2 ) {
-                    ModCntManPack.MOD_LOG.printf(Level.WARN, "Can't get avg. color for armor texture %s!", unlocName);
-                    ModCntManPack.MOD_LOG.log(Level.WARN, "", ex2);
+                    ManPackLoadingPlugin.MOD_LOG.printf(Level.WARN, "Can't get avg. color for armor texture %s!", unlocName);
+                    ManPackLoadingPlugin.MOD_LOG.log(Level.WARN, "", ex2);
                     this.unknownTextureColorMap.put(unlocName, new RGBAValues(255, 255, 255, 255));
                 }
 
@@ -275,7 +275,7 @@ public class RenderSanPlayer
             {
                 return new Gson().fromJson(in, CubeLoader.class);
             } catch( IOException ex ) {
-                ModCntManPack.MOD_LOG.printf(Level.WARN, "Can't load hat model for item %s!", unlocName);
+                ManPackLoadingPlugin.MOD_LOG.printf(Level.WARN, "Can't load hat model for item %s!", unlocName);
                 Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(String.format("Can't load hat model for item %s!", unlocName)));
                 return new CubeLoader();
             }
