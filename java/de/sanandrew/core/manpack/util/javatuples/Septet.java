@@ -30,12 +30,10 @@ import java.util.Iterator;
  * A tuple of seven elements.
  * </p>
  *
- * @since 1.0
- *
  * @author Daniel Fern&aacute;ndez
- *
+ * @since 1.0
  */
-public final class Septet<A,B,C,D,E,F,G>
+public final class Septet<A, B, C, D, E, F, G>
         extends Tuple
         implements IValue0<A>, IValue1<B>, IValue2<C>, IValue3<D>, IValue4<E>, IValue5<F>, IValue6<G>
 {

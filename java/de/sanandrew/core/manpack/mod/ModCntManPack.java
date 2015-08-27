@@ -26,7 +26,6 @@ import de.sanandrew.core.manpack.mod.client.ClientProxy;
 import de.sanandrew.core.manpack.network.NetworkManager;
 import de.sanandrew.core.manpack.util.MutableString;
 import de.sanandrew.core.manpack.util.SAPReflectionHelper;
-import de.sanandrew.core.manpack.util.annotation.ASMOverride;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import net.minecraft.nbt.NBTTagCompound;
@@ -51,6 +50,7 @@ public class ModCntManPack
     public static CommonProxy proxy;
 
     private static final List<String> TITLES = new ArrayList<>();
+
     static {
         TITLES.add("May contain nuts!");
         TITLES.add("Creepers gonna creep.");
@@ -83,7 +83,7 @@ public class ModCntManPack
     public void modConstruction(FMLConstructionEvent event) {
         if( Integer.parseInt(FMLInjectionData.data()[3].toString()) < FORGE_BULD_MIN ) {
             ManPackLoadingPlugin.MOD_LOG.log(Level.FATAL, "The installed version of Forge is outdated! Minimum build required is %d, installed is build %s. " +
-                                                                "Either update Forge or remove this mod, it will cause problems otherwise!", FORGE_BULD_MIN,
+                                                     "Either update Forge or remove this mod, it will cause problems otherwise!", FORGE_BULD_MIN,
                                              FMLInjectionData.data()[3]);
         }
 
@@ -91,14 +91,14 @@ public class ModCntManPack
     }
 
     @Subscribe
-    @SideOnly(Side.CLIENT)
+    @SideOnly( Side.CLIENT )
     public void injectClientProxy(FMLPreInitializationEvent evt) {
         proxy = new ClientProxy();
         this.preInit(evt);
     }
 
     @Subscribe
-    @SideOnly(Side.SERVER)
+    @SideOnly( Side.SERVER )
     public void injectServerProxy(FMLPreInitializationEvent evt) {
         proxy = new CommonProxy();
         this.preInit(evt);
@@ -107,11 +107,13 @@ public class ModCntManPack
     public void preInit(FMLPreInitializationEvent event) {
         ConfigurationManager.load(event.getSuggestedConfigurationFile());
 
-        Class<Object> dspCls = SAPReflectionHelper.getClass("org.lwjgl.opengl.Display");
-        if( dspCls != null ) {
-            String currTitle = SAPReflectionHelper.invokeCachedMethod(dspCls, null, null, "getTitle", null, null);
-            currTitle = String.format("%s: %s", currTitle, TITLES.get(SAPUtils.RNG.nextInt(TITLES.size())));
-            SAPReflectionHelper.invokeCachedMethod(dspCls, null, null, "setTitle", new Class[]{String.class}, new Object[]{currTitle});
+        if( ConfigurationManager.enableWindowTitleMsg ) {
+            Class<Object> dspCls = SAPReflectionHelper.getClass("org.lwjgl.opengl.Display");
+            if( dspCls != null ) {
+                String currTitle = SAPReflectionHelper.invokeCachedMethod(dspCls, null, null, "getTitle", null, null);
+                currTitle = String.format("%s: %s", currTitle, TITLES.get(SAPUtils.RNG.nextInt(TITLES.size())));
+                SAPReflectionHelper.invokeCachedMethod(dspCls, null, null, "setTitle", new Class[] { String.class }, new Object[] { currTitle });
+            }
         }
 
         SAPUpdateManager.createUpdateManager("SAP Manager Pack", new Version(ManPackLoadingPlugin.MOD_VERSION),
@@ -128,8 +130,10 @@ public class ModCntManPack
     public void postInit(FMLPostInitializationEvent evt) {
         NetworkManager.initPacketHandler();
 
-        for( Triplet<SAPUpdateManager, MutableBoolean, MutableString> udm : SAPUpdateManager.UPD_MANAGERS ) {
-            udm.getValue0().checkForUpdate();
+        if( ConfigurationManager.enableUpdater ) {
+            for( Triplet<SAPUpdateManager, MutableBoolean, MutableString> udm : SAPUpdateManager.UPD_MANAGERS ) {
+                udm.getValue0().checkForUpdate();
+            }
         }
     }
 
@@ -145,7 +149,6 @@ public class ModCntManPack
     }
 
     @Subscribe
-    @ASMOverride("deprecated;private n/serverStarting (Lcpw/mods/fml/common/event/FMLServerStartingEvent;)V")
     public void serverStarting(FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandSAPManPack());
     }

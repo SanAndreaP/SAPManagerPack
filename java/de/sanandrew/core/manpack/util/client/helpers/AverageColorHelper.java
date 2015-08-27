@@ -6,35 +6,22 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.util.client.helpers;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils.RGBAValues;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
+@SideOnly( Side.CLIENT )
 public final class AverageColorHelper
 {
     /**
-     * @see de.sanandrew.core.manpack.util.client.helpers.AverageColorHelper#getAverageColor(java.io.InputStream)
-     * @param res the ResourceLocation of the image
-     * @return
-     */
-    @Deprecated
-    public static RGBAValues getAverageColor(ResourceLocation res) {
-        try {
-            return getAverageColor(Minecraft.getMinecraft().getResourceManager().getResource(res).getInputStream());
-        } catch( IOException e ) {
-            e.printStackTrace();
-            return new RGBAValues(0, 0, 0, 0);
-        }
-    }
-
-    /**
      * Gets the average color from an image.
-     * @param is The image as InputStream
+     *
+     * @param is    The image as InputStream
      * @return the average color
      * @throws java.io.IOException when the InputStream cannot be read as an image
      */

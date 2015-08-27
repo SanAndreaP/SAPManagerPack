@@ -31,12 +31,10 @@ import java.util.Iterator;
  * A tuple of two elements.
  * </p>
  *
- * @since 1.0
- *
  * @author Daniel Fern&aacute;ndez
- *
+ * @since 1.0
  */
-public final class Pair<A,B>
+public final class Pair<A, B>
         extends Tuple
         implements IValue0<A>, IValue1<B>
 {
@@ -51,6 +49,7 @@ public final class Pair<A,B>
     }
 
     //region fromXYZ
+
     /**
      * <p>
      * Create tuple from array. Array has to have exactly two elements.

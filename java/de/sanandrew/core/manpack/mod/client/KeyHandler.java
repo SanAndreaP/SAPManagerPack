@@ -6,6 +6,8 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.mod.client;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.mod.client.gui.GuiModUpdate;
 import org.lwjgl.input.Keyboard;
 
@@ -16,6 +18,7 @@ import net.minecraft.client.settings.KeyBinding;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 
+@SideOnly( Side.CLIENT )
 public class KeyHandler
 {
     @SubscribeEvent

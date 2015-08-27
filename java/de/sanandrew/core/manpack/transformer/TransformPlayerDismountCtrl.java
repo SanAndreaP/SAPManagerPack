@@ -35,7 +35,8 @@ public class TransformPlayerDismountCtrl
     /**
      * Transforms the Entity.class by adding a new method called _SAP_canDismountOnInput.<br>
      * This method can be overridden by any entity to control wether or not the rider can dismount via sneaking (usually by pressing LSHIFT for the player).
-     * @param bytes the class bytes to be transformed
+     *
+     * @param bytes     the class bytes to be transformed
      * @return the transformed class bytes
      */
     private static byte[] transformEntity(byte[] bytes) {
@@ -63,7 +64,8 @@ public class TransformPlayerDismountCtrl
     /**
      * Transforms the EntityPlayer.class by hooking into the updateRidden method and adding a call to _SAP_canDismountOnInput
      * in order for the ridden entity to control whether or not the rider can dismount via sneaking.
-     * @param bytes the class bytes to be transformed
+     *
+     * @param bytes     the class bytes to be transformed
      * @return the transformed class bytes
      */
     private static byte[] transformPlayer(byte[] bytes) {

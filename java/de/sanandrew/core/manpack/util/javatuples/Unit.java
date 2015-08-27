@@ -29,10 +29,8 @@ import java.util.Iterator;
  * A tuple of one element.
  * </p>
  *
- * @since 1.0
- *
  * @author Daniel Fern&aacute;ndez
- *
+ * @since 1.0
  */
 public final class Unit<A>
         extends Tuple

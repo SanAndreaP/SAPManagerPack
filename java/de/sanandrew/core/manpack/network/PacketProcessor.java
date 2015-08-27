@@ -8,7 +8,6 @@ package de.sanandrew.core.manpack.network;
 
 import com.google.common.collect.Maps;
 import de.sanandrew.core.manpack.init.ManPackLoadingPlugin;
-import de.sanandrew.core.manpack.mod.ModCntManPack;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import net.minecraft.network.INetHandler;

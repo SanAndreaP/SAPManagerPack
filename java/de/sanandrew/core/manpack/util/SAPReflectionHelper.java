@@ -39,7 +39,7 @@ public final class SAPReflectionHelper
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public static <T, E> T getCachedFieldValue(Class<? super E> classToAccess, E instance, String mcpName, String srgName) {
         Field field = getCachedField(classToAccess, mcpName, srgName);
         try {
@@ -49,7 +49,7 @@ public final class SAPReflectionHelper
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public static <T, E> T invokeCachedMethod(Class<? super E> classToAccess, E instance, String mcpName,
                                               String srgName, Class<?>[] parameterTypes, Object[] parameterValues) {
         Method method = getCachedMethod(classToAccess, mcpName, srgName, parameterTypes);

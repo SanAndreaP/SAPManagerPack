@@ -8,6 +8,8 @@ package de.sanandrew.core.manpack.mod.client.particle;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.util.client.EntityParticle;
 import de.sanandrew.core.manpack.util.client.event.SAPFxLayerRenderEvent;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
@@ -25,6 +27,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
 
+@SideOnly( Side.CLIENT )
 public class SAPEffectRenderer
 {
     private static final ResourceLocation PARTICLE_TEXTURES = new ResourceLocation("textures/particle/particles.png");
@@ -132,7 +135,9 @@ public class SAPEffectRenderer
         INSTANCE.defaultFxLayer = INSTANCE.registerFxLayer(PARTICLE_TEXTURES, false);
     }
 
-    private static class SortingFilter implements Predicate<Entry<Integer, Pair<ResourceLocation, Boolean>>> {
+    private static class SortingFilter
+            implements Predicate<Entry<Integer, Pair<ResourceLocation, Boolean>>>
+    {
         private final boolean hasAlpha;
 
         public SortingFilter(boolean alpha) {

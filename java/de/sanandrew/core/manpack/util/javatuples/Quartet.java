@@ -33,12 +33,10 @@ import java.util.Iterator;
  * A tuple of four elements.
  * </p>
  *
- * @since 1.0
- *
  * @author Daniel Fern&aacute;ndez
- *
+ * @since 1.0
  */
-public final class Quartet<A,B,C,D>
+public final class Quartet<A, B, C, D>
         extends Tuple
         implements IValue0<A>, IValue1<B>, IValue2<C>, IValue3<D>
 {

@@ -57,22 +57,22 @@ public final class InstructionComparator
             return false;
         }
 
-        switch( node2.getType() ){
-            case VAR_INSN :
+        switch( node2.getType() ) {
+            case VAR_INSN:
                 return varInsnEqual((VarInsnNode) node1, (VarInsnNode) node2);
-            case TYPE_INSN :
+            case TYPE_INSN:
                 return typeInsnEqual((TypeInsnNode) node1, (TypeInsnNode) node2);
-            case FIELD_INSN :
+            case FIELD_INSN:
                 return fieldInsnEqual((FieldInsnNode) node1, (FieldInsnNode) node2);
-            case METHOD_INSN :
+            case METHOD_INSN:
                 return methodInsnEqual((MethodInsnNode) node1, (MethodInsnNode) node2);
-            case LDC_INSN :
+            case LDC_INSN:
                 return ldcInsnEqual((LdcInsnNode) node1, (LdcInsnNode) node2);
-            case IINC_INSN :
+            case IINC_INSN:
                 return iincInsnEqual((IincInsnNode) node1, (IincInsnNode) node2);
-            case INT_INSN :
+            case INT_INSN:
                 return intInsnEqual((IntInsnNode) node1, (IntInsnNode) node2);
-            default :
+            default:
                 return true;
         }
     }
@@ -102,21 +102,21 @@ public final class InstructionComparator
         HashSet<LabelNode> controlFlowLabels = new HashSet<>();
 
         for( AbstractInsnNode insn = haystack.getFirst(); insn != null; insn = insn.getNext() ) {
-            switch( insn.getType() ){
-                case 8 :
-                case 15 :
+            switch( insn.getType() ) {
+                case 8:
+                case 15:
                     break;
-                case 7 :
+                case 7:
                     JumpInsnNode jinsn = (JumpInsnNode) insn;
                     controlFlowLabels.add(jinsn.label);
                     break;
-                case 11 :
+                case 11:
                     TableSwitchInsnNode tsinsn = (TableSwitchInsnNode) insn;
                     for( LabelNode label : tsinsn.labels ) {
                         controlFlowLabels.add(label);
                     }
                     break;
-                case 12 :
+                case 12:
                     LookupSwitchInsnNode lsinsn = (LookupSwitchInsnNode) insn;
                     for( LabelNode label : lsinsn.labels ) {
                         controlFlowLabels.add(label);
@@ -127,7 +127,8 @@ public final class InstructionComparator
 
         LinkedList<InsnListSection> list = new LinkedList<>();
 
-        nextsection: for( int start = 0; start <= haystack.size() - needle.size(); start++ ) {
+        nextsection:
+        for( int start = 0; start <= haystack.size() - needle.size(); start++ ) {
             InsnListSection section = insnListMatchesL(haystack, needle, start, controlFlowLabels);
             if( section != null ) {
                 for( InsnListSection asection : list ) {
@@ -169,7 +170,7 @@ public final class InstructionComparator
                                                     HashSet<LabelNode> controlFlowLabels) {
         int h = start, n = 0;
 
-        for( ; h < haystack.size() && n < needle.size(); h++ ) {
+        for(; h < haystack.size() && n < needle.size(); h++ ) {
             AbstractInsnNode insn = haystack.get(h);
 
             if( insn.getType() == 15 ) {

@@ -32,12 +32,10 @@ import java.util.Iterator;
  * A tuple of three elements.
  * </p>
  *
- * @since 1.0
- *
  * @author Daniel Fern&aacute;ndez
- *
+ * @since 1.0
  */
-public final class Triplet<A,B,C>
+public final class Triplet<A, B, C>
         extends Tuple
         implements IValue0<A>, IValue1<B>, IValue2<C>
 {

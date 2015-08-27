@@ -74,5 +74,4 @@ public class TransformEntityThrowable
 
         return ASMHelper.createBytes(classNode, /*ClassWriter.COMPUTE_FRAMES |*/ ClassWriter.COMPUTE_MAXS);
     }
-
 }

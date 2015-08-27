@@ -37,17 +37,13 @@ public final class ItemRenderHelper
     protected static RenderItem itemRender = new RenderItem();
     protected static RenderBlocks renderBlocksRi = new RenderBlocks();
 
-    @Deprecated
-	public static void renderItem(ItemStack stack, int layer) {
-		renderItem(stack, layer, false);
-	}
-
     /**
      * Renders an ItemStack in a GUI.
-     * @param mc the Minecraft instance
+     *
+     * @param mc    the Minecraft instance
      * @param stack the ItemStack to be rendered
-     * @param x x-position in the GUI
-     * @param y y-position in the GUI
+     * @param x     x-position in the GUI
+     * @param y     y-position in the GUI
      */
     public static void renderItemInGui(Minecraft mc, ItemStack stack, int x, int y) {
         if( stack != null ) {
@@ -60,10 +56,11 @@ public final class ItemRenderHelper
 
     /**
      * Renders an IIcon instance in 3D.
-     * @param icon the icon to be rendered
-     * @param isBlock if it should be rendered as a block or not
+     *
+     * @param icon     the icon to be rendered
+     * @param isBlock  if it should be rendered as a block or not
      * @param hasAlpha if it has a transparent texture
-     * @param color the tint it should be rendered in
+     * @param color    the tint it should be rendered in
      */
     public static void renderIconIn3D(IIcon icon, boolean isBlock, boolean hasAlpha, int color) {
         GL11.glPushMatrix();
@@ -150,6 +147,7 @@ public final class ItemRenderHelper
 
     /**
      * Renders an ItemStack in 3D.
+     *
      * @param stack the ItemStack to be rendered
      */
     public static void renderItemIn3D(ItemStack stack) {
@@ -168,8 +166,7 @@ public final class ItemRenderHelper
                 ForgeHooksClient.renderEquippedItem(ItemRenderType.EQUIPPED, customRenderer, renderBlocksRi, Minecraft.getMinecraft().thePlayer, stack);
                 GL11.glPopMatrix();
             } else if( stack.getItemSpriteNumber() == 0 && stack.getItem() instanceof ItemBlock
-                       && RenderBlocks.renderItemIn3d(Block.getBlockFromItem(stack.getItem()).getRenderType()) )
-            {
+                    && RenderBlocks.renderItemIn3d(Block.getBlockFromItem(stack.getItem()).getRenderType()) ) {
                 Minecraft.getMinecraft().renderEngine.bindTexture(Minecraft.getMinecraft().renderEngine.getResourceLocation(stack.getItemSpriteNumber()));
 
                 Block block = Block.getBlockFromItem(stack.getItem());
@@ -254,7 +251,7 @@ public final class ItemRenderHelper
 
         Minecraft.getMinecraft().renderEngine.bindTexture(
                 Minecraft.getMinecraft().renderEngine.getResourceLocation(spriteIndex)
-        );
+                                                         );
 
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
@@ -304,24 +301,16 @@ public final class ItemRenderHelper
         GL11.glPopMatrix();
     }
 
-    @Deprecated
-	public static void renderItem(ItemStack stack, int layer, boolean isGlowing) {
-        if( stack == null ) {
-            return;
-        }
-
-        renderIcon(getItemIcon(stack, layer), stack.getItemSpriteNumber(), stack.hasEffect(layer), isGlowing);
-    }
-
     /**
      * Renders an IIcon in 2D.
-     * @param icon the icon to be rendered
+     *
+     * @param icon        the icon to be rendered
      * @param spriteIndex the index of the texture to be used (0 = blocks, 1 = items)
-     * @param hasEffect if it has an enchantment effect
-     * @param isGlowing if it should glow in the dark
+     * @param hasEffect   if it has an enchantment effect
+     * @param isGlowing   if it should glow in the dark
      */
     public static void renderIcon(IIcon icon, int spriteIndex, boolean hasEffect, boolean isGlowing) {
-		GL11.glPushMatrix();
+        GL11.glPushMatrix();
 
         if( icon == null ) {
             GL11.glPopMatrix();
@@ -338,8 +327,8 @@ public final class ItemRenderHelper
         Tessellator tessellator = Tessellator.instance;
 
         Minecraft.getMinecraft().renderEngine.bindTexture(
-        		Minecraft.getMinecraft().renderEngine.getResourceLocation(spriteIndex)
-        );
+                Minecraft.getMinecraft().renderEngine.getResourceLocation(spriteIndex)
+                                                         );
 
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glTranslatef(-transX, -transY, 0.0F);
@@ -391,69 +380,36 @@ public final class ItemRenderHelper
         }
 
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-		GL11.glPopMatrix();
-	}
+        GL11.glPopMatrix();
+    }
 
-	private static void renderItemIn2D(Tessellator tess, float minU, float minV, float maxU, float maxV, int scaleX, int scaleY, float negZLevel, boolean isGlowing) {
-		if( isGlowing ) {
-	        GL11.glDisable(GL11.GL_LIGHTING);
-	        GL11.glDisable(GL11.GL_LIGHT0);
-	        GL11.glDisable(GL11.GL_LIGHT1);
-	        GL11.glDisable(GL11.GL_COLOR_MATERIAL);
+    private static void renderItemIn2D(Tessellator tess, float minU, float minV, float maxU, float maxV, int scaleX, int scaleY, float negZLevel, boolean isGlowing) {
+        if( isGlowing ) {
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glDisable(GL11.GL_LIGHT0);
+            GL11.glDisable(GL11.GL_LIGHT1);
+            GL11.glDisable(GL11.GL_COLOR_MATERIAL);
 
-			float prevLGTX = OpenGlHelper.lastBrightnessX;
-			float prevLGTY = OpenGlHelper.lastBrightnessY;
-			int bright = 0xF0;
-			int brightX = bright % 65536;
-			int brightY = bright / 65536;
+            float prevLGTX = OpenGlHelper.lastBrightnessX;
+            float prevLGTY = OpenGlHelper.lastBrightnessY;
+            int bright = 0xF0;
+            int brightX = bright % 65536;
+            int brightY = bright / 65536;
 
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX / 1.0F, brightY / 1.0F);
-	        ItemRenderer.renderItemIn2D(tess, minU, minV, maxU, maxV, scaleX, scaleY, negZLevel);
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevLGTX, prevLGTY);
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX / 1.0F, brightY / 1.0F);
+            ItemRenderer.renderItemIn2D(tess, minU, minV, maxU, maxV, scaleX, scaleY, negZLevel);
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevLGTX, prevLGTY);
 
-	        GL11.glEnable(GL11.GL_LIGHTING);
-	        GL11.glEnable(GL11.GL_LIGHT0);
-	        GL11.glEnable(GL11.GL_LIGHT1);
-	        GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-		} else {
-			ItemRenderer.renderItemIn2D(tess, minU, minV, maxU, maxV, scaleX, scaleY, negZLevel);
-		}
-	}
-
-    @Deprecated
-    public static void renderGlint(int par1, int minU, int minV, int maxU, int maxV, double zLevel) {
-        for( int j1 = 0; j1 < 2; ++j1 ) {
-            if( j1 == 0 ) {
-                GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
-            }
-
-            if( j1 == 1 ) {
-                GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
-            }
-
-            float f = 0.00390625F;
-            float f1 = 0.00390625F;
-            float f5 = 3000.0F + j1 * 1873.0F;
-            float f2 = Minecraft.getSystemTime() % f5 / f5 * 256.0F;
-            float f3 = 0.0F;
-            Tessellator tessellator = Tessellator.instance;
-            float f4 = 4.0F;
-
-            if( j1 == 1 ) {
-                f4 = -1.0F;
-            }
-
-            tessellator.startDrawingQuads();
-            tessellator.addVertexWithUV(minU, minV + maxV, zLevel, (f2 + maxV * f4) * f, (f3 + maxV) * f1);
-            tessellator.addVertexWithUV(minU + maxU, minV + maxV, zLevel, (f2 + maxU + maxV * f4) * f, (f3 + maxV) * f1);
-            tessellator.addVertexWithUV(minU + maxU, minV, zLevel, (f2 + maxU) * f, (f3 + 0.0F) * f1);
-            tessellator.addVertexWithUV(minU, minV, zLevel, (f2 + 0.0F) * f, (f3 + 0.0F) * f1);
-            tessellator.draw();
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL11.GL_LIGHT0);
+            GL11.glEnable(GL11.GL_LIGHT1);
+            GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+        } else {
+            ItemRenderer.renderItemIn2D(tess, minU, minV, maxU, maxV, scaleX, scaleY, negZLevel);
         }
     }
 
-    public static IIcon getItemIcon(ItemStack stack, int layer)
-    {
+    public static IIcon getItemIcon(ItemStack stack, int layer) {
         return stack.getItem().requiresMultipleRenderPasses() ? stack.getItem().getIcon(stack, layer) : stack.getIconIndex();
     }
 }

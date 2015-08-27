@@ -9,6 +9,8 @@ package de.sanandrew.core.manpack.mod.client;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.mod.CommonProxy;
 import de.sanandrew.core.manpack.mod.client.event.EventWorldRenderLast;
 import de.sanandrew.core.manpack.mod.client.event.RenderPlayerEventHandler;
@@ -22,13 +24,14 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 
+@SideOnly( Side.CLIENT )
 public class ClientProxy
         extends CommonProxy
 {
     private static final UpdateOverlayManager UPDATE_OVERLY_MGR = new UpdateOverlayManager();
     public static final KeyBinding KEY_UPDATE_GUI = new KeyBinding("key.sapmanpack.updateKey", Keyboard.KEY_U, "key.categories.sapmanpack");
 
-	@Override
+    @Override
     public void registerRenderStuff() {
         RenderBlockGlowOverlay.renderID = RenderingRegistry.getNextAvailableRenderId();
         RenderingRegistry.registerBlockHandler(RenderBlockGlowOverlay.renderID, new RenderBlockGlowOverlay());
@@ -48,7 +51,7 @@ public class ClientProxy
         FMLCommonHandler.instance().bus().register(worldRenderLastEventHandler);
 
         MinecraftForge.EVENT_BUS.register(new RenderPlayerEventHandler());
-	}
+    }
 
     @Override
     public void registerPacketHandler(String modId, String modChannel, PacketProcessor packetProcessor) {

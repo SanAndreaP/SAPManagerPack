@@ -43,20 +43,20 @@ public class SAPUpdateManager
     public static final List<Triplet<SAPUpdateManager, MutableBoolean, MutableString>> UPD_MANAGERS = new ArrayList<>();
     public static final Map<Integer, Boolean> IS_IN_RENDER_QUEUE = Maps.newHashMap();
 
-	private boolean checkedForUpdate = false;
-	private Version version;
-	private String modName;
-	private URL updURL;
-	private String modInfoURL;
+    private boolean checkedForUpdate = false;
+    private Version version;
+    private String modName;
+    private URL updURL;
+    private String modInfoURL;
     private File modPackedJar;
     private UpdateFile updInfo = new UpdateFile();
-	private final int mgrId;
+    private final int mgrId;
 
     public UpdateDownloader downloader;
 
-	public static synchronized void setChecked(int mgrId) {
+    public static synchronized void setChecked(int mgrId) {
         UPD_MANAGERS.get(mgrId).getValue1().setTrue();
-	}
+    }
 
     public static synchronized void setHasUpdate(int mgrId, String version) {
         setChecked(mgrId);
@@ -85,27 +85,6 @@ public class SAPUpdateManager
         this.mgrId = UPD_MANAGERS.size();
     }
 
-    @Deprecated
-	public SAPUpdateManager(String modName, int majorNr, int minorNr, int revisionNr, String updateURL, String modURL, String modJar) {
-        this(modName, new Version(majorNr, minorNr, revisionNr), updateURL, modURL, null);
-	}
-
-    @Deprecated
-	public SAPUpdateManager(String modName, int majorNr, int minorNr, int revisionNr, String updateURL, String modURL) {
-        this(modName, new Version(majorNr, minorNr, revisionNr), updateURL, modURL, null);
-	}
-
-    @Deprecated
-    public SAPUpdateManager(String modName, String version, String updateURL, String modURL, String modJar) {
-        this(modName, new Version(0, 0, 0), updateURL, modURL, null);
-        this.version = new Version(version);
-    }
-
-    @Deprecated
-	public SAPUpdateManager(String modName, String version, String updateURL, String modURL) {
-	    this(modName, new Version(version), updateURL, modURL, null);
-	}
-
     public static SAPUpdateManager createUpdateManager(String modName, Version version, String updateURL, String modURL, File modJar) {
         SAPUpdateManager updMgr = new SAPUpdateManager(modName, version, updateURL, modURL, modJar);
 
@@ -117,8 +96,9 @@ public class SAPUpdateManager
         return updMgr;
     }
 
-	private void check() {
-	    Runnable threadProcessor = new Runnable() {
+    private void check() {
+        Runnable threadProcessor = new Runnable()
+        {
             @Override
             public void run() {
                 try {
@@ -218,14 +198,14 @@ public class SAPUpdateManager
         };
 
         new Thread(threadProcessor, "SAPUpdateThread").start();
-	}
+    }
 
-	public void checkForUpdate() {
-		if( !this.checkedForUpdate ) {
-			this.check();
-			this.checkedForUpdate = true;
-		}
-	}
+    public void checkForUpdate() {
+        if( !this.checkedForUpdate ) {
+            this.check();
+            this.checkedForUpdate = true;
+        }
+    }
 
     public Version getVersion() {
         return this.version;
@@ -320,7 +300,7 @@ public class SAPUpdateManager
         }
     }
 
-    public static enum EnumUpdateSeverity
+    public enum EnumUpdateSeverity
     {
         MINOR(EnumChatFormatting.GREEN),
         MAJOR(EnumChatFormatting.YELLOW),
@@ -329,12 +309,13 @@ public class SAPUpdateManager
 
         public final EnumChatFormatting format;
 
-        private EnumUpdateSeverity(EnumChatFormatting formatting) {
+        EnumUpdateSeverity(EnumChatFormatting formatting) {
             this.format = formatting;
         }
     }
 
-    public static final class Version implements Cloneable
+    public static final class Version
+            implements Cloneable
     {
         public final int revision;
         public final int minor;
@@ -375,10 +356,17 @@ public class SAPUpdateManager
                         if( matcher.group("prType") != null ) {
                             String prType = matcher.group("prType");
                             switch( prType ) {
-                                case "alpha": this.versionType = EnumVersionType.ALPHA; break;
-                                case "beta": this.versionType = EnumVersionType.BETA; break;
-                                case "rc": this.versionType = EnumVersionType.RELEASECANDIDATE; break;
-                                default: this.versionType = EnumVersionType.UNKNOWN;
+                                case "alpha":
+                                    this.versionType = EnumVersionType.ALPHA;
+                                    break;
+                                case "beta":
+                                    this.versionType = EnumVersionType.BETA;
+                                    break;
+                                case "rc":
+                                    this.versionType = EnumVersionType.RELEASECANDIDATE;
+                                    break;
+                                default:
+                                    this.versionType = EnumVersionType.UNKNOWN;
                             }
 
                             this.preVersionNr = matcher.group("prNr") != null ? Integer.valueOf(matcher.group("prNr")) : 1;
@@ -416,16 +404,21 @@ public class SAPUpdateManager
         }
     }
 
-    public static enum EnumVersionType {
-        ALPHA("alpha"), BETA("beta"), RELEASECANDIDATE("rc"), RELEASE, UNKNOWN;
+    public enum EnumVersionType
+    {
+        ALPHA("alpha"),
+        BETA("beta"),
+        RELEASECANDIDATE("rc"),
+        RELEASE,
+        UNKNOWN;
 
         private final String versionStr;
 
-        private EnumVersionType() {
+        EnumVersionType() {
             this.versionStr = this.name();
         }
 
-        private EnumVersionType(String verStr) {
+        EnumVersionType(String verStr) {
             this.versionStr = verStr;
         }
 
@@ -440,15 +433,16 @@ public class SAPUpdateManager
      * code from http://stackoverflow.com/a/14245807
      */
 
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.FIELD)
+    @Retention( RetentionPolicy.RUNTIME )
+    @Target( ElementType.FIELD )
     @interface JsonRequired
-    { }
-
-    static class AnnotatedDeserializer<T> implements JsonDeserializer<T>
     {
-        public T deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException
-        {
+    }
+
+    static class AnnotatedDeserializer<T>
+            implements JsonDeserializer<T>
+    {
+        public T deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {
             T pojo = new Gson().fromJson(je, type);
 
             Field[] fields = pojo.getClass().getDeclaredFields();
@@ -456,7 +450,7 @@ public class SAPUpdateManager
                 if( f.getAnnotation(JsonRequired.class) != null ) {
                     try {
                         f.setAccessible(true);
-                        if (f.get(pojo) == null) {
+                        if( f.get(pojo) == null ) {
                             throw new JsonParseException("Missing field in JSON: " + f.getName());
                         }
                     } catch( IllegalArgumentException | IllegalAccessException ex ) {

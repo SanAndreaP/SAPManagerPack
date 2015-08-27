@@ -12,10 +12,7 @@ import de.sanandrew.core.manpack.network.ServerPacketHandler;
 
 public class CommonProxy
 {
-	public void registerRenderStuff() { }
-
-    @Deprecated
-	public void registerPackets() { }
+    public void registerRenderStuff() { }
 
     public void registerPacketHandler(String modId, String modChannel, PacketProcessor packetProcessor) {
         NetworkManager.getPacketChannel(modId).register(new ServerPacketHandler(modId, modChannel));

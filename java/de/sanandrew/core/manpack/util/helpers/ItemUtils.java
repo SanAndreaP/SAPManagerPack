@@ -22,7 +22,8 @@ import java.util.List;
  */
 public final class ItemUtils
 {
-    private static final Comparator<NBTTagCompound> STD_NBT_COMPARATOR = new Comparator<NBTTagCompound>() {
+    private static final Comparator<NBTTagCompound> STD_NBT_COMPARATOR = new Comparator<NBTTagCompound>()
+    {
         @Override
         public int compare(NBTTagCompound o1, NBTTagCompound o2) {
             if( o1 != null ) {
@@ -38,7 +39,8 @@ public final class ItemUtils
 
     /**
      * Decreases the size of the given stack by the amount.
-     * @param is the ItemStack whose size should be decreased
+     *
+     * @param is     the ItemStack whose size should be decreased
      * @param amount the amount the size will be decreased
      * @return the stack with decreased size or null, if the size is <= 0
      */
@@ -56,17 +58,18 @@ public final class ItemUtils
      * Compares the two given stacks and checks for their equality.<br>
      * <p>They are considered equal if either:
      * <ul>
-     *     <li>They are both null: Either the instances themselves or their items are both {@code null}</li>
-     *     <li>They have the same item instance and:
-     *     <ul>
-     *         <li>If {@code checkNbt == true}, the NBT of those 2 items is either null or {@code is1.nbt.equals(is2.nbt) == true}, otherwise NBT isn't checked</li>
-     *         <li>Their damage value is the same <i>or</i> either of their damage value has the value of {@link OreDictionary#WILDCARD_VALUE}</li>
-     *     </ul>
-     *     </li>
+     * <li>They are both null: Either the instances themselves or their items are both {@code null}</li>
+     * <li>They have the same item instance and:
+     * <ul>
+     * <li>If {@code checkNbt == true}, the NBT of those 2 items is either null or {@code is1.nbt.equals(is2.nbt) == true}, otherwise NBT isn't checked</li>
+     * <li>Their damage value is the same <i>or</i> either of their damage value has the value of {@link OreDictionary#WILDCARD_VALUE}</li>
+     * </ul>
+     * </li>
      * </ul>
      * </p>
-     * @param is1 the first stack
-     * @param is2 the second stack
+     *
+     * @param is1      the first stack
+     * @param is2      the second stack
      * @param checkNbt true, if the NBT should be checked as well
      * @return true, if the stacks are equal, false otherwise.
      */
@@ -78,17 +81,18 @@ public final class ItemUtils
      * Compares the two given stacks and checks for their equality.<br>
      * <p>They are considered equal if either:
      * <ul>
-     *     <li>They are both null: Either the instances themselves or their items are both {@code null}</li>
-     *     <li>They have the same item instance and:
-     *     <ul>
-     *         <li>If the given comparator is either null or its {@code .compare(nbt1, nbt2)} method returns 0</li>
-     *         <li>Their damage value is the same <i>or</i> either of their damage value has the value of {@link OreDictionary#WILDCARD_VALUE}</li>
-     *     </ul>
-     *     </li>
+     * <li>They are both null: Either the instances themselves or their items are both {@code null}</li>
+     * <li>They have the same item instance and:
+     * <ul>
+     * <li>If the given comparator is either null or its {@code .compare(nbt1, nbt2)} method returns 0</li>
+     * <li>Their damage value is the same <i>or</i> either of their damage value has the value of {@link OreDictionary#WILDCARD_VALUE}</li>
+     * </ul>
+     * </li>
      * </ul>
      * </p>
-     * @param is1 the first stack
-     * @param is2 the second stack
+     *
+     * @param is1      the first stack
+     * @param is2      the second stack
      * @param nbtCheck A comparator for the NBTs of those 2 stacks, can be null to avoid checking for NBT
      * @return true, if the stacks are equal, false otherwise.
      */
@@ -109,7 +113,7 @@ public final class ItemUtils
             }
 
             return is1.getItemDamage() == OreDictionary.WILDCARD_VALUE || is2.getItemDamage() == OreDictionary.WILDCARD_VALUE
-                   || is1.getItemDamage() == is2.getItemDamage();
+                    || is1.getItemDamage() == is2.getItemDamage();
         }
 
         return false;
@@ -117,6 +121,7 @@ public final class ItemUtils
 
     /**
      * Splits the given stack, which has a size > it's max. allowed, into "good" stacks with sizes <= max. allowed.
+     *
      * @param is the stack which should be split
      * @return an Array of all "good" stacks. If {@code is.stackSize <= 0}, then a zero-length array is returned.
      */
@@ -150,8 +155,9 @@ public final class ItemUtils
     /**
      * Checks if the ItemStack given can be found inside the array.<br>
      * Comparison rules are like {@link ItemUtils#areStacksEqual(ItemStack, ItemStack, boolean)}.
-     * @param stack the stack to be searched inside the array
-     * @param checkNbt true, if the NBT should be checked as well
+     *
+     * @param stack      the stack to be searched inside the array
+     * @param checkNbt   true, if the NBT should be checked as well
      * @param stackArray the array to be searched
      * @return true, if the stack was found, false otherwise
      */
@@ -168,8 +174,9 @@ public final class ItemUtils
     /**
      * Checks if the ItemStack given can be found inside the array.<br>
      * Comparison rules are like {@link ItemUtils#areStacksEqual(ItemStack, ItemStack, Comparator)}.
-     * @param stack the stack to be searched inside the array
-     * @param nbtCheck A comparator for the NBTs of those 2 stacks, can be null to avoid checking for NBT
+     *
+     * @param stack      the stack to be searched inside the array
+     * @param nbtCheck   A comparator for the NBTs of those 2 stacks, can be null to avoid checking for NBT
      * @param stackArray the array to be searched
      * @return true, if the stack was found, false otherwise
      */

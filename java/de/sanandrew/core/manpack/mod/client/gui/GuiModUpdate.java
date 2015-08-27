@@ -6,6 +6,8 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.mod.client.gui;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.init.ManPackLoadingPlugin;
 import de.sanandrew.core.manpack.managers.SAPUpdateManager;
 import de.sanandrew.core.manpack.managers.UpdateDownloader.EnumDlState;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
 
+@SideOnly( Side.CLIENT )
 public class GuiModUpdate
         extends GuiScreen
         implements GuiYesNoCallback
@@ -36,7 +39,7 @@ public class GuiModUpdate
         MANAGERS.add(mgr);
 
         int slotId = MANAGERS.indexOf(mgr);
-        SLOT_BUTTONS.add(Pair.with(new GuiButtonUpdate(MANAGERS.size()*2, slotId, "Update"), new GuiButtonDetails(MANAGERS.size()*2 + 1, slotId, "Details")));
+        SLOT_BUTTONS.add(Pair.with(new GuiButtonUpdate(MANAGERS.size() * 2, slotId, "Update"), new GuiButtonDetails(MANAGERS.size() * 2 + 1, slotId, "Details")));
     }
 
     private GuiButton restartMC;
@@ -52,7 +55,7 @@ public class GuiModUpdate
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public void initGui() {
         super.initGui();
 
@@ -116,10 +119,11 @@ public class GuiModUpdate
 
     static boolean checkIfMgrCanUpdate(SAPUpdateManager mgr) {
         return mgr.getUpdateInfo().getDownload() != null && mgr.getModJar() != null && mgr.getModJar().getName().endsWith(".jar")
-               && (mgr.downloader == null || mgr.downloader.getStatus() == EnumDlState.ERROR);
+                && (mgr.downloader == null || mgr.downloader.getStatus() == EnumDlState.ERROR);
     }
 
-    class GuiModSlots extends GuiSlot
+    class GuiModSlots
+            extends GuiSlot
     {
         public GuiModSlots() {
             super(GuiModUpdate.this.mc, GuiModUpdate.this.width, GuiModUpdate.this.height, 32, GuiModUpdate.this.height - 64, 36);
@@ -162,10 +166,10 @@ public class GuiModUpdate
                 int progBarClr = 0;
                 int progBarLength = 0;
 
-                if( mgr.downloader.getStatus() == EnumDlState.DOWNLOADING && mgr.downloader.getProgress() >= 0.0F) {
+                if( mgr.downloader.getStatus() == EnumDlState.DOWNLOADING && mgr.downloader.getProgress() >= 0.0F ) {
                     result = String.format("Download Update: %s%s%%", EnumChatFormatting.WHITE, new DecimalFormat("0.00").format(mgr.downloader.getProgress()));
                     progBarClr = 0;
-                    progBarLength = (int)(140.0F * mgr.downloader.getProgress() / 100.0F);
+                    progBarLength = (int) (140.0F * mgr.downloader.getProgress() / 100.0F);
                 } else if( mgr.downloader.getStatus() == EnumDlState.ERROR ) {
                     result = String.format("Download Update: %s%s", EnumChatFormatting.RED, "Failed!");
                     progBarClr = 2;
@@ -187,8 +191,8 @@ public class GuiModUpdate
 
             GuiModUpdate.this.fontRendererObj.drawStringWithShadow(mgr.getModName(), xPos, yPos, 0xFFFFFFFF);
 
-            GuiButtonUpdate btnUpdate =  SLOT_BUTTONS.get(slotIndex).getValue0();
-            GuiButtonDetails btnDetails =  SLOT_BUTTONS.get(slotIndex).getValue1();
+            GuiButtonUpdate btnUpdate = SLOT_BUTTONS.get(slotIndex).getValue0();
+            GuiButtonDetails btnDetails = SLOT_BUTTONS.get(slotIndex).getValue1();
 
             btnUpdate.xPosition = xPos + 151;
             btnUpdate.yPosition = yPos;
@@ -212,7 +216,9 @@ public class GuiModUpdate
         }
     }
 
-    static class GuiButtonSlot extends GuiButton {
+    static class GuiButtonSlot
+            extends GuiButton
+    {
         public final int slot;
 
         public GuiButtonSlot(int id, int slotId, String name) {
@@ -233,19 +239,24 @@ public class GuiModUpdate
 
                 // frame
                 Gui.drawRect(this.xPosition, this.yPosition, this.xPosition + this.width - 1, this.yPosition + 1,
-                             hoverState == 2 ? 0xFFFFFF80 : hoverState == 1 ? 0xFFFFFFFF : 0x80808080);
+                             hoverState == 2 ? 0xFFFFFF80 : hoverState == 1 ? 0xFFFFFFFF : 0x80808080
+                            );
                 Gui.drawRect(this.xPosition + width - 1, this.yPosition, this.xPosition + this.width, this.yPosition + this.height - 1,
-                             hoverState == 2 ? 0xFF606030 : hoverState == 1 ? 0xFF606060 : 0x80303030);
+                             hoverState == 2 ? 0xFF606030 : hoverState == 1 ? 0xFF606060 : 0x80303030
+                            );
                 Gui.drawRect(this.xPosition + 1, this.yPosition + height - 1, this.xPosition + this.width, this.yPosition + this.height,
-                             hoverState == 2 ? 0xFF606030 : hoverState == 1 ? 0xFF606060 : 0x80303030);
+                             hoverState == 2 ? 0xFF606030 : hoverState == 1 ? 0xFF606060 : 0x80303030
+                            );
                 Gui.drawRect(this.xPosition, this.yPosition + 1, this.xPosition + 1, this.yPosition + this.height,
-                             hoverState == 2 ? 0xFFFFFF80 : hoverState == 1 ? 0xFFFFFFFF : 0x80808080);
+                             hoverState == 2 ? 0xFFFFFF80 : hoverState == 1 ? 0xFFFFFFFF : 0x80808080
+                            );
 
                 // background
 //                GuiModUpdate.drawGlossEffect(this.xPosition + 45, this.yPosition + 1, this.yPosition + this.height - 1, 1.0F, 2);
 //                GuiModUpdate.drawGlossEffect(this.xPosition + 49, this.yPosition + 1, this.yPosition + this.height - 1, 1.0F, 1);
                 Gui.drawRect(this.xPosition + 1, this.yPosition + 1, this.xPosition + this.width - 1, this.yPosition + this.height - 1,
-                             hoverState == 2 ? 0x80404020 : hoverState == 1 ? 0x80404040 : 0x80000000);
+                             hoverState == 2 ? 0x80404020 : hoverState == 1 ? 0x80404040 : 0x80000000
+                            );
 
                 this.mouseDragged(mc, mouseX, mouseY);
                 int l = 0xE0E0E0;
@@ -261,19 +272,24 @@ public class GuiModUpdate
         }
     }
 
-    static class GuiButtonUpdate extends GuiButtonSlot {
+    static class GuiButtonUpdate
+            extends GuiButtonSlot
+    {
         GuiButtonUpdate(int id, int slotId, String name) {
             super(id, slotId, name);
         }
     }
 
-    static class GuiButtonDetails extends GuiButtonSlot {
+    static class GuiButtonDetails
+            extends GuiButtonSlot
+    {
         GuiButtonDetails(int id, int slotId, String name) {
             super(id, slotId, name);
         }
     }
 
-    static class AllUpdater implements Runnable
+    static class AllUpdater
+            implements Runnable
     {
         static int currMgrIndex = 0;
 

@@ -20,10 +20,10 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.Map;
 
-@SortingIndex(1001)
-@MCVersion(ManPackLoadingPlugin.MC_VERSION)
-@DependsOn("forge")
-@TransformerExclusions({ "de.sanandrew.core.manpack.transformer", "de.sanandrew.core.manpack.init" })
+@SortingIndex( 1001 )
+@MCVersion( ManPackLoadingPlugin.MC_VERSION )
+@DependsOn( "forge" )
+@TransformerExclusions( { "de.sanandrew.core.manpack.transformer", "de.sanandrew.core.manpack.init" } )
 public class ManPackLoadingPlugin
         implements IFMLLoadingPlugin
 {
@@ -33,7 +33,6 @@ public class ManPackLoadingPlugin
     public static final String MOD_VERSION = "2.6.0";
 
     public static File source;
-    public static File mcLoc;
 
     @Override
     public String getAccessTransformerClass() {
@@ -82,7 +81,5 @@ public class ManPackLoadingPlugin
                 throw new RuntimeException("Failed to acquire source location for SAPManPack!", e);
             }
         }
-
-//        ASMNameHelper.getInstance().readMcpSrgFile();
     }
 }

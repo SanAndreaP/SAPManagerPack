@@ -6,7 +6,9 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.mod.client.model;
 
-import de.sanandrew.core.manpack.util.client.helpers.SAPClientUtils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import de.sanandrew.core.manpack.util.client.helpers.ModelBoxBuilder;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -15,13 +17,12 @@ import org.lwjgl.opengl.GL11;
 /**
  * Created using Tabula 4.1.1
  */
+@SideOnly( Side.CLIENT )
 public class ModelSanPlayer
         extends ModelBiped
 {
     public ModelRenderer legLeft;
     public ModelRenderer legRight;
-    public ModelRenderer armLeft;
-    public ModelRenderer armRight;
     public ModelRenderer armLeft2;
     public ModelRenderer armRight2;
     public ModelRenderer body;
@@ -46,22 +47,38 @@ public class ModelSanPlayer
 
         this.textureWidth = 64;
         this.textureHeight = 64;
-        this.legLeft = SAPClientUtils.createNewBox(this, 0, 16, true, -1.5F, 0.0F, -1.5F, 3, 12, 3, scaling, 2.5F, 12.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-        this.legRight = SAPClientUtils.createNewBox(this, 0, 16, false, -1.5F, 0.0F, -1.5F, 3, 12, 3, scaling, -2.5F, 12.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-        this.armLeft = SAPClientUtils.createNewBox(this, 40, 16, true, -1.0F, -2.0F, -2.0F, 3, 12, 3, scaling, 5.0F, 2.0F, 0.5F, -0.00331613F, 0.0F, -0.09983283F);
-        this.armRight = SAPClientUtils.createNewBox(this, 40, 16, false, -3.0F, -2.0F, -2.0F, 3, 12, 3, scaling, -4.0F, 2.0F, 0.5F, 0.0F, 0.0F, 0.09983283F);
-        this.armLeft2 = SAPClientUtils.createNewBox(this, 40, 32, true, -1.0F, 5.0F, -2.0F, 3, 5, 3, scaling, 5.0F, 2.0F, 0.5F, -0.00331613F, 0.0F, -0.09983283F);
-        this.armRight2 = SAPClientUtils.createNewBox(this, 40, 32, false, -3.0F, 5.0F, -2.0F, 3, 5, 3, scaling, -4.0F, 2.0F, 0.5F , 0.0F, 0.0F, 0.09983283F);
-        this.body = SAPClientUtils.createNewBox(this, 16, 16, false, -4.0F, 0.0F, -2.0F, 8, 12, 4, scaling, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-        this.breast = SAPClientUtils.createNewBox(this, 0, 54, false, -3.5F, 0.0F, 0.0F, 7, 3, 3, scaling, 0.0F, 3.0F, -3.5F, 0.87266463F, 0.0F, 0.0F);
-        this.skirt1 = SAPClientUtils.createNewBox(this, 16, 36, false, -4.5F, 8.0F, -2.5F, 9, 3, 5, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-        this.skirt2 = SAPClientUtils.createNewBox(this, 16, 44, false, -4.5F, 11.0F, -3.0F, 9, 4, 6, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-        this.head = SAPClientUtils.createNewBox(this, 28, 0, false, -3.5F, -7.0F, -3.5F, 7, 7, 7, scaling, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-        this.hair = SAPClientUtils.createNewBox(this, 0, 0, false, -3.5F, -7.4F, -3.5F, 7, 7, 7, scaling + 0.4F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-        this.quadTail1 = SAPClientUtils.createNewBox(this, 0, 40, true, -1.5F, 3.0F, 1.0F, 3, 10, 3, scaling, 0.0F, -3.0F, 0.0F, 0.52359878F, 0.0F, -2.26892803F);
-        this.quadTail2 = SAPClientUtils.createNewBox(this, 0, 40, false, -1.5F, 3.0F, 1.0F, 3, 10, 3, scaling, 0.0F, -3.0F, 0.0F, 0.52359878F, 0.0F, 2.26892803F);
-        this.quadTail3 = SAPClientUtils.createNewBox(this, 0, 32, true, -0.5F, 3.0F, 0.9F, 2, 6, 2, scaling, 0.0F, -3.0F, 0.0F, 0.63739424F, 0.0F, -0.61086524F);
-        this.quadTail4 = SAPClientUtils.createNewBox(this, 0, 32, false, -1.5F, 3.0F, 0.9F, 2, 6, 2, scaling, 0.0F, -3.0F, 0.0F, 0.63739424F, 0.0F, 0.61086524F);
+        this.legLeft = ModelBoxBuilder.newBuilder(this).setTexture(0, 16, true).setLocation(2.5F, 12.0F, 0.0F).setRotation(0.0F, 0.0F, 0.0F)
+                                      .getBox(-1.5F, 0.0F, -1.5F, 3, 12, 3, scaling);
+        this.legRight = ModelBoxBuilder.newBuilder(this).setTexture(0, 16, false).setLocation(-2.5F, 12.0F, 0.0F).setRotation(0.0F, 0.0F, 0.0F)
+                                       .getBox(-1.5F, 0.0F, -1.5F, 3, 12, 3, scaling);
+        this.bipedLeftArm = ModelBoxBuilder.newBuilder(this).setTexture(40, 16, true).setLocation(5.0F, 2.0F, 0.5F).setRotation(-0.00331613F, 0.0F, -0.09983283F)
+                                      .getBox(-1.0F, -2.0F, -2.0F, 3, 12, 3, scaling);
+        this.bipedRightArm = ModelBoxBuilder.newBuilder(this).setTexture(40, 16, false).setLocation(-4.0F, 2.0F, 0.5F).setRotation(0.0F, 0.0F, 0.09983283F)
+                                       .getBox(-3.0F, -2.0F, -2.0F, 3, 12, 3, scaling);
+        this.armLeft2 = ModelBoxBuilder.newBuilder(this).setTexture(40, 32, true).setLocation(5.0F, 2.0F, 0.5F).setRotation(-0.00331613F, 0.0F, -0.09983283F)
+                                       .getBox(-1.0F, 5.0F, -2.0F, 3, 5, 3, scaling);
+        this.armRight2 = ModelBoxBuilder.newBuilder(this).setTexture(40, 32, false).setLocation(-4.0F, 2.0F, 0.5F).setRotation(0.0F, 0.0F, 0.09983283F)
+                                        .getBox(-3.0F, 5.0F, -2.0F, 3, 5, 3, scaling);
+        this.body = ModelBoxBuilder.newBuilder(this).setTexture(16, 16, false).setLocation(0.0F, 0.0F, 0.0F).setRotation(0.0F, 0.0F, 0.0F)
+                                   .getBox(-4.0F, 0.0F, -2.0F, 8, 12, 4, scaling);
+        this.breast = ModelBoxBuilder.newBuilder(this).setTexture(0, 54, false).setLocation(0.0F, 3.0F, -3.5F).setRotation(0.87266463F, 0.0F, 0.0F)
+                                     .getBox(-3.5F, 0.0F, 0.0F, 7, 3, 3, scaling);
+        this.skirt1 = ModelBoxBuilder.newBuilder(this).setTexture(16, 36, false).setLocation(0.0F, 0.0F, 0.0F).setRotation(0.0F, 0.0F, 0.0F)
+                                     .getBox(-4.5F, 8.0F, -2.5F, 9, 3, 5, 0.0F);
+        this.skirt2 = ModelBoxBuilder.newBuilder(this).setTexture(16, 44, false).setLocation(0.0F, 0.0F, 0.0F).setRotation(0.0F, 0.0F, 0.0F)
+                                     .getBox(-4.5F, 11.0F, -3.0F, 9, 4, 6, 0.0F);
+        this.head = ModelBoxBuilder.newBuilder(this).setTexture(28, 0, false).setLocation(0.0F, 0.0F, 0.0F).setRotation(0.0F, 0.0F, 0.0F)
+                                   .getBox(-3.5F, -7.0F, -3.5F, 7, 7, 7, scaling);
+        this.hair = ModelBoxBuilder.newBuilder(this).setTexture(0, 0, false).setLocation(0.0F, 0.0F, 0.0F).setRotation(0.0F, 0.0F, 0.0F)
+                                   .getBox(-3.5F, -7.4F, -3.5F, 7, 7, 7, scaling + 0.4F);
+        this.quadTail1 = ModelBoxBuilder.newBuilder(this).setTexture(0, 40, true).setLocation(0.0F, -3.0F, 0.0F).setRotation(0.52359878F, 0.0F, -2.26892803F)
+                                        .getBox(-1.5F, 3.0F, 1.0F, 3, 10, 3, scaling);
+        this.quadTail2 = ModelBoxBuilder.newBuilder(this).setTexture(0, 40, false).setLocation(0.0F, -3.0F, 0.0F).setRotation(0.52359878F, 0.0F, 2.26892803F)
+                                        .getBox(-1.5F, 3.0F, 1.0F, 3, 10, 3, scaling);
+        this.quadTail3 = ModelBoxBuilder.newBuilder(this).setTexture(0, 32, true).setLocation(0.0F, -3.0F, 0.0F).setRotation(0.63739424F, 0.0F, -0.61086524F)
+                                        .getBox(-0.5F, 3.0F, 0.9F, 2, 6, 2, scaling);
+        this.quadTail4 = ModelBoxBuilder.newBuilder(this).setTexture(0, 32, false).setLocation(0.0F, -3.0F, 0.0F).setRotation(0.63739424F, 0.0F, 0.61086524F)
+                                        .getBox(-1.5F, 3.0F, 0.9F, 2, 6, 2, scaling);
 
         this.body.addChild(this.breast);
         this.head.addChild(this.quadTail1);
@@ -94,8 +111,8 @@ public class ModelSanPlayer
             this.hatBase.render(partTicks);
         }
 
-        this.armLeft.render(partTicks);
-        this.armRight.render(partTicks);
+        this.bipedLeftArm.render(partTicks);
+        this.bipedRightArm.render(partTicks);
         this.legLeft.render(partTicks);
         this.legRight.render(partTicks);
         this.body.render(partTicks);
@@ -138,9 +155,7 @@ public class ModelSanPlayer
         this.setRotateAngle(this.body, this.bipedBody.rotateAngleX * 0.5F, this.bipedBody.rotateAngleY, this.bipedBody.rotateAngleZ);
         this.setRotateAngle(this.skirt1, this.bipedBody.rotateAngleX * 0.5F, this.bipedBody.rotateAngleY, this.bipedBody.rotateAngleZ);
         this.setRotateAngle(this.skirt2, this.bipedBody.rotateAngleX * 0.5F, this.bipedBody.rotateAngleY, this.bipedBody.rotateAngleZ);
-        this.setRotateAngle(this.armLeft, this.bipedLeftArm.rotateAngleX, this.bipedLeftArm.rotateAngleY, this.bipedLeftArm.rotateAngleZ);
         this.setRotateAngle(this.armLeft2, this.bipedLeftArm.rotateAngleX, this.bipedLeftArm.rotateAngleY, this.bipedLeftArm.rotateAngleZ);
-        this.setRotateAngle(this.armRight, this.bipedRightArm.rotateAngleX, this.bipedRightArm.rotateAngleY, this.bipedRightArm.rotateAngleZ);
         this.setRotateAngle(this.armRight2, this.bipedRightArm.rotateAngleX, this.bipedRightArm.rotateAngleY, this.bipedRightArm.rotateAngleZ);
 
         if( this.isRiding ) {
@@ -151,8 +166,8 @@ public class ModelSanPlayer
             this.setRotateAngle(this.legRight, this.bipedRightLeg.rotateAngleX * 0.5F, this.bipedRightLeg.rotateAngleY, this.bipedRightLeg.rotateAngleZ);
         }
 
-        this.armLeft.rotateAngleZ -= 0.1F;
-        this.armRight.rotateAngleZ += 0.1F;
+        this.bipedLeftArm.rotateAngleZ -= 0.1F;
+        this.bipedRightArm.rotateAngleZ += 0.1F;
         this.armLeft2.rotateAngleZ -= 0.1F;
         this.armRight2.rotateAngleZ += 0.1F;
 
@@ -161,14 +176,17 @@ public class ModelSanPlayer
             this.legRight.rotationPointZ = 3.0F;
             this.legLeft.rotateAngleX -= 0.15F;
             this.legRight.rotateAngleX -= 0.15F;
-            this.armLeft.rotateAngleX += 0.2F;
+            this.bipedLeftArm.rotateAngleX += 0.2F;
             this.armLeft2.rotateAngleX += 0.2F;
-            this.armRight.rotateAngleX += 0.2F;
+            this.bipedRightArm.rotateAngleX += 0.2F;
             this.armRight2.rotateAngleX += 0.2F;
         } else {
             this.legLeft.rotationPointZ = 0.0F;
             this.legRight.rotationPointZ = 0.0F;
         }
+
+        setRotationPoint(this.bipedLeftArm, 5.0F, 2.0F, 0.5F);
+        setRotationPoint(this.bipedRightArm, -4.0F, 2.0F, 0.5F);
     }
 
     /**
@@ -178,5 +196,11 @@ public class ModelSanPlayer
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
+    }
+
+    public void setRotationPoint(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotationPointX = x;
+        modelRenderer.rotationPointY = y;
+        modelRenderer.rotationPointZ = z;
     }
 }

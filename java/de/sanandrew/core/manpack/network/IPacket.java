@@ -24,7 +24,7 @@ public interface IPacket
      * @param handler An instance of the INetHandler interface.
      * @throws java.io.IOException
      */
-    public void process(ByteBufInputStream stream, ByteBuf rawData, INetHandler handler) throws IOException;
+    void process(ByteBufInputStream stream, ByteBuf rawData, INetHandler handler) throws IOException;
 
     /**
      * This is called when the packet is getting prepared for being send. Use this to write data to the packet.
@@ -33,5 +33,5 @@ public interface IPacket
      * @param dataTuple A tuple containing the data provided by the packet sending call.
      * @throws java.io.IOException
      */
-    public void writeData(ByteBufOutputStream stream, Tuple dataTuple) throws IOException;
+    void writeData(ByteBufOutputStream stream, Tuple dataTuple) throws IOException;
 }

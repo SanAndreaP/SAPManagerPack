@@ -17,42 +17,43 @@ import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
-public class GuiItemTab extends GuiButton
+@SideOnly( Side.CLIENT )
+public class GuiItemTab
+        extends GuiButton
 {
     protected static RenderItem itemRenderer = new RenderItem();
     protected static final ResourceLocation RES_ITEM_GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");
     public ResourceLocation baseTexture = TextureMap.locationItemsTexture;
-	protected IIcon renderedIcon;
-	protected ResourceLocation texture = null;
+    protected IIcon renderedIcon;
+    protected ResourceLocation texture = null;
     protected boolean isRight;
     protected boolean hasEffect;
     public int textureBaseX = 0;
     public int textureBaseY = 0;
 
-	public GuiItemTab(int id, int xPos, int yPos, String name, IIcon icon, boolean right, boolean hasEff, ResourceLocation tabTexture) {
-		super(id, xPos, yPos, name);
-		this.width = 26;
-		this.height = 26;
-		this.renderedIcon = icon;
-		this.isRight = right;
-		this.hasEffect = hasEff;
-		this.texture = tabTexture;
-	}
+    public GuiItemTab(int id, int xPos, int yPos, String name, IIcon icon, boolean right, boolean hasEff, ResourceLocation tabTexture) {
+        super(id, xPos, yPos, name);
+        this.width = 26;
+        this.height = 26;
+        this.renderedIcon = icon;
+        this.isRight = right;
+        this.hasEffect = hasEff;
+        this.texture = tabTexture;
+    }
 
-	public void setIcon(IIcon ico) {
-		this.renderedIcon = ico;
-	}
+    public void setIcon(IIcon ico) {
+        this.renderedIcon = ico;
+    }
 
-	@Override
+    @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if( this.visible ) {
-        	FontRenderer var4 = mc.fontRenderer;
-        	mc.getTextureManager().bindTexture(this.texture);
+            FontRenderer var4 = mc.fontRenderer;
+            mc.getTextureManager().bindTexture(this.texture);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
             int var5 = this.getHoverState(this.field_146123_n);
-            this.drawTexturedModalRect(this.xPosition, this.yPosition, this.textureBaseX+26*(this.isRight?0:1), this.textureBaseY+var5*26, this.width, this.height);
+            this.drawTexturedModalRect(this.xPosition, this.yPosition, this.textureBaseX + 26 * (this.isRight ? 0 : 1), this.textureBaseY + var5 * 26, this.width, this.height);
             this.mouseDragged(mc, mouseX, mouseY);
 
             GL11.glEnable(GL11.GL_DEPTH_TEST);
@@ -73,7 +74,7 @@ public class GuiItemTab extends GuiButton
             GL11.glDisable(GL11.GL_DEPTH_TEST);
 
             if( this.field_146123_n ) {
-            	this.drawTabHoveringText(this.displayString, this.xPosition - (this.isRight ? var4.getStringWidth(this.displayString) + 5 : - 5), this.yPosition + 21, var4);
+                this.drawTabHoveringText(this.displayString, this.xPosition - (this.isRight ? var4.getStringWidth(this.displayString) + 5 : -5), this.yPosition + 21, var4);
             }
 
             RenderHelper.disableStandardItemLighting();
@@ -111,7 +112,7 @@ public class GuiItemTab extends GuiButton
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
     }
 
-	private void drawIcon(IIcon ico, int x, int y, Minecraft mc, int color) {
+    private void drawIcon(IIcon ico, int x, int y, Minecraft mc, int color) {
         float f;
         int i1;
         float f1;
@@ -122,7 +123,7 @@ public class GuiItemTab extends GuiButton
         mc.renderEngine.bindTexture(resourcelocation);
 
         if( this.renderedIcon == null ) {
-        	this.renderedIcon = ((TextureMap)Minecraft.getMinecraft().getTextureManager().getTexture(resourcelocation)).getAtlasSprite("missingno");
+            this.renderedIcon = ((TextureMap) Minecraft.getMinecraft().getTextureManager().getTexture(resourcelocation)).getAtlasSprite("missingno");
         }
 
         i1 = color;
@@ -136,11 +137,11 @@ public class GuiItemTab extends GuiButton
         GL11.glEnable(GL11.GL_LIGHTING);
 
         if( this.hasEffect ) {
-        	this.renderEffect(mc.renderEngine, x, y);
+            this.renderEffect(mc.renderEngine, x, y);
         }
         GL11.glEnable(GL11.GL_CULL_FACE);
 
-	}
+    }
 
     protected void renderEffect(TextureManager manager, int x, int y) {
         GL11.glDepthFunc(GL11.GL_GREATER);

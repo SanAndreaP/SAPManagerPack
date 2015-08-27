@@ -6,6 +6,8 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.util.client.helpers;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 
@@ -15,10 +17,12 @@ import java.lang.reflect.InvocationTargetException;
  * A builder class to easily instantiate a ModelRenderer box for a Model without having to deal with multi-line method calls and field assignments.
  * Method cascading FTW \o/
  */
+@SideOnly( Side.CLIENT )
 public final class ModelBoxBuilder<T extends ModelRenderer>
 {
     /**
      * Creates a new Model Box Builder.
+     *
      * @param model The model instance
      * @return A new instance of the ModelBoxBuilder.
      */
@@ -28,7 +32,8 @@ public final class ModelBoxBuilder<T extends ModelRenderer>
 
     /**
      * Creates a new Model Box Builder with a custom box class.
-     * @param model The model instance
+     *
+     * @param model    The model instance
      * @param boxClass The custom box class. Note: It MUST be a child of the {@link net.minecraft.client.model.ModelRenderer} class and override the
      *                 {@link net.minecraft.client.model.ModelRenderer#ModelRenderer(net.minecraft.client.model.ModelBase)} parent constructor!
      * @return A new instance of the ModelBoxBuilder.
@@ -51,8 +56,9 @@ public final class ModelBoxBuilder<T extends ModelRenderer>
 
     /**
      * Sets the texture variables of the box.
-     * @param x The X-coordinate of the texture's upper-left corner
-     * @param y The Y-coordinate of the texture's upper-left corner
+     *
+     * @param x      The X-coordinate of the texture's upper-left corner
+     * @param y      The Y-coordinate of the texture's upper-left corner
      * @param mirror If it should mirror the texture on the box. Does not affect the coordinates!
      * @return The ModelBoxBuilder instance calling this method.
      */
@@ -65,10 +71,11 @@ public final class ModelBoxBuilder<T extends ModelRenderer>
 
     /**
      * Sets the texture variables of the box.
-     * @param x The X-coordinate of the texture's upper-left corner
-     * @param y The Y-coordinate of the texture's upper-left corner
+     *
+     * @param x      The X-coordinate of the texture's upper-left corner
+     * @param y      The Y-coordinate of the texture's upper-left corner
      * @param mirror If it should mirror the texture on the box. Does not affect the coordinates!
-     * @param width The width of the texture
+     * @param width  The width of the texture
      * @param height The height of the texture
      * @return The ModelBoxBuilder instance calling this method.
      */
@@ -83,6 +90,7 @@ public final class ModelBoxBuilder<T extends ModelRenderer>
 
     /**
      * Sets the location (rotation point) of the box.
+     *
      * @param pointX X-coordinate of the box
      * @param pointY Y-coordinate of the box
      * @param pointZ Z-coordinate of the box
@@ -98,6 +106,7 @@ public final class ModelBoxBuilder<T extends ModelRenderer>
 
     /**
      * Sets the rotation angles of the box.
+     *
      * @param angleX X-axis rotation of the box
      * @param angleY Y-axis rotation of the box
      * @param angleZ Z-axis rotation of the box

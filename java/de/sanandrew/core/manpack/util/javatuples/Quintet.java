@@ -30,12 +30,10 @@ import java.util.Iterator;
  * A tuple of five elements.
  * </p>
  *
- * @since 1.0
- *
  * @author Daniel Fern&aacute;ndez
- *
+ * @since 1.0
  */
-public final class Quintet<A,B,C,D,E>
+public final class Quintet<A, B, C, D, E>
         extends Tuple
         implements IValue0<A>, IValue1<B>, IValue2<C>, IValue3<D>, IValue4<E>
 {

@@ -1,26 +1,25 @@
 package de.sanandrew.core.manpack.util.client;
 
-import org.lwjgl.opengl.GL11;
-
+import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.IBlockAccess;
+import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-@SideOnly(Side.CLIENT)
-public class RenderBlockGlowOverlay implements ISimpleBlockRenderingHandler
+@SideOnly( Side.CLIENT )
+public class RenderBlockGlowOverlay
+        implements ISimpleBlockRenderingHandler
 {
-	public static int renderID = 0;
+    public static int renderID = 0;
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer) {
         Tessellator tessellator = Tessellator.instance;
-        IGlowBlockOverlay blockOverlay = ( block instanceof IGlowBlockOverlay ) ? (IGlowBlockOverlay)block : null;
+        IGlowBlockOverlay blockOverlay = (block instanceof IGlowBlockOverlay) ? (IGlowBlockOverlay) block : null;
 
         block.setBlockBoundsForItemRender();
         renderer.setRenderBoundsFromBlock(block);
@@ -108,20 +107,20 @@ public class RenderBlockGlowOverlay implements ISimpleBlockRenderingHandler
         renderer.renderStandardBlockWithColorMultiplier(block, x, y, z, 1F, 1F, 1F);
 
         if( block instanceof IGlowBlockOverlay ) {
-        	IGlowBlockOverlay icn = (IGlowBlockOverlay)block;
-		    Tessellator.instance.setBrightness(240);
-		    Tessellator.instance.setColorOpaque(255, 255, 255);
+            IGlowBlockOverlay icn = (IGlowBlockOverlay) block;
+            Tessellator.instance.setBrightness(240);
+            Tessellator.instance.setColorOpaque(255, 255, 255);
 
-		    // render the overlaying block START
-		    renderer.renderFaceYNeg(block, x, y, z, icn.getOverlayTexture(world, x, y, z, 0));
-		    renderer.renderFaceYPos(block, x, y, z, icn.getOverlayTexture(world, x, y, z, 1));
-		    renderer.renderFaceZNeg(block, x, y, z, icn.getOverlayTexture(world, x, y, z, 2));
-		    renderer.renderFaceZPos(block, x, y, z, icn.getOverlayTexture(world, x, y, z, 3));
-		    renderer.renderFaceXNeg(block, x, y, z, icn.getOverlayTexture(world, x, y, z, 4));
-		    renderer.renderFaceXPos(block, x, y, z, icn.getOverlayTexture(world, x, y, z, 5));
-		    // render the overlaying block END
+            // render the overlaying block START
+            renderer.renderFaceYNeg(block, x, y, z, icn.getOverlayTexture(world, x, y, z, 0));
+            renderer.renderFaceYPos(block, x, y, z, icn.getOverlayTexture(world, x, y, z, 1));
+            renderer.renderFaceZNeg(block, x, y, z, icn.getOverlayTexture(world, x, y, z, 2));
+            renderer.renderFaceZPos(block, x, y, z, icn.getOverlayTexture(world, x, y, z, 3));
+            renderer.renderFaceXNeg(block, x, y, z, icn.getOverlayTexture(world, x, y, z, 4));
+            renderer.renderFaceXPos(block, x, y, z, icn.getOverlayTexture(world, x, y, z, 5));
+            // render the overlaying block END
 
-		    Tessellator.instance.setBrightness(block.getMixedBrightnessForBlock(world, x, y, z));
+            Tessellator.instance.setBrightness(block.getMixedBrightnessForBlock(world, x, y, z));
         }
         return true;
     }
@@ -135,5 +134,4 @@ public class RenderBlockGlowOverlay implements ISimpleBlockRenderingHandler
     public int getRenderId() {
         return 0;
     }
-
 }

@@ -6,6 +6,8 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.util.client.helpers;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -18,6 +20,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+@SideOnly( Side.CLIENT )
 public final class GuiUtils
 {
     private static RenderItem itemRenderer = new RenderItem();

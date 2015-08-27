@@ -30,12 +30,10 @@ import java.util.Iterator;
  * A tuple of eight elements.
  * </p>
  *
- * @since 1.0
- *
  * @author Daniel Fern&aacute;ndez
- *
+ * @since 1.0
  */
-public final class Octet<A,B,C,D,E,F,G,H>
+public final class Octet<A, B, C, D, E, F, G, H>
         extends Tuple
         implements IValue0<A>, IValue1<B>, IValue2<C>, IValue3<D>, IValue4<E>, IValue5<F>, IValue6<G>, IValue7<H>
 {

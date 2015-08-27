@@ -176,7 +176,7 @@ public class UpdateDownloader
         this.notifyObservers();
     }
 
-    public static enum EnumDlState
+    public enum EnumDlState
     {
         DOWNLOADING, PAUSED, COMPLETE, CANCELLED, ERROR, PENDING
     }

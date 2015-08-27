@@ -18,23 +18,23 @@ public class TransformHorseArmor
         implements IClassTransformer
 {
 
-	@Override
-	public byte[] transform(String name, String transformedName, byte[] bytes) {
-		if( transformedName.equals("net.minecraft.entity.passive.EntityHorse") ) {
-			return transformHorse(bytes);
-		}
+    @Override
+    public byte[] transform(String name, String transformedName, byte[] bytes) {
+        if( transformedName.equals("net.minecraft.entity.passive.EntityHorse") ) {
+            return transformHorse(bytes);
+        }
 
-		return bytes;
-	}
+        return bytes;
+    }
 
     private static byte[] transformHorse(byte[] bytes) {
-		ClassNode clazz = ASMHelper.createClassNode(bytes);
+        ClassNode clazz = ASMHelper.createClassNode(bytes);
 
-		MethodNode method = injectMethodSetCustomArmorItem();
-		clazz.methods.add(method);
+        MethodNode method = injectMethodSetCustomArmorItem();
+        clazz.methods.add(method);
 
-		method = injectMethodGetCustomArmorItem();
-		clazz.methods.add(method);
+        method = injectMethodGetCustomArmorItem();
+        clazz.methods.add(method);
 
         transformInteract(ASMHelper.findMethod(clazz, ASMNames.MD_HORSE_INTERACT));
         transformIsValidArmor(ASMHelper.findMethod(clazz, ASMNames.MD_HORSE_FUNC146085A));
@@ -43,16 +43,16 @@ public class TransformHorseArmor
         transformOnInvChanged(ASMHelper.findMethod(clazz, ASMNames.MD_HORSE_ON_INV_CHANGED));
         transformGetTotalArmorValue(ASMHelper.findMethod(clazz, ASMNames.MD_HORSE_GET_TOTAL_ARMOR_VAL));
 
-        try {
+        if( ASMHelper.hasClassMethod(clazz, ASMNames.MD_HORSE_SET_TEXTURE_PATH) ) {
             transformArmorTexture(ASMHelper.findMethod(clazz, ASMNames.MD_HORSE_SET_TEXTURE_PATH));
-        } catch( ASMHelper.MethodNotFoundException e ) {
+        } else {
             ManPackLoadingPlugin.MOD_LOG.log(Level.INFO, "Running on dedicated server, no need to transform Method >setHorseTexturePaths< in EntityHorse!");
         }
 
-	    bytes = ASMHelper.createBytes(clazz, /*ClassWriter.COMPUTE_FRAMES |*/ ClassWriter.COMPUTE_MAXS);
+        bytes = ASMHelper.createBytes(clazz, /*ClassWriter.COMPUTE_FRAMES |*/ ClassWriter.COMPUTE_MAXS);
 
-		return bytes;
-	}
+        return bytes;
+    }
 
     private static MethodNode injectMethodGetCustomArmorItem() {
         MethodNode method = ASMHelper.getMethodNode(Opcodes.ACC_PRIVATE, ASMNames.MD_SAP_GET_CUSTOM_ARMOR_ITEM);
@@ -189,83 +189,83 @@ public class TransformHorseArmor
         method.instructions.insert(pointer, newInstr);
     }
 
-	private static void transformArmorTexture(MethodNode method) {
-	    InsnList needle = new InsnList();
-	    needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
-	    needle.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_HORSE_FUNC110241CB, false));
-	    needle.add(new VarInsnNode(Opcodes.ISTORE, 3));
+    private static void transformArmorTexture(MethodNode method) {
+        InsnList needle = new InsnList();
+        needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        needle.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_HORSE_FUNC110241CB, false));
+        needle.add(new VarInsnNode(Opcodes.ISTORE, 3));
 
-	    AbstractInsnNode node = ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
+        AbstractInsnNode node = ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
 
         InsnList newInstr = new InsnList();
-	    LabelNode l17 = new LabelNode();
-	    newInstr.add(l17);
-	    newInstr.add(new VarInsnNode(Opcodes.ALOAD, 0));
-	    newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKESPECIAL, ASMNames.MD_SAP_GET_CUSTOM_ARMOR_ITEM, false));
-	    newInstr.add(new VarInsnNode(Opcodes.ASTORE, 4));
-	    LabelNode l18 = new LabelNode();
-	    newInstr.add(l18);
-	    newInstr.add(new VarInsnNode(Opcodes.ALOAD, 4));
-	    newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_ITEMSTACK_GET_ITEM, false));
-	    newInstr.add(new TypeInsnNode(Opcodes.INSTANCEOF, ASMNames.CL_ITEM_HORSE_ARMOR));
-	    LabelNode l19 = new LabelNode();
-	    newInstr.add(new JumpInsnNode(Opcodes.IFEQ, l19));
-	    LabelNode l20 = new LabelNode();
-	    newInstr.add(l20);
-	    newInstr.add(new VarInsnNode(Opcodes.ALOAD, 0));
-	    newInstr.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FD_HORSE_FIELD110280BR));
-	    newInstr.add(new InsnNode(Opcodes.ICONST_2));
-	    newInstr.add(new VarInsnNode(Opcodes.ALOAD, 4));
-	    newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_ITEMSTACK_GET_ITEM, false));
-	    newInstr.add(new TypeInsnNode(Opcodes.CHECKCAST, ASMNames.CL_ITEM_HORSE_ARMOR));
-	    newInstr.add(new VarInsnNode(Opcodes.ALOAD, 0));
-	    newInstr.add(new VarInsnNode(Opcodes.ALOAD, 4));
-	    newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_SAP_GET_ARMOR_TEXTURE, false));
-	    newInstr.add(new InsnNode(Opcodes.AASTORE));
-	    LabelNode l21 = new LabelNode();
-	    newInstr.add(l21);
-	    newInstr.add(new VarInsnNode(Opcodes.ALOAD, 0));
-	    newInstr.add(new TypeInsnNode(Opcodes.NEW, ASMNames.CL_STRING_BUILDER));
-	    newInstr.add(new InsnNode(Opcodes.DUP));
-	    newInstr.add(new VarInsnNode(Opcodes.ALOAD, 0));
-	    newInstr.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FD_HORSE_FIELD110286BQ));
-	    newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKESTATIC, ASMNames.MD_STRING_VALUE_OF, false));
-	    newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKESPECIAL, ASMNames.MD_STRINGBUILDER_INIT, false));
-	    newInstr.add(new LdcInsnNode("cst-"));
-	    newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_STRINGBUILDER_APPEND, false));
-	    newInstr.add(new VarInsnNode(Opcodes.ALOAD, 4));
-	    newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_ITEMSTACK_GET_UNLOC_NAME, false));
-	    newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_STRINGBUILDER_APPEND, false));
-	    newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_STRINGBUILDER_TO_STRING, false));
-	    newInstr.add(ASMHelper.getFieldInsnNode(Opcodes.PUTFIELD, ASMNames.FD_HORSE_FIELD110286BQ));
-	    newInstr.add(new InsnNode(Opcodes.RETURN));
-	    newInstr.add(l19);
+        LabelNode l17 = new LabelNode();
+        newInstr.add(l17);
+        newInstr.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKESPECIAL, ASMNames.MD_SAP_GET_CUSTOM_ARMOR_ITEM, false));
+        newInstr.add(new VarInsnNode(Opcodes.ASTORE, 4));
+        LabelNode l18 = new LabelNode();
+        newInstr.add(l18);
+        newInstr.add(new VarInsnNode(Opcodes.ALOAD, 4));
+        newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_ITEMSTACK_GET_ITEM, false));
+        newInstr.add(new TypeInsnNode(Opcodes.INSTANCEOF, ASMNames.CL_ITEM_HORSE_ARMOR));
+        LabelNode l19 = new LabelNode();
+        newInstr.add(new JumpInsnNode(Opcodes.IFEQ, l19));
+        LabelNode l20 = new LabelNode();
+        newInstr.add(l20);
+        newInstr.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        newInstr.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FD_HORSE_FIELD110280BR));
+        newInstr.add(new InsnNode(Opcodes.ICONST_2));
+        newInstr.add(new VarInsnNode(Opcodes.ALOAD, 4));
+        newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_ITEMSTACK_GET_ITEM, false));
+        newInstr.add(new TypeInsnNode(Opcodes.CHECKCAST, ASMNames.CL_ITEM_HORSE_ARMOR));
+        newInstr.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        newInstr.add(new VarInsnNode(Opcodes.ALOAD, 4));
+        newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_SAP_GET_ARMOR_TEXTURE, false));
+        newInstr.add(new InsnNode(Opcodes.AASTORE));
+        LabelNode l21 = new LabelNode();
+        newInstr.add(l21);
+        newInstr.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        newInstr.add(new TypeInsnNode(Opcodes.NEW, ASMNames.CL_STRING_BUILDER));
+        newInstr.add(new InsnNode(Opcodes.DUP));
+        newInstr.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        newInstr.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FD_HORSE_FIELD110286BQ));
+        newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKESTATIC, ASMNames.MD_STRING_VALUE_OF, false));
+        newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKESPECIAL, ASMNames.MD_STRINGBUILDER_INIT, false));
+        newInstr.add(new LdcInsnNode("cst-"));
+        newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_STRINGBUILDER_APPEND, false));
+        newInstr.add(new VarInsnNode(Opcodes.ALOAD, 4));
+        newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_ITEMSTACK_GET_UNLOC_NAME, false));
+        newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_STRINGBUILDER_APPEND, false));
+        newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_STRINGBUILDER_TO_STRING, false));
+        newInstr.add(ASMHelper.getFieldInsnNode(Opcodes.PUTFIELD, ASMNames.FD_HORSE_FIELD110286BQ));
+        newInstr.add(new InsnNode(Opcodes.RETURN));
+        newInstr.add(l19);
 
-	    method.instructions.insert(node, newInstr);
-	}
+        method.instructions.insert(node, newInstr);
+    }
 
-	private static void transformUpdateHorseSlots(MethodNode method) {
-	    InsnList needle = new InsnList();
-	    needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
-	    needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
-	    needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FD_HORSE_CHEST));
-	    needle.add(new InsnNode(Opcodes.ICONST_1));
+    private static void transformUpdateHorseSlots(MethodNode method) {
+        InsnList needle = new InsnList();
+        needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FD_HORSE_CHEST));
+        needle.add(new InsnNode(Opcodes.ICONST_1));
 
-	    AbstractInsnNode pointer = ASMHelper.findFirstNodeFromNeedle(method.instructions, needle);
+        AbstractInsnNode pointer = ASMHelper.findFirstNodeFromNeedle(method.instructions, needle);
 
-	    InsnList newInstr = new InsnList();
-	    newInstr.add(new VarInsnNode(Opcodes.ALOAD, 0));
-	    newInstr.add(new VarInsnNode(Opcodes.ALOAD, 0));
-	    newInstr.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FD_HORSE_CHEST));
-	    newInstr.add(new InsnNode(Opcodes.ICONST_1));
-	    newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_ANIMALCHEST_GET_STACK_IN_SLOT, false));
-	    newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKESPECIAL, ASMNames.MD_SAP_SET_CUSTOM_ARMOR_ITEM, false));
-	    newInstr.add(new LabelNode());
+        InsnList newInstr = new InsnList();
+        newInstr.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        newInstr.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        newInstr.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FD_HORSE_CHEST));
+        newInstr.add(new InsnNode(Opcodes.ICONST_1));
+        newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_ANIMALCHEST_GET_STACK_IN_SLOT, false));
+        newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKESPECIAL, ASMNames.MD_SAP_SET_CUSTOM_ARMOR_ITEM, false));
+        newInstr.add(new LabelNode());
 
-	    method.instructions.insertBefore(pointer, newInstr);
-	}
+        method.instructions.insertBefore(pointer, newInstr);
+    }
 
-	private static void transformEntityInit(MethodNode method) {
+    private static void transformEntityInit(MethodNode method) {
         InsnList needle = new InsnList();
         needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
         needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETFIELD, ASMNames.FD_HORSE_DATAWATCHER));
@@ -289,19 +289,19 @@ public class TransformHorseArmor
         newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_DATAWATCHER_ADD_OBJECT, false));
 
         method.instructions.insert(pointer, newInstr);
-	}
+    }
 
-	private static void transformIsValidArmor(MethodNode method) {
-	    InsnList needle = new InsnList();
+    private static void transformIsValidArmor(MethodNode method) {
+        InsnList needle = new InsnList();
         needle.add(new LabelNode());
         needle.add(new LineNumberNode(-1, new LabelNode()));
-	    needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
-	    needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETSTATIC, ASMNames.FD_ITEMS_IRON_HORSE_ARMOR));
-	    needle.add(new JumpInsnNode(Opcodes.IF_ACMPEQ, new LabelNode()));
+        needle.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETSTATIC, ASMNames.FD_ITEMS_IRON_HORSE_ARMOR));
+        needle.add(new JumpInsnNode(Opcodes.IF_ACMPEQ, new LabelNode()));
 
-	    AbstractInsnNode node = ASMHelper.findFirstNodeFromNeedle(method.instructions, needle);
+        AbstractInsnNode node = ASMHelper.findFirstNodeFromNeedle(method.instructions, needle);
 
-	    InsnList newInstr = new InsnList();
+        InsnList newInstr = new InsnList();
         newInstr.add(new LabelNode());
         newInstr.add(new VarInsnNode(Opcodes.ALOAD, 0));
         newInstr.add(new TypeInsnNode(Opcodes.INSTANCEOF, ASMNames.CL_ITEM_HORSE_ARMOR));
@@ -312,27 +312,27 @@ public class TransformHorseArmor
         newInstr.add(new InsnNode(Opcodes.IRETURN));
         newInstr.add(ln);
 
-	    method.instructions.insertBefore(node, newInstr);
-	}
+        method.instructions.insertBefore(node, newInstr);
+    }
 
-	private static void transformInteract(MethodNode method) {
+    private static void transformInteract(MethodNode method) {
 
-	    InsnList needle = new InsnList();
-	    needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETSTATIC, ASMNames.FD_ITEMS_DIAMOND_HORSE_ARMOR));
-	    needle.add(new JumpInsnNode(Opcodes.IF_ACMPNE, new LabelNode()));
-	    needle.add(new LabelNode());
-	    needle.add(new LineNumberNode(-1, new LabelNode()));
-	    needle.add(new InsnNode(Opcodes.ICONST_3));
-	    needle.add(new VarInsnNode(Opcodes.ISTORE, 4));
-	    needle.add(new LabelNode());
-	    needle.add(new LineNumberNode(-1, new LabelNode()));
-	    needle.add(new FrameNode(Opcodes.F_SAME, 0, null, 0, null));
+        InsnList needle = new InsnList();
+        needle.add(ASMHelper.getFieldInsnNode(Opcodes.GETSTATIC, ASMNames.FD_ITEMS_DIAMOND_HORSE_ARMOR));
+        needle.add(new JumpInsnNode(Opcodes.IF_ACMPNE, new LabelNode()));
+        needle.add(new LabelNode());
+        needle.add(new LineNumberNode(-1, new LabelNode()));
+        needle.add(new InsnNode(Opcodes.ICONST_3));
+        needle.add(new VarInsnNode(Opcodes.ISTORE, 4));
+        needle.add(new LabelNode());
+        needle.add(new LineNumberNode(-1, new LabelNode()));
+        needle.add(new FrameNode(Opcodes.F_SAME, 0, null, 0, null));
 
-	    AbstractInsnNode node = ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
+        AbstractInsnNode node = ASMHelper.findLastNodeFromNeedle(method.instructions, needle);
 
-	    InsnList newInstr = new InsnList();
+        InsnList newInstr = new InsnList();
         newInstr.add(new LabelNode());
-	    newInstr.add(new VarInsnNode(Opcodes.ALOAD, 2));
+        newInstr.add(new VarInsnNode(Opcodes.ALOAD, 2));
         newInstr.add(ASMHelper.getMethodInsnNode(Opcodes.INVOKEVIRTUAL, ASMNames.MD_ITEMSTACK_GET_ITEM, false));
         newInstr.add(new TypeInsnNode(Opcodes.INSTANCEOF, ASMNames.CL_ITEM_HORSE_ARMOR));
         LabelNode l8 = new LabelNode();
@@ -343,6 +343,6 @@ public class TransformHorseArmor
         newInstr.add(l8);
         newInstr.add(new FrameNode(Opcodes.F_SAME, 0, null, 0, null));
 
-	    method.instructions.insert(node, newInstr);
-	}
+        method.instructions.insert(node, newInstr);
+    }
 }

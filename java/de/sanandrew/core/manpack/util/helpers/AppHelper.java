@@ -2,7 +2,7 @@
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
  * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
- *                http://creativecommons.org/licenses/by-nc-sa/4.0/
+ * http://creativecommons.org/licenses/by-nc-sa/4.0/
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.util.helpers;
 
@@ -65,14 +65,12 @@ final class AppHelper
                                                              e.printStackTrace();
                                                          }
                                                      }
-                                                 }
-            );
+                                                 });
 
             System.out.println();
             ManPackLoadingPlugin.MOD_LOG.log(Level.INFO, "---=== Restarting Minecraft! ===---");
             FMLCommonHandler.instance().exitJava(0, false);                                             // try to exit Minecraft
-//            Thread.currentThread().interrupt();
-        } catch (Throwable e) {
+        } catch( Throwable e ) {
             throw new RejectedExecutionException("Error while trying to restart the application", e);
         }
     }

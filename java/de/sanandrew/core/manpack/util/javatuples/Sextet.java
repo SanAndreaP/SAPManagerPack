@@ -30,12 +30,10 @@ import java.util.Iterator;
  * A tuple of six elements.
  * </p>
  *
- * @since 1.0
- *
  * @author Daniel Fern&aacute;ndez
- *
+ * @since 1.0
  */
-public final class Sextet<A,B,C,D,E,F>
+public final class Sextet<A, B, C, D, E, F>
         extends Tuple
         implements IValue0<A>, IValue1<B>, IValue2<C>, IValue3<D>, IValue4<E>, IValue5<F>
 {

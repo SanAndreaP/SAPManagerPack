@@ -7,6 +7,8 @@
 package de.sanandrew.core.manpack.mod.client.event;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.mod.client.render.RenderSanPlayer;
 import de.sanandrew.core.manpack.util.ReflectionNames;
 import de.sanandrew.core.manpack.util.SAPReflectionHelper;
@@ -22,9 +24,10 @@ import net.minecraftforge.client.event.RenderLivingEvent.Pre;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import org.lwjgl.opengl.GL11;
 
+@SideOnly( Side.CLIENT )
 public class RenderPlayerEventHandler
 {
-    private static final String[] SANPLAYER_NAMES_UUID = new String[] {"SanAndreasP", "044d980d-5c2a-4030-95cf-cbfde69ea3cb"};
+    private static final String[] SANPLAYER_NAMES_UUID = new String[] { "SanAndreasP", "044d980d-5c2a-4030-95cf-cbfde69ea3cb" };
 
     private RenderSanPlayer sanPlayerModel = null;
 
@@ -55,7 +58,7 @@ public class RenderPlayerEventHandler
         this.lazyLoad();
 
         if( event.entity instanceof EntityPlayer && event.renderer != this.sanPlayerModel
-            && SAPUtils.isPlayerNameOrUuidEqual((EntityPlayer) event.entity, SANPLAYER_NAMES_UUID) )
+                && SAPUtils.isPlayerNameOrUuidEqual((EntityPlayer) event.entity, SANPLAYER_NAMES_UUID) )
         {
             this.sanPlayerModel.doRender(event.entity, event.x, event.y + event.entity.yOffset, event.z, 0.0F, this.playerPartTicks);
             event.setCanceled(true);
@@ -63,21 +66,23 @@ public class RenderPlayerEventHandler
     }
 
     @SubscribeEvent
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public void onHandRender(RenderHandEvent event) {
         this.lazyLoad();
 
         GL11.glPushMatrix();
         Minecraft mc = Minecraft.getMinecraft();
+
         if( SAPUtils.isPlayerNameOrUuidEqual(mc.thePlayer, SANPLAYER_NAMES_UUID) ) {
             event.setCanceled(true);
             GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-            RenderPlayer rend = (RenderPlayer)RenderManager.instance.getEntityRenderObject(mc.thePlayer);
+            RenderPlayer rend = (RenderPlayer) RenderManager.instance.getEntityRenderObject(mc.thePlayer);
             RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), this.sanPlayerModel);
             SAPReflectionHelper.invokeCachedMethod(EntityRenderer.class, mc.entityRenderer, ReflectionNames.RENDER_HAND.mcpName, ReflectionNames.RENDER_HAND.srgName,
-                                                   new Class[] {float.class, int.class}, new Object[] {event.partialTicks, event.renderPass});
+                                                   new Class[] { float.class, int.class }, new Object[] { event.partialTicks, event.renderPass } );
             RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), rend);
         }
+
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glPopMatrix();
     }

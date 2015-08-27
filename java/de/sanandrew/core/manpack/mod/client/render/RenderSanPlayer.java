@@ -7,6 +7,8 @@
 package de.sanandrew.core.manpack.mod.client.render;
 
 import com.google.gson.Gson;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.init.ManPackLoadingPlugin;
 import de.sanandrew.core.manpack.mod.client.model.ModelSanPlayer;
 import de.sanandrew.core.manpack.util.client.helpers.AverageColorHelper;
@@ -38,6 +40,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
+@SideOnly( Side.CLIENT )
 public class RenderSanPlayer
         extends RenderPlayer
         implements IResourceManagerReloadListener
@@ -106,9 +109,9 @@ public class RenderSanPlayer
 
 //                myModelArmor.hatBase.showModel = renderPass == 0;
                 myModelArmor.body.showModel = renderPass == 1 || renderPass == 2;
-                myModelArmor.armLeft.showModel = renderPass == 1;
+                myModelArmor.bipedLeftArm.showModel = renderPass == 1;
                 myModelArmor.armLeft2.showModel = renderPass == 1;
-                myModelArmor.armRight.showModel = renderPass == 1;
+                myModelArmor.bipedRightArm.showModel = renderPass == 1;
                 myModelArmor.armRight2.showModel = renderPass == 1;
                 myModelArmor.skirt1.showModel = renderPass == 2;
                 myModelArmor.skirt2.showModel = renderPass == 2;
@@ -185,21 +188,24 @@ public class RenderSanPlayer
     public void renderFirstPersonArm(EntityPlayer player) {
         GL11.glColor3f(1.0F, 1.0F, 1.0F);
         this.modelBipedMain.onGround = 0.0F;
+        boolean isRidingPrev = this.modelBipedMain.isRiding;
+        this.modelBipedMain.isRiding = false;
         this.modelBipedMain.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, player);
+        this.modelBipedMain.isRiding = isRidingPrev;
         if( this.renderManager.renderEngine != null ) {
             if( player.getCurrentArmor(2) != null ) {
                 this.bindTexture(this.getEntityTexture(player));
-                this.myModel.armRight.render(0.0625F);
+                this.myModel.bipedLeftArm.render(0.0625F);
                 String armoredChest = player.getCurrentArmor(2).getUnlocalizedName().replace(':', '_');
                 boolean prevArmR2Visible = this.myModel.armRight2.showModel;
 
                 Minecraft.getMinecraft().getTextureManager().bindTexture(tryLoadArmorPiece("Chest", armoredChest, player, player.getCurrentArmor(2), 1));
 
-                this.myModel.armRight.render(0.0625F);
+                this.myModel.bipedRightArm.render(0.0625F);
                 GL11.glPushMatrix();
                 GL11.glScalef(1.05F, 1.05F, 1.05F);
                 GL11.glTranslatef(0.015F, 0.00F, 0.0F);
-                int armorColor = ((ItemArmor)player.getCurrentArmor(2).getItem()).getColor(player.getCurrentArmor(2));
+                int armorColor = ((ItemArmor) player.getCurrentArmor(2).getItem()).getColor(player.getCurrentArmor(2));
                 if( armorColor != -1 ) {
                     float red = (armorColor >> 16 & 255) / 255.0F;
                     float green = (armorColor >> 8 & 255) / 255.0F;
@@ -219,7 +225,7 @@ public class RenderSanPlayer
                 boolean prevArmR2Visible = this.myModel.armRight2.showModel;
 
                 this.bindTexture(this.getEntityTexture(player));
-                this.myModel.armRight.render(0.0625F);
+                this.myModel.bipedRightArm.render(0.0625F);
                 GL11.glPushMatrix();
                 GL11.glScalef(1.05F, 1.05F, 1.05F);
                 GL11.glTranslatef(0.015F, 0.00F, 0.0F);
@@ -264,14 +270,16 @@ public class RenderSanPlayer
         this.hatRenderList.clear();
     }
 
-    public static class CubeLoader {
+    public static class CubeLoader
+    {
         public CubeLoaderCube[] cubes = new CubeLoaderCube[0];
         public boolean hideTails;
         private ModelRenderer[] cubeInsts = new ModelRenderer[1];
 
         public static CubeLoader loadFromResource(String unlocName) {
             try( BufferedReader in = new BufferedReader(new InputStreamReader(Minecraft.getMinecraft().getResourceManager()
-                                            .getResource(new ResourceLocation("sapmanpack", "model/hats/" + unlocName + ".json")).getInputStream())) )
+                                                                                       .getResource(new ResourceLocation("sapmanpack", "model/hats/" + unlocName + ".json"))
+                                                                                       .getInputStream())) )
             {
                 return new Gson().fromJson(in, CubeLoader.class);
             } catch( IOException ex ) {
@@ -290,8 +298,7 @@ public class RenderSanPlayer
                                                        .setLocation(cubeDef.rotationPointX, cubeDef.rotationPointY, cubeDef.rotationPointZ)
                                                        .setRotation(cubeDef.rotationX, cubeDef.rotationY, cubeDef.rotationZ)
                                                        .getBox(cubeDef.boxX, cubeDef.boxY, cubeDef.boxZ, cubeDef.sizeX, cubeDef.sizeY,
-                                                               cubeDef.sizeZ, cubeDef.scale
-                                                       );
+                                                               cubeDef.sizeZ, cubeDef.scale);
                 if( index == 0 ) {
                     parent = this.cubeInsts[index];
                 } else {
@@ -305,7 +312,8 @@ public class RenderSanPlayer
         }
     }
 
-    public static class CubeLoaderCube {
+    public static class CubeLoaderCube
+    {
         public int textureX;
         public int textureY;
         public boolean mirror;

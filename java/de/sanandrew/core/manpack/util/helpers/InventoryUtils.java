@@ -22,6 +22,7 @@ public final class InventoryUtils
     /**
      * Decreases the player's held stack size by the amount.
      * Sends the changes to the client as well.
+     *
      * @param player the player whose held stack size should be decreased
      * @param amount the amount the size is decreased by
      * @return the held stack with decreased size, or null if the stack empties out
@@ -51,8 +52,9 @@ public final class InventoryUtils
     /**
      * Adds the stack to the given inventory.<br>
      * <b>Note</b>: if you have a {@link net.minecraft.inventory.Container} instance available,
-     *      please call {@link Container#detectAndSendChanges()} to send the changes to the client!
-     * @param is the ItemStack to be added
+     * please call {@link Container#detectAndSendChanges()} to send the changes to the client!
+     *
+     * @param is  the ItemStack to be added
      * @param inv the Inventory the stack should be added to
      * @return the remaining stack if the inventory is full / fills out or null if it added the complete stack
      */
@@ -70,7 +72,7 @@ public final class InventoryUtils
             if( invIS != null && ItemUtils.areStacksEqual(is, invIS, checkNBT) ) {
                 rest = is.stackSize + invIS.stackSize;
                 int maxStack = Math.min(invIS.getMaxStackSize(), inv.getInventoryStackLimit());
-                if(rest <= maxStack) {
+                if( rest <= maxStack ) {
                     invIS.stackSize = rest;
                     inv.setInventorySlotContents(i, invIS.copy());
                     is = null;

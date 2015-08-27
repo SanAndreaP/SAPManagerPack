@@ -7,11 +7,14 @@
 package de.sanandrew.core.manpack.mod.client.gui;
 
 import com.google.common.primitives.Floats;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.core.manpack.util.client.helpers.GuiUtils;
 import net.minecraft.client.gui.Gui;
 import org.apache.commons.lang3.ArrayUtils;
 
+@SideOnly( Side.CLIENT )
 public class GuiColorPickerCtrl
         extends Gui
 {
@@ -71,7 +74,7 @@ public class GuiColorPickerCtrl
         return this.bright;
     }
 
-    @SuppressWarnings("FloatingPointEquality")
+    @SuppressWarnings( "FloatingPointEquality" )
     public void setHsbFromRgb(int rgb) {
         float[] splitColors = ArrayUtils.remove(SAPUtils.getRgbaFromColorInt(rgb).getColorFloatArray(), 3);  // don't need the alpha value (3)
 
@@ -110,7 +113,7 @@ public class GuiColorPickerCtrl
         int x1 = 105 + xPos;
         int x2 = 115 + xPos;
 
-        drawGradientRect(x1,      yPos, x2, 15 + yPos, 0xFFFF0000, 0xFFFF00FF);
+        drawGradientRect(x1, yPos, x2, 15 + yPos, 0xFFFF0000, 0xFFFF00FF);
         drawGradientRect(x1, 15 + yPos, x2, 30 + yPos, 0xFFFF00FF, 0xFF0000FF);
         drawGradientRect(x1, 30 + yPos, x2, 45 + yPos, 0xFF0000FF, 0xFF00FFFF);
         drawGradientRect(x1, 45 + yPos, x2, 60 + yPos, 0xFF00FFFF, 0xFF00FF00);
@@ -170,11 +173,11 @@ public class GuiColorPickerCtrl
         bluePart += blueSat;
 
         int brightColor = redPart << 16 | greenPart << 8 | bluePart;
-            float brightFloat = this.bright / 100.0F;
-            brightColor = 0xFF000000
-                    | (int) (((brightColor >> 16) & 0xFF) * brightFloat) << 16
-                    | (int) (((brightColor >> 8) & 0xFF) * brightFloat) << 8
-                    | (int) ((brightColor & 0xFF) * brightFloat);
+        float brightFloat = this.bright / 100.0F;
+        brightColor = 0xFF000000
+                | (int) (((brightColor >> 16) & 0xFF) * brightFloat) << 16
+                | (int) (((brightColor >> 8) & 0xFF) * brightFloat) << 8
+                | (int) ((brightColor & 0xFF) * brightFloat);
 
         this.resColor = brightColor;
         this.resColorHued = pickedColor;

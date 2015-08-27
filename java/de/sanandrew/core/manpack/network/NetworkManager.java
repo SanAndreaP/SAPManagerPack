@@ -84,8 +84,7 @@ public final class NetworkManager
                 case TO_ALL_IN_RANGE:
                     channel.sendToAllAround(proxyPacket, new NetworkRegistry.TargetPoint((int) dirData.getValue(0), (double) dirData.getValue(1),
                                                                                          (double) dirData.getValue(2), (double) dirData.getValue(3),
-                                                                                         (double) dirData.getValue(4))
-                    );
+                                                                                         (double) dirData.getValue(4)));
                     break;
                 case TO_ALL_IN_DIMENSION:
                     channel.sendToDimension(proxyPacket, (int) dirData.getValue(0));
@@ -114,7 +113,7 @@ public final class NetworkManager
         return PROCESSORS.get(modId).getValue2();
     }
 
-    private static enum EnumPacketDirections
+    private enum EnumPacketDirections
     {
         TO_SERVER, TO_PLAYER, TO_ALL, TO_ALL_IN_RANGE, TO_ALL_IN_DIMENSION
     }

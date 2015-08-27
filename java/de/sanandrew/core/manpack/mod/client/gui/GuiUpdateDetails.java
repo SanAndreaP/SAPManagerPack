@@ -6,6 +6,8 @@
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.mod.client.gui;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.init.ManPackLoadingPlugin;
 import de.sanandrew.core.manpack.managers.SAPUpdateManager;
 import de.sanandrew.core.manpack.util.client.helpers.GuiUtils;
@@ -17,6 +19,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+@SideOnly( Side.CLIENT )
 public class GuiUpdateDetails
         extends GuiScreen
 {
@@ -37,7 +40,7 @@ public class GuiUpdateDetails
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public void initGui() {
         super.initGui();
 
@@ -110,6 +113,7 @@ public class GuiUpdateDetails
         s = this.manager.getUpdateInfo().description;
         this.fontRendererObj.drawSplitString(s, xPos + listX + 4, yPos + listY + listTextY + 2, listWidth - 12, 0xFFA00060);
         listTextY += this.fontRendererObj.splitStringWidth(s, listWidth - 12) + 4;
+
         if( this.manager.getUpdateInfo().changelog != null ) {
             for( int i = 0; i < this.manager.getUpdateInfo().changelog.length; i++ ) {
                 s = this.manager.getUpdateInfo().changelog[i];
@@ -118,6 +122,7 @@ public class GuiUpdateDetails
                 listTextY += this.fontRendererObj.splitStringWidth(s, listWidth - 22) + 2;
             }
         }
+
         this.scrollMax = listTextY - listHeight + 4;
 
         GL11.glPopMatrix();

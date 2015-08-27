@@ -20,6 +20,8 @@ public final class ASMNames
 {
     private static final Map<String, String> MAPPINGS = new HashMap<>();
 
+    static final Pattern OWNERNAME = Pattern.compile("(\\S*)/(.*)");
+
     public static final String MD_AABB_EXPAND                   = "net/minecraft/util/AxisAlignedBB/expand (DDD)Lnet/minecraft/util/AxisAlignedBB;";
     public static final String MD_ANIMALCHEST_GET_STACK_IN_SLOT = "net/minecraft/inventory/AnimalChest/getStackInSlot (I)Lnet/minecraft/item/ItemStack;";
     public static final String MD_DATAWATCHER_ADD_OBJECT        = "net/minecraft/entity/DataWatcher/addObject (ILjava/lang/Object;)V";
@@ -66,7 +68,6 @@ public final class ASMNames
     public static final String MD_WORLD_RAY_TRACE_BLOCKS        = "net/minecraft/world/World/rayTraceBlocks (Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;)Lnet/minecraft/util/MovingObjectPosition;";
     public static final String MD_WORLD_RAY_TRACE_BLOCKS_Z      = "net/minecraft/world/World/rayTraceBlocks (Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;Z)Lnet/minecraft/util/MovingObjectPosition;";
 
-//    public static final String FD_FORGE_EVENT_BUS           = "net/minecraftforge/common/MinecraftForge/EVENT_BUS Lcpw/mods/fml/common/eventhandler/EventBus;";
     public static final String FD_HORSE_ARMOR_VALUES        = "net/minecraft/entity/passive/EntityHorse/armorValues [I";
     public static final String FD_HORSE_CHEST               = "net/minecraft/entity/passive/EntityHorse/horseChest Lnet/minecraft/inventory/AnimalChest;";
     public static final String FD_HORSE_DATAWATCHER         = "net/minecraft/entity/passive/EntityHorse/dataWatcher Lnet/minecraft/entity/DataWatcher;";
@@ -99,6 +100,8 @@ public final class ASMNames
     public static final String CL_T_ITEM_STACK = "Lnet/minecraft/item/ItemStack;";
 
     public static final String OR_SAP_ENTITY_GET_BOUNDING_BOX = "public " + MD_SAP_ENTITY_GET_BOUNDING_BOX;
+    public static final String OR_SAP_CAN_DISMOUNT_ON_INPUT = "public " + MD_SAP_CAN_DISMOUNT_ON_INPUT;
+    public static final String OR_SAP_CAN_IMPACT_ON_LIQUID = "public " + MD_SAP_CAN_IMPACT_ON_LIQUID;
 
     static {
         MAPPINGS.put(MD_ENDERMAN_SHOULD_ATTACK_PLAYER,  "func_70821_d");
@@ -146,8 +149,6 @@ public final class ASMNames
         MAPPINGS.put(FD_ITEMS_IRON_HORSE_ARMOR,     "field_151138_bX");
         MAPPINGS.put(FD_ITEMS_DIAMOND_HORSE_ARMOR,  "field_151125_bZ");
     }
-
-    static final Pattern OWNERNAME = Pattern.compile("(\\S*)/(.*)");
     public static Triplet<String, String, String[]> getSrgNameMd(String method) {
         Matcher mtch = OWNERNAME.matcher(method);
         if( !mtch.find() ) {

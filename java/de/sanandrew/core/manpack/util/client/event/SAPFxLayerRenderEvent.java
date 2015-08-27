@@ -9,8 +9,11 @@
 package de.sanandrew.core.manpack.util.client.event;
 
 import cpw.mods.fml.common.eventhandler.Event;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.Tessellator;
 
+@SideOnly( Side.CLIENT )
 public class SAPFxLayerRenderEvent
         extends Event
 {
@@ -20,7 +23,8 @@ public class SAPFxLayerRenderEvent
         this.layerId = layer;
     }
 
-    public static class Pre extends SAPFxLayerRenderEvent
+    public static class Pre
+            extends SAPFxLayerRenderEvent
     {
         public final Tessellator tessellator;
 
@@ -30,7 +34,8 @@ public class SAPFxLayerRenderEvent
         }
     }
 
-    public static class Post extends SAPFxLayerRenderEvent
+    public static class Post
+            extends SAPFxLayerRenderEvent
     {
         public Post(int layer) {
             super(layer);

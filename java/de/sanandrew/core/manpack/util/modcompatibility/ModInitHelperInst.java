@@ -2,7 +2,7 @@
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
  * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
- *                http://creativecommons.org/licenses/by-nc-sa/4.0/
+ * http://creativecommons.org/licenses/by-nc-sa/4.0/
  *******************************************************************************************************************/
 package de.sanandrew.core.manpack.util.modcompatibility;
 
@@ -20,7 +20,7 @@ public class ModInitHelperInst
         this.helperInst = instance;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public static ModInitHelperInst loadWhenModAvailable(String modId, String helperClass) {
         if( modId == null || modId.isEmpty() ) {
             ManPackLoadingPlugin.MOD_LOG.printf(Level.FATAL, "Cannot check for null/empty mod ID!");
@@ -60,9 +60,16 @@ public class ModInitHelperInst
         this.helperInst.postInitialize();
     }
 
-    public static final class EmptyModInitHelper implements IModInitHelper {
-        @Override public void preInitialize() { }
-        @Override public void initialize() { }
-        @Override public void postInitialize() { }
+    public static final class EmptyModInitHelper
+            implements IModInitHelper
+    {
+        @Override
+        public void preInitialize() { }
+
+        @Override
+        public void initialize() { }
+
+        @Override
+        public void postInitialize() { }
     }
 }

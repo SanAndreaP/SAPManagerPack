@@ -53,7 +53,7 @@ public class AnnotationChecker
                             }
                         } else if( checkBitwiseEqual(asmMethod.access, Opcodes.ACC_DEPRECATED) ) {
                             ManPackLoadingPlugin.MOD_LOG.log(Level.WARN, String.format("The Method %s is marked as deprecated! It is most likely that the method is " +
-                                                                                            "not injected in any superclass anymore! Thus this may not be called!",
+                                                                                               "not injected in any superclass anymore! Thus this may not be called!",
                                                                                        asmMethod.name));
                         }
                     }
@@ -132,7 +132,9 @@ public class AnnotationChecker
         return (value & flag) == flag;
     }
 
-    public static class OverrideException extends RuntimeException {
+    public static class OverrideException
+            extends RuntimeException
+    {
         private static final long serialVersionUID = 7395488467026629355L;
 
         public OverrideException(String message) {

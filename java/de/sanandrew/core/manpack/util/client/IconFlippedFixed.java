@@ -1,12 +1,12 @@
 package de.sanandrew.core.manpack.util.client;
 
-import net.minecraft.util.IIcon;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.IIcon;
 
-@SideOnly(Side.CLIENT)
-public class IconFlippedFixed implements IIcon
+@SideOnly( Side.CLIENT )
+public class IconFlippedFixed
+        implements IIcon
 {
     private final IIcon baseIcon;
     private final boolean flipU;
@@ -56,14 +56,14 @@ public class IconFlippedFixed implements IIcon
     @Override
     public float getInterpolatedU(double par1) {
         float diffU = this.getMaxU() - this.getMinU();
-        return this.getMinU() + diffU * ((float)par1 / 16.0F);
+        return this.getMinU() + diffU * ((float) par1 / 16.0F);
     }
 
     /**
      * Returns the minimum V coordinate to use when rendering with this icon.
-     *
+     * <p/>
      * - This method is fixed to correctly flip V, since vanilla returns always
-     *   this.baseIcon.getMinV() which causes texture errors - ~SanAndreasP
+     * this.baseIcon.getMinV() which causes texture errors - ~SanAndreasP
      */
     @Override
     public float getMinV() {
@@ -81,7 +81,7 @@ public class IconFlippedFixed implements IIcon
     @Override
     public float getInterpolatedV(double par1) {
         float diffV = this.getMaxV() - this.getMinV();
-        return this.getMinV() + diffV * ((float)par1 / 16.0F);
+        return this.getMinV() + diffV * ((float) par1 / 16.0F);
     }
 
     @Override

@@ -9,6 +9,8 @@ package de.sanandrew.core.manpack.mod.client;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.managers.SAPUpdateManager;
 import de.sanandrew.core.manpack.mod.client.gui.GuiModUpdate;
 import de.sanandrew.core.manpack.util.MutableString;
@@ -33,6 +35,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.List;
 
+@SideOnly( Side.CLIENT )
 public class UpdateOverlayManager
         extends Gui
 {
@@ -63,7 +66,7 @@ public class UpdateOverlayManager
 
     @SubscribeEvent
     public void renderMinecraft(TickEvent.RenderTickEvent event) {
-        if(event.phase == Phase.END) {
+        if( event.phase == Phase.END ) {
             if( !this.hasEverythingChecked ) {
                 for( Triplet<SAPUpdateManager, MutableBoolean, MutableString> udm : SAPUpdateManager.UPD_MANAGERS ) {
                     if( udm.getValue1().booleanValue() ) {
@@ -105,7 +108,9 @@ public class UpdateOverlayManager
 
         this.mc.renderEngine.bindTexture(this.frameTex);
         int width = Math.max(this.fontRenderer.getStringWidth(update), Math.max(this.fontRenderer.getStringWidth(version),
-                                                                                this.fontRenderer.getStringWidth(details))) + 12;
+                                                                                this.fontRenderer.getStringWidth(details)
+                                                                               )
+                            ) + 12;
         int height = 45;
 
         GL11.glPushMatrix();
@@ -113,10 +118,10 @@ public class UpdateOverlayManager
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glPushMatrix();
         GL11.glScalef(1.0F / 256.0F * 16, 1.0F / 256.0F * 16, 1.0F);
-        this.drawTexturedModalRect(0               , 0                , 0, 0                , width * 16, 4 * 16);
-        this.drawTexturedModalRect(0               , 4 * 16           , 0, 4 * 16           , 4 * 16    , (height - 8) * 16);
-        this.drawTexturedModalRect(0               , (height - 4) * 16, 0, (height - 4) * 16, width * 16, 4 * 16);
-        this.drawTexturedModalRect((width - 4) * 16, 4 * 16           , 0, 4 * 16           , 4 * 16    , (height - 8) * 16);
+        this.drawTexturedModalRect(0, 0, 0, 0, width * 16, 4 * 16);
+        this.drawTexturedModalRect(0, 4 * 16, 0, 4 * 16, 4 * 16, (height - 8) * 16);
+        this.drawTexturedModalRect(0, (height - 4) * 16, 0, (height - 4) * 16, width * 16, 4 * 16);
+        this.drawTexturedModalRect((width - 4) * 16, 4 * 16, 0, 4 * 16, 4 * 16, (height - 8) * 16);
         GL11.glPopMatrix();
         drawRect(1, 1, width - 1, height - 1, 0x80000000);
         GL11.glPopMatrix();
@@ -126,7 +131,7 @@ public class UpdateOverlayManager
                 this.timer.updateTimer();
             }
 
-            int alpha = ((int)(Math.abs(this.txtFade) * 255.0F) & 255) << 24;
+            int alpha = ((int) (Math.abs(this.txtFade) * 255.0F) & 255) << 24;
             GL11.glEnable(GL11.GL_BLEND);
             OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
