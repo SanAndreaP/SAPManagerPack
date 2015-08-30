@@ -242,6 +242,10 @@ public final class SAPUtils
             this.value = Quartet.with(r, g, b, a);
         }
 
+        public RGBAValues(int color) {
+            this((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, (color >> 24) & 0xFF);
+        }
+
         public int getRed() {
             return this.value.getValue0();
         }
@@ -260,6 +264,10 @@ public final class SAPUtils
 
         public float[] getColorFloatArray() {
             return new float[] { this.getRed() / 255.0F, this.getGreen() / 255.0F, this.getBlue() / 255.0F, this.getAlpha() / 255.0F };
+        }
+
+        public int getColorInt() {
+            return ((this.value.getValue3() << 24) & 0xFF) | ((this.value.getValue0() << 16) & 0xFF) | ((this.value.getValue1() << 8) & 0xFF) | (this.value.getValue2() & 0xFF);
         }
     }
 }

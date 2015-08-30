@@ -26,6 +26,10 @@ public final class AverageColorHelper
      * @throws java.io.IOException when the InputStream cannot be read as an image
      */
     public static RGBAValues getAverageColor(InputStream is) throws IOException {
+        return getAverageColor(is, null);
+    }
+
+    public static RGBAValues getAverageColor(InputStream is, RGBAValues maskClr) throws IOException {
         // read texture as BufferedImage from InputStream
         BufferedImage bi = ImageIO.read(is);
 
@@ -36,14 +40,20 @@ public final class AverageColorHelper
         double count = 0;
         for( int x = 0; x < bi.getWidth(); x++ ) {          // loop through the pixels
             for( int y = 0; y < bi.getHeight(); y++ ) {
-                int color = bi.getRGB(x, y);
-                if( ((color >> 24) & 0xFF) == 0x00 ) {      // check if it isn't fully transparent, if it is, then ignore this color, since it will darken it,
+                RGBAValues color = new RGBAValues(bi.getRGB(x, y));
+                if( color.getAlpha() == 0x00 ) {            // check if it isn't fully transparent, if it is, then ignore this color, since it will darken it,
                     continue;                               // because those pixels are usually black and you don't see them anyway
                 }
 
-                red += ((color >> 16) & 0xFF);              // add RGB from the pixel to the RGB storage variables, increase pixel counter
-                green += ((color >> 8) & 0xFF);
-                blue += (color & 0xFF);
+                if( maskClr != null ) {
+                    if( color.getRed() == maskClr.getRed() && color.getGreen() == maskClr.getGreen() && color.getBlue() == maskClr.getBlue() ) {
+                        continue;
+                    }
+                }
+
+                red += color.getRed();              // add RGB from the pixel to the RGB storage variables, increase pixel counter
+                green += color.getGreen();
+                blue += color.getBlue();
                 count += 1.0D;
             }
         }
