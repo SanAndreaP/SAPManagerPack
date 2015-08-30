@@ -267,7 +267,7 @@ public final class SAPUtils
         }
 
         public int getColorInt() {
-            return ((this.value.getValue3() << 24) & 0xFF) | ((this.value.getValue0() << 16) & 0xFF) | ((this.value.getValue1() << 8) & 0xFF) | (this.value.getValue2() & 0xFF);
+            return ((this.value.getValue3() & 0xFF) << 24) | ((this.value.getValue0() & 0xFF) << 16) | ((this.value.getValue1() & 0xFF) << 8) | (this.value.getValue2() & 0xFF);
         }
     }
 }
