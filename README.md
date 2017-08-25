@@ -1,6 +1,8 @@
 SAPManagerPack
 ==============
 
+### IMPORTANT: This is no longer in development. The successor of this project can be found here: [SanAndreasP/SanLib](https://github.com/SanAndreasP/SanLib)
+
 A Manager Pack which helps me to keep my stuff organized and doing some fancy stuff like adding custom hooks
 through ASM.<br>
 If you have suggestions to this, feel free to submit a Pull Request or (if you can't do a PR) contact me.<br>
