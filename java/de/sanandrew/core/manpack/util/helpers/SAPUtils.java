@@ -15,18 +15,27 @@ import de.sanandrew.core.manpack.util.ReflectionNames;
 import de.sanandrew.core.manpack.util.SAPReflectionHelper;
 import de.sanandrew.core.manpack.util.javatuples.Quartet;
 import net.minecraft.block.Block;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
 
+import java.io.File;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -233,6 +242,93 @@ public final class SAPUtils
 
         return false;
     }
+
+    @Deprecated
+    public static ItemStack decrStackSize(ItemStack stack) {
+        return ItemUtils.decrStackSize(stack, 1);
+    }
+
+    @Deprecated
+    public static ItemStack decrStackSize(ItemStack stack, int amount) {
+        return ItemUtils.decrStackSize(stack, amount);
+    }
+
+    @Deprecated
+    public static ItemStack decrInvStackSize(ItemStack stack, int amount) {
+        return ItemUtils.decrStackSize(stack, amount);
+    }
+
+    @Deprecated
+    public static boolean areStacksEqualWithWCV(ItemStack stack1, ItemStack stack2) {
+        return ItemUtils.areStacksEqual(stack1, stack2, false);
+    }
+
+    @Deprecated
+    public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2, boolean checkNbt) {
+        return ItemUtils.areStacksEqual(stack1, stack2, checkNbt);
+    }
+
+    @Deprecated
+    public static ItemStack[] getGoodItemStacks(ItemStack stack) {
+        return ItemUtils.getGoodItemStacks(stack);
+    }
+
+    @Deprecated
+    public static int getInBetweenVal(int val1, int val2) {
+        return getAverage(val1, val2);
+    }
+
+    @Deprecated
+    public static ItemStack getSilkBlock(Block block, int meta) {
+        return SAPReflectionHelper.invokeCachedMethod(Block.class, block, "createStackedBlock", "func_71880_c_", new Class[]{int.class}, new Object[]{meta});
+    }
+
+    @Deprecated
+    public static void dropBlockAsItem(Block block, World world, int x, int y, int z, ItemStack stack) {
+        dropBlockAsItem(world, x, y, z, stack);
+    }
+
+    @Deprecated
+    public static void dropBlockAsItem(World world, int x, int y, int z, ItemStack stack) {
+        EntityItem item = new EntityItem(world, x + 0.5D, y + 0.5D, z + 0.5D, stack);
+        world.spawnEntityInWorld(item);
+    }
+
+    @Deprecated
+    public static void dropBlockXP(Block block, World world, int x, int y, int z, int meta, int fortune) {
+        block.dropXpOnBlockBreak(world, x, y, z, block.getExpDrop(world, meta, fortune));
+    }
+
+    @Deprecated
+    public static boolean isItemInStackArray(ItemStack base, ItemStack... stackArray) {
+        return ItemUtils.isItemStackInArray(base, false, stackArray);
+    }
+
+    @Deprecated
+    public static boolean isItemInStackArray(ItemStack base, List<ItemStack> stackArray) {
+        return ItemUtils.isItemStackInArray(base, false, stackArray.toArray(new ItemStack[stackArray.size()]));
+    }
+
+    @Deprecated
+    public static boolean isItemInStackArray(ItemStack base, boolean checkSize, ItemStack... stackArray) {
+        return ItemUtils.isItemStackInArray(base, checkSize, stackArray);
+    }
+
+    @Deprecated
+    public static boolean isItemInStackArray(ItemStack base, boolean checkSize, List<ItemStack> stackArray) {
+        return ItemUtils.isItemStackInArray(base, checkSize, stackArray.toArray(new ItemStack[stackArray.size()]));
+    }
+
+    @Deprecated
+    public static boolean isToolEffective(Block[] effectives, Block block) {
+        for( Block currBlock : effectives ) {
+            if( block == currBlock ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public static class RGBAValues
     {

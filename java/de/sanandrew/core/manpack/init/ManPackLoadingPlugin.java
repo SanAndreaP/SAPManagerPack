@@ -30,7 +30,7 @@ public class ManPackLoadingPlugin
     public static final String MC_VERSION = "1.7.10";
     public static final String MOD_ID = "sapmanpack";
     public static final Logger MOD_LOG = LogManager.getLogger(MOD_ID);
-    public static final String MOD_VERSION = "2.7.0";
+    public static final String MOD_VERSION = "2.7.1";
 
     public static File source;
 
