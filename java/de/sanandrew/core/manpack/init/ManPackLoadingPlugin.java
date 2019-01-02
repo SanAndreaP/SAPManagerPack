@@ -30,7 +30,7 @@ public class ManPackLoadingPlugin
     public static final String MC_VERSION = "1.7.10";
     public static final String MOD_ID = "sapmanpack";
     public static final Logger MOD_LOG = LogManager.getLogger(MOD_ID);
-    public static final String MOD_VERSION = "2.6.0";
+    public static final String MOD_VERSION = "2.7.0";
 
     public static File source;
 
@@ -42,12 +42,12 @@ public class ManPackLoadingPlugin
     @Override
     public String[] getASMTransformerClass() {
         return new String[] {
-                TransformEntityThrowable.class.getName(),
-                TransformPlayerDismountCtrl.class.getName(),
-                TransformHorseArmor.class.getName(),
-                TransformEnderman.class.getName(),
-                TransformEntityCollision.class.getName(),
-                AnnotationChecker.class.getName() // KEEP THIS AS LAST
+//                TransformEntityThrowable.class.getName(),
+//                TransformPlayerDismountCtrl.class.getName(),
+//                TransformHorseArmor.class.getName(),
+//                TransformEnderman.class.getName(),
+//                TransformEntityCollision.class.getName()//,
+//                AnnotationChecker.class.getName() // KEEP THIS AS LAST
         };
     }
 
